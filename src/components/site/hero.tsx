@@ -1,26 +1,18 @@
-import Image from "next/image";
 import { Search } from "lucide-react";
-import hero1 from "@/assets/hero-1.jpg";
 import { BRAND, CONDOMINIOS_DESTAQUE } from "@/lib/brand";
 import type { Imovel } from "./queries";
 import { HeroMarquee } from "./hero-marquee";
+import { SectionVideo } from "./section-video";
 
-/** Hero fotográfico navy com busca e faixa de imóveis em movimento. */
+/** Hero navy com busca, vídeo de condomínio ao fundo e faixa de imóveis em movimento. */
 export function Hero({ imoveis }: { imoveis: Imovel[] }) {
   return (
     <section className="relative isolate overflow-hidden bg-navy-950 text-white">
-      <Image
-        src={hero1}
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-center"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
+      <SectionVideo
+        src="/videos/hero-condominio.mp4"
+        poster="/videos/hero-condominio.jpg"
+        eager
+        overlay={{
           backgroundImage:
             "linear-gradient(100deg, #012439 0%, rgba(1,36,57,0.92) 45%, rgba(1,36,57,0.68) 100%)",
         }}

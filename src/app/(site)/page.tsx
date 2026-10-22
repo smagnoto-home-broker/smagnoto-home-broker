@@ -5,6 +5,7 @@ import { BRAND, CONDOMINIOS_DESTAQUE, CORRETORES } from "@/lib/brand";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getVitrineEmpresa } from "@/lib/site-company";
 import { Hero } from "@/components/site/hero";
+import { SectionVideo } from "@/components/site/section-video";
 import { LeadForm } from "@/components/site/lead-form";
 import { PropertyCard } from "@/components/site/property-card";
 import { contarDisponiveis, listarImoveis, valorPortfolio, type Imovel } from "@/components/site/queries";
@@ -87,43 +88,47 @@ export default async function HomePage() {
       </section>
 
       {/* 3. Condomínios */}
-      <section id="condominios" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-14">
-        <h2 className="text-2xl font-bold text-navy-950 md:text-3xl">
-          Escolha primeiro o condomínio.
-          <br />
-          Depois a casa.
-        </h2>
-        <p className="mt-3 max-w-2xl text-sm text-mute">
-          Atendemos os condomínios fechados de {BRAND.area[0]} e região. Comece pelo condomínio que
-          você já conhece — o resto a gente mostra.
-        </p>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {CONDOMINIOS_DESTAQUE.map((nome) => (
-            <Link
-              key={nome}
-              href={linkCondominio(nome)}
-              className="card group overflow-hidden transition-shadow hover:shadow-[0_18px_40px_-26px_rgba(1,36,57,0.5)]"
-            >
-              <span
-                className="flex h-24 items-end p-4"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle at 85% 15%, #2A4A66 0%, transparent 55%), linear-gradient(140deg, #012439 0%, #0a3049 100%)",
-                }}
+      <section id="condominios" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
+        <SectionVideo
+          src="/videos/condominios.mp4"
+          poster="/videos/condominios.jpg"
+          overlay={{
+            backgroundImage:
+              "linear-gradient(180deg, rgba(1,36,57,0.94) 0%, rgba(1,36,57,0.86) 55%, rgba(1,36,57,0.94) 100%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-6xl px-5 py-14">
+          <h2 className="text-2xl font-bold md:text-3xl">
+            Escolha primeiro o condomínio.
+            <br />
+            Depois a casa.
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm text-navy-200">
+            Atendemos os condomínios fechados de {BRAND.area[0]} e região. Comece pelo condomínio que
+            você já conhece — o resto a gente mostra.
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {CONDOMINIOS_DESTAQUE.map((nome) => (
+              <Link
+                key={nome}
+                href={linkCondominio(nome)}
+                className="group overflow-hidden rounded-2xl border border-white/12 bg-white/[0.07] backdrop-blur-sm transition-colors hover:bg-white/[0.13]"
               >
-                <Building2 size={20} className="text-gold-500" aria-hidden />
-              </span>
-              <span className="block p-4">
-                <span className="block text-sm font-bold text-navy-950">{nome}</span>
-                <span className="mt-1 block text-xs text-mute">
-                  Condomínio fechado · {BRAND.area[0]} e região
+                <span className="flex h-24 items-end border-b border-white/10 p-4">
+                  <Building2 size={20} className="text-gold-500" aria-hidden />
                 </span>
-                <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-navy-700 group-hover:underline">
-                  Ver imóveis <ArrowRight size={13} aria-hidden />
+                <span className="block p-4">
+                  <span className="block text-sm font-bold">{nome}</span>
+                  <span className="mt-1 block text-xs text-navy-200">
+                    Condomínio fechado · {BRAND.area[0]} e região
+                  </span>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-gold-500">
+                    Ver imóveis <ArrowRight size={13} aria-hidden />
+                  </span>
                 </span>
-              </span>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -170,8 +175,16 @@ export default async function HomePage() {
       </section>
 
       {/* 5. Avaliação */}
-      <section id="avaliar" className="scroll-mt-24 bg-navy-950 text-white">
-        <div className="mx-auto grid max-w-6xl gap-8 px-5 py-14 lg:grid-cols-2 lg:items-center">
+      <section id="avaliar" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
+        <SectionVideo
+          src="/videos/avaliacao.mp4"
+          poster="/videos/avaliacao.jpg"
+          overlay={{
+            backgroundImage:
+              "linear-gradient(100deg, #012439 0%, rgba(1,36,57,0.94) 50%, rgba(1,36,57,0.80) 100%)",
+          }}
+        />
+        <div className="relative mx-auto grid max-w-6xl gap-8 px-5 py-14 lg:grid-cols-2 lg:items-center">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold-500">
               Vender com a Smagnoto
@@ -227,15 +240,23 @@ export default async function HomePage() {
       </section>
 
       {/* 7. Corretores */}
-      <section className="border-y border-line bg-cream">
-        <div className="mx-auto max-w-6xl px-5 py-14">
-          <h2 className="text-2xl font-bold text-navy-950 md:text-3xl">Três corretores, não um call center</h2>
-          <p className="mt-3 max-w-2xl text-sm text-mute">
+      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
+        <SectionVideo
+          src="/videos/corretores.mp4"
+          poster="/videos/corretores.jpg"
+          overlay={{
+            backgroundImage:
+              "linear-gradient(180deg, rgba(1,36,57,0.93) 0%, rgba(1,36,57,0.85) 55%, rgba(1,36,57,0.93) 100%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-6xl px-5 py-14">
+          <h2 className="text-2xl font-bold md:text-3xl">Três corretores, não um call center</h2>
+          <p className="mt-3 max-w-2xl text-sm text-navy-200">
             Quem atende você é quem mostra o imóvel e acompanha a proposta até a assinatura.
           </p>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             {CORRETORES.map((c) => (
-              <div key={c.nome} className="card p-6">
+              <div key={c.nome} className="rounded-2xl bg-white p-6 text-navy-950">
                 <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-navy-950 text-lg font-bold text-gold-500">
                   {c.iniciais}
                 </span>
@@ -267,41 +288,51 @@ export default async function HomePage() {
       </section>
 
       {/* 8. Contato */}
-      <section className="mx-auto max-w-6xl px-5 py-14">
-        <div className="grid gap-10 lg:grid-cols-2">
-          <div>
-            <h2 className="text-2xl font-bold text-navy-950 md:text-3xl">Deixe seu contato</h2>
-            <p className="mt-3 max-w-lg text-sm text-mute">
-              Conta o que você procura — compra, aluguel ou venda. Respondemos em horário comercial,
-              com o número de WhatsApp que você deixar.
-            </p>
-            <ul className="mt-6 space-y-2 text-sm text-ink">
-              <li className="flex items-center gap-2">
-                <Phone size={15} className="text-gold-500" aria-hidden />
-                <a href={BRAND.phoneHref} className="hover:text-navy-700">
-                  {BRAND.phone}
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <MessageCircle size={15} className="text-gold-500" aria-hidden />
-                <a
-                  href={linkWhatsTelefone(BRAND.whatsapp)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-navy-700"
-                >
-                  {BRAND.whatsapp}
-                </a>
-              </li>
-            </ul>
-            <p className="mt-4 text-xs text-mute">
-              {BRAND.address} · {BRAND.city}
-              <br />
-              {BRAND.hours}
-            </p>
-          </div>
-          <div className="card p-6 md:p-8">
-            <LeadForm />
+      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
+        <SectionVideo
+          src="/videos/contato.mp4"
+          poster="/videos/contato.jpg"
+          overlay={{
+            backgroundImage:
+              "linear-gradient(180deg, rgba(1,36,57,0.93) 0%, rgba(1,36,57,0.86) 55%, rgba(1,36,57,0.95) 100%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-6xl px-5 py-14">
+          <div className="grid gap-10 lg:grid-cols-2">
+            <div>
+              <h2 className="text-2xl font-bold md:text-3xl">Deixe seu contato</h2>
+              <p className="mt-3 max-w-lg text-sm text-navy-200">
+                Conta o que você procura — compra, aluguel ou venda. Respondemos em horário comercial,
+                com o número de WhatsApp que você deixar.
+              </p>
+              <ul className="mt-6 space-y-2 text-sm">
+                <li className="flex items-center gap-2">
+                  <Phone size={15} className="text-gold-500" aria-hidden />
+                  <a href={BRAND.phoneHref} className="hover:text-gold-500">
+                    {BRAND.phone}
+                  </a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <MessageCircle size={15} className="text-gold-500" aria-hidden />
+                  <a
+                    href={linkWhatsTelefone(BRAND.whatsapp)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-gold-500"
+                  >
+                    {BRAND.whatsapp}
+                  </a>
+                </li>
+              </ul>
+              <p className="mt-4 text-xs text-navy-200">
+                {BRAND.address} · {BRAND.city}
+                <br />
+                {BRAND.hours}
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white p-6 text-navy-950 md:p-8">
+              <LeadForm />
+            </div>
           </div>
         </div>
       </section>

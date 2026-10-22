@@ -86,10 +86,10 @@ export default async function PainelPage() {
   const maxFunil = Math.max(1, ...etapas.map((e) => counts[e.key] ?? 0));
 
   const kpis = [
-    { label: "Imóveis disponíveis", value: disponiveis, sub: `${totalImoveis} na carteira`, icon: Home },
-    { label: "Leads no mês", value: leadsMes, sub: `${totalLeads} no total`, icon: Users },
-    { label: "Visitas no mês", value: visitasMes, sub: `${visitasHoje?.data?.length ?? 0} hoje`, icon: CalendarDays },
-    { label: "Propostas abertas", value: abertas.length, sub: `R$ ${fmtK(valorAberto)} em análise`, icon: FileText },
+    { label: "Imóveis disponíveis", value: disponiveis, sub: `${totalImoveis} na carteira`, icon: Home, href: "/sistema/imoveis" },
+    { label: "Leads no mês", value: leadsMes, sub: `${totalLeads} no total`, icon: Users, href: "/sistema/leads" },
+    { label: "Visitas no mês", value: visitasMes, sub: `${visitasHoje?.data?.length ?? 0} hoje`, icon: CalendarDays, href: "/sistema/visitas" },
+    { label: "Propostas abertas", value: abertas.length, sub: `R$ ${fmtK(valorAberto)} em análise`, icon: FileText, href: "/sistema/propostas" },
   ];
 
   const saudacao = now.getHours() < 12 ? "Bom dia" : now.getHours() < 18 ? "Boa tarde" : "Boa noite";
@@ -130,15 +130,16 @@ export default async function PainelPage() {
 
         <div className="relative grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
           {kpis.map((k) => (
-            <div
+            <Link
               key={k.label}
-              className="rounded-xl bg-white/[0.06] border border-white/10 p-4 backdrop-blur-sm"
+              href={k.href}
+              className="rounded-xl bg-white/[0.06] border border-white/10 p-4 backdrop-blur-sm transition-colors hover:bg-white/[0.12] hover:border-gold-500/40 focus-visible:outline-2 focus-visible:outline-gold-500"
             >
               <k.icon size={16} className="text-gold-500 mb-2" />
               <p className="text-2xl font-bold">{k.value}</p>
               <p className="text-xs text-navy-200 mt-0.5">{k.label}</p>
               <p className="text-[11px] text-navy-400 mt-1">{k.sub}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
