@@ -16,7 +16,7 @@ import {
   Target,
   X,
 } from "lucide-react";
-import { Monogram } from "@/components/brand/logo";
+import { Logo } from "@/components/brand/logo";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 
 const NAV = [
@@ -65,14 +65,8 @@ export function Sidebar({ role, nome }: { role: string; nome: string }) {
 
   const content = (
     <nav className="flex flex-col h-full">
-      <div className="px-5 py-5 flex items-center gap-2.5 border-b border-line">
-        <Monogram size={34} />
-        <span className="leading-none">
-          <span className="block font-bold tracking-[0.12em] text-navy-950 text-sm">SMAGNOTO</span>
-          <span className="block text-[9px] tracking-[0.3em] text-gold-600 font-semibold mt-0.5">
-            HOME BROKER
-          </span>
-        </span>
+      <div className="px-5 py-5 flex items-center border-b border-line">
+        <Logo size={26} />
       </div>
 
       <div className="flex-1 overflow-y-auto py-4 px-3 space-y-5">

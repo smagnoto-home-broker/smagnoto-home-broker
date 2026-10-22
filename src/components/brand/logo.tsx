@@ -1,3 +1,5 @@
+import Image from "next/image";
+import logoImg from "@/assets/logo.png";
 import { BRAND } from "@/lib/brand";
 
 /** Monograma: quadrado dourado com "S" — usada em favicon, login e painel. */
@@ -15,36 +17,35 @@ export function Monogram({ size = 40, tone = "gold" }: { size?: number; tone?: "
   );
 }
 
-/** Logo horizontal completa (monograma + wordmark). */
+/**
+ * Logo horizontal oficial (lockup SMAGNOTO + Home Broker), PNG com fundo
+ * transparente. `size` ≈ altura da antiga caixa do monograma.
+ * `light` = fundo escuro: o logo tem texto navy, então vai num chip claro p/ legibilidade.
+ */
 export function Logo({
   size = 40,
-  tone = "gold",
   light = false,
 }: {
   size?: number;
   tone?: "gold" | "navy" | "light";
   light?: boolean;
 }) {
-  return (
-    <span className="inline-flex items-center gap-2.5 select-none">
-      <Monogram size={size} tone={tone} />
-      <span className="leading-none" style={{ color: light ? "#fff" : "#012439" }}>
-        <span
-          className="block font-bold tracking-[0.14em]"
-          style={{ fontSize: size * 0.46 }}
-        >
-          SMAGNOTO
-          <sup style={{ color: "#C29736", fontSize: size * 0.22, marginLeft: 2 }}>®</sup>
-        </span>
-        <span
-          className="block tracking-[0.34em] font-medium"
-          style={{ fontSize: size * 0.24, color: light ? "#C29736" : "#C29736", marginTop: 3 }}
-        >
-          HOME BROKER
-        </span>
-      </span>
-    </span>
+  const altura = Math.round(size * 1.3);
+  const img = (
+    <Image
+      src={logoImg}
+      alt="Smagnoto Home Broker"
+      height={altura}
+      width={Math.round(altura * (228 / 82))}
+      style={{ height: altura, width: "auto" }}
+      className="select-none"
+    />
   );
+
+  if (light) {
+    return <span className="inline-flex items-center rounded-xl bg-white px-3 py-2">{img}</span>;
+  }
+  return <span className="inline-flex items-center">{img}</span>;
 }
 
 /** Texto de rodapé/cabeçalho com dados oficiais (nunca hardcode em tela). */
