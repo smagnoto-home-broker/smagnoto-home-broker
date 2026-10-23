@@ -3,6 +3,7 @@ import { addDays, format } from "date-fns";
 import { brl, dataHoraBR } from "@/lib/format";
 import { Clock, Plus } from "lucide-react";
 import { requireCompany } from "@/lib/supabase/server";
+import { SectionVideo } from "@/components/site/section-video";
 import { AcoesPrestador } from "./_components/acoes-prestador";
 import { CopiarPortal } from "./_components/copiar-portal";
 import { LinhaSolicitacao, type SolicitacaoLinha } from "./_components/linha-solicitacao";
@@ -106,6 +107,7 @@ export default async function PrestadoresPage({ searchParams }: Props) {
     <div className="space-y-6">
       {/* Cabeçalho + KPIs */}
       <div className="rounded-2xl bg-navy-950 text-white p-6 md:p-8 relative overflow-hidden">
+        <SectionVideo src="/videos/manutencao-residencial.mp4" poster="/videos/manutencao-residencial.jpg" />
         <div
           className="absolute inset-0 opacity-20"
           style={{

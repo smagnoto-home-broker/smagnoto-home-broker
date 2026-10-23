@@ -75,7 +75,7 @@ export default async function HomePage() {
       <Hero imoveis={imoveis} />
 
       {/* 2. Números reais */}
-      <section aria-label="Números da Smagnoto" className="bg-cream">
+      <section aria-label="Números da Smagnoto" className="border-b border-line bg-cream">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 py-10 md:grid-cols-4">
           {numeros.map((n) => (
             <div key={n.label}>
@@ -88,7 +88,7 @@ export default async function HomePage() {
       </section>
 
       {/* 3. Condomínios */}
-      <section id="condominios" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
+      <section id="condominios" className="relative isolate scroll-mt-24 overflow-hidden border-b border-line bg-navy-950 text-white">
         <SectionVideo src="/videos/condominios.mp4" poster="/videos/condominios.jpg" />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold md:text-3xl">
@@ -126,7 +126,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Destaques */}
-      <section className="border-y border-line bg-shell">
+      <section className="border-b border-line bg-shell">
         <div className="mx-auto max-w-6xl px-5 py-14">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -168,7 +168,7 @@ export default async function HomePage() {
       </section>
 
       {/* 5. Avaliação */}
-      <section id="avaliar" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
+      <section id="avaliar" className="relative isolate scroll-mt-24 overflow-hidden border-b border-line bg-navy-950 text-white">
         <SectionVideo src="/videos/avaliacao.mp4" poster="/videos/avaliacao.jpg" />
         <div className="relative mx-auto grid max-w-6xl gap-8 px-5 py-14 lg:grid-cols-2 lg:items-center">
           <div>
@@ -205,69 +205,30 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6. Tipos */}
-      <section className="mx-auto max-w-6xl px-5 py-14">
-        <h2 className="text-2xl font-bold text-navy-950 md:text-3xl">O que você está procurando?</h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {TIPOS_BUSCA.map((t) => (
-            <Link
-              key={t.label}
-              href={t.href}
-              className="group flex items-center justify-between gap-4 rounded-2xl bg-navy-950 p-6 text-white transition-colors hover:bg-navy-800"
-            >
-              <span>
-                <span className="block text-base font-bold">{t.label}</span>
-                <span className="mt-1 block text-xs text-navy-200">{t.nota}</span>
-              </span>
-              <ArrowRight size={18} className="shrink-0 text-gold-500" aria-hidden />
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* 7. Corretores */}
-      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
-        <SectionVideo src="/videos/corretores.mp4" poster="/videos/corretores.jpg" />
-        <div className="relative mx-auto max-w-6xl px-5 py-14">
-          <h2 className="text-2xl font-bold md:text-3xl">Três corretores, não um call center</h2>
-          <p className="mt-3 max-w-2xl text-sm text-navy-200">
-            Quem atende você é quem mostra o imóvel e acompanha a proposta até a assinatura.
-          </p>
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
-            {CORRETORES.map((c) => (
-              <div key={c.nome} className="rounded-2xl bg-white p-6 text-navy-950">
-                <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-navy-950 text-lg font-bold text-gold-500">
-                  {c.iniciais}
+      {/* 6. Tipos — seção clara termina com o fio padrão antes da seção escura (contato) */}
+      <section className="border-b border-line">
+        <div className="mx-auto max-w-6xl px-5 py-14">
+          <h2 className="text-2xl font-bold text-navy-950 md:text-3xl">O que você está procurando?</h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {TIPOS_BUSCA.map((t) => (
+              <Link
+                key={t.label}
+                href={t.href}
+                className="group flex items-center justify-between gap-4 rounded-2xl bg-navy-950 p-6 text-white transition-colors hover:bg-navy-800"
+              >
+                <span>
+                  <span className="block text-base font-bold">{t.label}</span>
+                  <span className="mt-1 block text-xs text-navy-200">{t.nota}</span>
                 </span>
-                <h3 className="mt-4 text-base font-bold text-navy-950">{c.nome}</h3>
-                <p className="text-xs text-mute">{c.cargo}</p>
-                <p className="mt-1 text-[11px] text-mute">
-                  {c.creci} · {c.desde}
-                </p>
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {c.foco.map((f) => (
-                    <li key={f} className="rounded-full border border-line bg-cream px-2.5 py-1 text-[11px] font-semibold text-navy-700">
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href={linkWhatsTelefone(c.whats, `Olá, ${c.nome.split(" ")[0]}! Vim pelo site da Smagnoto.`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-navy mt-5 btn-sm w-full"
-                >
-                  <MessageCircle size={15} aria-hidden />
-                  WhatsApp {c.whats}
-                </a>
-              </div>
+                <ArrowRight size={18} className="shrink-0 text-gold-500" aria-hidden />
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 8. Contato */}
-      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
+      {/* 7. Contato */}
+      <section className="relative isolate overflow-hidden border-b border-line bg-navy-950 text-white">
         <SectionVideo src="/videos/contato.mp4" poster="/videos/contato.jpg" />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <div className="grid gap-10 lg:grid-cols-2">
@@ -305,6 +266,47 @@ export default async function HomePage() {
             <div className="rounded-2xl bg-white p-6 text-navy-950 md:p-8">
               <LeadForm />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Corretores — depois do contato; herói com o vídeo "corretor" da pasta de docs */}
+      <section className="relative isolate overflow-hidden border-b border-line bg-navy-950 text-white">
+        <SectionVideo src="/videos/hero-corretor.mp4" poster="/videos/hero-corretor.jpg" />
+        <div className="relative mx-auto max-w-6xl px-5 py-14">
+          <h2 className="text-2xl font-bold md:text-3xl">Três corretores, não um call center</h2>
+          <p className="mt-3 max-w-2xl text-sm text-navy-200">
+            Quem atende você é quem mostra o imóvel e acompanha a proposta até a assinatura.
+          </p>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            {CORRETORES.map((c) => (
+              <div key={c.nome} className="rounded-2xl bg-white p-6 text-navy-950">
+                <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-navy-950 text-lg font-bold text-gold-500">
+                  {c.iniciais}
+                </span>
+                <h3 className="mt-4 text-base font-bold text-navy-950">{c.nome}</h3>
+                <p className="text-xs text-mute">{c.cargo}</p>
+                <p className="mt-1 text-[11px] text-mute">
+                  {c.creci} · {c.desde}
+                </p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {c.foco.map((f) => (
+                    <li key={f} className="rounded-full border border-line bg-cream px-2.5 py-1 text-[11px] font-semibold text-navy-700">
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={linkWhatsTelefone(c.whats, `Olá, ${c.nome.split(" ")[0]}! Vim pelo site da Smagnoto.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-navy mt-5 btn-sm w-full"
+                >
+                  <MessageCircle size={15} aria-hidden />
+                  WhatsApp {c.whats}
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </section>

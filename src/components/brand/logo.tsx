@@ -1,5 +1,6 @@
 import Image from "next/image";
 import logoImg from "@/assets/logo.png";
+import logoLightImg from "@/assets/logo-light.png";
 import { BRAND } from "@/lib/brand";
 
 /** Monograma: quadrado dourado com "S" — usada em favicon, login e painel. */
@@ -20,7 +21,8 @@ export function Monogram({ size = 40, tone = "gold" }: { size?: number; tone?: "
 /**
  * Logo horizontal oficial (lockup SMAGNOTO + Home Broker), PNG com fundo
  * transparente. `size` ≈ altura da antiga caixa do monograma.
- * `light` = fundo escuro: o logo tem texto navy, então vai num chip claro p/ legibilidade.
+ * `light` = fundo escuro: usa a versão clara do logo (texto navy virado branco,
+ * dourado preservado), direto sobre o fundo — sem chip de fundo.
  */
 export function Logo({
   size = 40,
@@ -33,7 +35,7 @@ export function Logo({
   const altura = Math.round(size * 1.3);
   const img = (
     <Image
-      src={logoImg}
+      src={light ? logoLightImg : logoImg}
       alt="Smagnoto Home Broker"
       height={altura}
       width={Math.round(altura * (228 / 82))}
@@ -42,9 +44,6 @@ export function Logo({
     />
   );
 
-  if (light) {
-    return <span className="inline-flex items-center rounded-xl bg-white px-3 py-2">{img}</span>;
-  }
   return <span className="inline-flex items-center">{img}</span>;
 }
 

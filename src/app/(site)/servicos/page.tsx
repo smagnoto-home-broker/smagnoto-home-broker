@@ -3,12 +3,22 @@ import { BRAND, SERVICE_CATEGORIES } from "@/lib/brand";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getVitrineEmpresa } from "@/lib/site-company";
 import { FormSolicitacao } from "./_components/form-solicitacao";
+import { VideoCardProfissao } from "@/components/site/video-card";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Serviços para o seu imóvel",
   description: "Prestadores de serviço indicados pela Smagnoto: reformas, elétrica, piscina, mudanças e mais.",
 };
+
+/** Cards de profissão com vídeo real da pasta de docs do cliente (um por profissão). */
+const PROFISSOES = [
+  { nome: "Encanador", slug: "encanador" },
+  { nome: "Jardineiro", slug: "jardineiro" },
+  { nome: "Marceneiro", slug: "marceneiro" },
+  { nome: "Paisagista", slug: "paisagista" },
+  { nome: "Pedreiro", slug: "pedreiro" },
+] as const;
 
 type ProviderPublico = {
   id: string;
@@ -89,7 +99,7 @@ export default async function ServicosPage({
   return (
     <main className="bg-cream">
       {/* Hero */}
-      <section className="bg-navy-950 text-white">
+      <section className="border-b border-line bg-navy-950 text-white">
         <div className="max-w-6xl mx-auto px-5 py-14 md:py-20">
           <p className="text-gold-500 text-[11px] font-bold tracking-[0.2em] uppercase mb-3">
             Serviços para o seu imóvel · {BRAND.short}
@@ -101,6 +111,17 @@ export default async function ServicosPage({
             Quem é cliente da imobiliária pede o serviço por aqui e acompanha tudo com a nossa equipe. Escolha um
             prestador ou descreva o que precisa — a gente aciona pra você.
           </p>
+
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {PROFISSOES.map((p) => (
+              <VideoCardProfissao
+                key={p.slug}
+                nome={p.nome}
+                src={`/videos/prof-${p.slug}.mp4`}
+                poster={`/videos/prof-${p.slug}.jpg`}
+              />
+            ))}
+          </div>
         </div>
       </section>
 

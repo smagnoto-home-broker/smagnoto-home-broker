@@ -7,7 +7,7 @@ import { SectionVideo } from "./section-video";
 /** Hero navy com busca, vídeo de condomínio ao fundo e faixa de imóveis em movimento. */
 export function Hero({ imoveis }: { imoveis: Imovel[] }) {
   return (
-    <section className="relative isolate overflow-hidden bg-navy-950 text-white">
+    <section className="relative isolate overflow-hidden border-b border-line bg-navy-950 text-white">
       <SectionVideo src="/videos/hero-condominio.mp4" poster="/videos/hero-condominio.jpg" eager />
 
       <div className="relative mx-auto max-w-6xl px-5 pt-12 md:pt-16">
