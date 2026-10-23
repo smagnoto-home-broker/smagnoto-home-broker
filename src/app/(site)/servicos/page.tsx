@@ -3,7 +3,7 @@ import { BRAND, SERVICE_CATEGORIES } from "@/lib/brand";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getVitrineEmpresa } from "@/lib/site-company";
 import { FormSolicitacao } from "./_components/form-solicitacao";
-import { VideoCardProfissao } from "@/components/site/video-card";
+import { ProfissaoCard } from "@/components/site/profissao-card";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
@@ -11,7 +11,12 @@ export const metadata = {
   description: "Prestadores de serviço indicados pela Smagnoto: reformas, elétrica, piscina, mudanças e mais.",
 };
 
-/** Cards de profissão com vídeo real da pasta de docs do cliente (um por profissão). */
+/**
+ * Cards de profissão com fotos REAIS do Pexels (licença livre) em /public/fotos —
+ * substituíram os vídeos da pasta de docs (pedido: imagens de melhor qualidade).
+ * Origem pexels.com: 32588548 encanador · 4920291 jardineiro · 6790751 marceneiro ·
+ * 4691401 paisagista · 30640160 pedreiro.
+ */
 const PROFISSOES = [
   { nome: "Encanador", slug: "encanador" },
   { nome: "Jardineiro", slug: "jardineiro" },
@@ -114,12 +119,7 @@ export default async function ServicosPage({
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {PROFISSOES.map((p) => (
-              <VideoCardProfissao
-                key={p.slug}
-                nome={p.nome}
-                src={`/videos/prof-${p.slug}.mp4`}
-                poster={`/videos/prof-${p.slug}.jpg`}
-              />
+              <ProfissaoCard key={p.slug} nome={p.nome} foto={`/fotos/prof-${p.slug}.jpg`} />
             ))}
           </div>
         </div>

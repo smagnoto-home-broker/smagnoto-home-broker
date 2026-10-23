@@ -6,9 +6,9 @@ import { SectionVideo } from "./section-video";
 export type NumeroHero = { valor: string; label: string; sub: string };
 
 /**
- * Hero em tela cheia (1 viewport): vídeo rotativo das casas a 20% de opacidade
- * (sem gradiente por cima — a opacidade baixa já é o escurecimento), busca e
- * os 3 cards de números à direita.
+ * Hero em tela cheia (1 viewport): rotação das casas em vídeo NO ORIGINAL
+ * (sem opacidade, com o overlay padrão de legibilidade), busca e os 3 cards
+ * de números à direita.
  */
 export function Hero({ numeros }: { numeros: NumeroHero[] }) {
   return (
@@ -16,8 +16,6 @@ export function Hero({ numeros }: { numeros: NumeroHero[] }) {
       <SectionVideo
         src={["/videos/casa1.mp4", "/videos/casa2.mp4", "/videos/casa3.mp4"]}
         poster="/videos/casa1.jpg"
-        opacity={0.2}
-        overlay={false}
         eager
       />
 

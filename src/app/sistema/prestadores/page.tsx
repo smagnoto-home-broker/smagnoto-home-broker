@@ -105,8 +105,8 @@ export default async function PrestadoresPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Cabeçalho + KPIs */}
-      <div className="rounded-2xl bg-navy-950 text-white p-6 md:p-8 relative overflow-hidden">
+      {/* Cabeçalho + KPIs — banner full-bleed (mesma largura do banner "Deixe seu contato"): * sangra a borda do main, sem cantos arredondados; o padding interno devolve o alinhamento com os cards. */}
+      <div className="relative -mx-5 -mt-5 overflow-hidden bg-navy-950 px-5 pt-11 pb-7 text-white md:-mx-7 md:-mt-7 md:px-7 md:pt-12 md:pb-8">
         <SectionVideo src="/videos/manutencao-residencial.mp4" poster="/videos/manutencao-residencial.jpg" />
         <div
           className="absolute inset-0 opacity-20"
@@ -161,34 +161,35 @@ export default async function PrestadoresPage({ searchParams }: Props) {
             /servicos <span aria-hidden>↗</span>
           </Link>
         </div>
-        <div className="flex items-center gap-2">
-          <Link href="/servicos" className="btn btn-outline btn-sm">
-            Abrir portal
-          </Link>
-          <CopiarPortal path="/servicos" />
+        <div className="flex flex-col items-start gap-2 sm:items-end">
+          <div className="flex items-center gap-2">
+            <Link href="/servicos" className="btn btn-outline btn-sm">
+              Abrir portal
+            </Link>
+            <CopiarPortal path="/servicos" />
+          </div>
+          {/* Abas dentro do card — clicar troca a lista que fica logo abaixo do card */}
+          <nav className="flex gap-2" aria-label="Seções de prestadores">
+            <Link
+              aria-current={aba === "prestadores" ? "page" : undefined}
+              href="/sistema/prestadores?aba=prestadores"
+              className={`btn btn-sm ${aba === "prestadores" ? "btn-navy" : "btn-outline"}`}
+            >
+              Prestadores
+            </Link>
+            <Link
+              aria-current={aba === "solicitacoes" ? "page" : undefined}
+              href="/sistema/prestadores?aba=solicitacoes"
+              className={`btn btn-sm ${aba === "solicitacoes" ? "btn-navy" : "btn-outline"}`}
+            >
+              Solicitações
+              {novas > 0 && (
+                <span className="rounded-full bg-gold-500 text-navy-950 text-[11px] font-bold px-1.5">{novas}</span>
+              )}
+            </Link>
+          </nav>
         </div>
       </div>
-
-      {/* Abas */}
-      <nav className="flex gap-2" aria-label="Seções de prestadores">
-        <Link
-          aria-current={aba === "prestadores" ? "page" : undefined}
-          href="/sistema/prestadores?aba=prestadores"
-          className={`btn btn-sm ${aba === "prestadores" ? "btn-navy" : "btn-outline"}`}
-        >
-          Prestadores
-        </Link>
-        <Link
-          aria-current={aba === "solicitacoes" ? "page" : undefined}
-          href="/sistema/prestadores?aba=solicitacoes"
-          className={`btn btn-sm ${aba === "solicitacoes" ? "btn-navy" : "btn-outline"}`}
-        >
-          Solicitações
-          {novas > 0 && (
-            <span className="rounded-full bg-gold-500 text-navy-950 text-[11px] font-bold px-1.5">{novas}</span>
-          )}
-        </Link>
-      </nav>
 
       {aba === "prestadores" ? (
         <div className="card p-5">

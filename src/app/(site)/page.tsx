@@ -179,7 +179,7 @@ export default async function HomePage() {
       <section className="relative isolate flex min-h-[600px] flex-col justify-center overflow-hidden bg-navy-950 text-white">
         <SectionVideo src="/videos/contato.mp4" poster="/videos/contato.jpg" fade />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
-          <div className="grid gap-10 lg:grid-cols-2">
+          <div className="grid gap-10 lg:grid-cols-[1fr_440px]">
             <div>
               <h2 className="text-2xl font-bold md:text-3xl">Deixe seu contato</h2>
               <p className="mt-3 max-w-lg text-sm text-navy-200">
@@ -211,7 +211,7 @@ export default async function HomePage() {
                 {BRAND.hours}
               </p>
             </div>
-            <div className="rounded-2xl bg-white p-6 text-navy-950 md:p-8">
+            <div className="rounded-2xl bg-white p-5 text-navy-950 md:p-6">
               <LeadForm />
             </div>
           </div>
