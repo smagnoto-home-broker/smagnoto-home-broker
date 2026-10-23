@@ -9,6 +9,23 @@ const dm = DM_Sans({
   weight: ["400", "500", "600", "700"],
 });
 
+/**
+ * URL base do site (metadados/OG). A env vem do painel (Vercel) e pode chegar
+ * com aspas/quebra de linha coladas — nunca deixe isso derrubar o build:
+ * valor inválido cai no domínio padrão do deploy.
+ */
+function urlBase(): URL {
+  const bruto = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (bruto) {
+    try {
+      return new URL(bruto);
+    } catch {
+      /* env malformada no painel: usa o padrão abaixo */
+    }
+  }
+  return new URL("https://smagnoto-home-broker.vercel.app");
+}
+
 export const metadata: Metadata = {
   title: {
     default: "Smagnoto Home Broker · Imóveis em condomínio em Piracicaba e região",
@@ -17,7 +34,7 @@ export const metadata: Metadata = {
   description:
     "Casas, sobrados e terrenos em condomínio fechado em Piracicaba, Rio das Pedras e região. CRECI 42131-J.",
   applicationName: "Smagnoto Home Broker",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: urlBase(),
 };
 
 export const viewport: Viewport = {

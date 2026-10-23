@@ -8,8 +8,8 @@ import { redirect } from "next/navigation";
  */
 export async function getSupabaseServer() {
   const cookieStore = await cookies();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
   if (!url || !key) throw new Error("Supabase: variáveis NEXT_PUBLIC ausentes no .env.local");
 
   return createServerClient(url, key, {
