@@ -9,9 +9,10 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ?? "";
+  // trim + sem barra final: cola de painel costuma vir com espaço ou "/" sobrando
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim().replace(/\/+$/, "");
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim() ?? "";
-  const supabase = createServerClient(url, key, {
+  const supabase = createServerClient(url ?? "", key, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
