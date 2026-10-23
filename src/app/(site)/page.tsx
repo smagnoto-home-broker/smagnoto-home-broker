@@ -7,8 +7,8 @@ import { getVitrineEmpresa } from "@/lib/site-company";
 import { Hero } from "@/components/site/hero";
 import { SectionVideo } from "@/components/site/section-video";
 import { LeadForm } from "@/components/site/lead-form";
-import { ImovelCardPopOut } from "@/components/site/imovel-card-popout";
-import { contarDisponiveis, listarImoveis, valorPortfolio, type Imovel } from "@/components/site/queries";
+import { DestaqueSlider } from "@/components/site/destaque-slider";
+import { contarDisponiveis, valorPortfolio } from "@/components/site/queries";
 import {
   TIPOS_BUSCA,
   linkCondominio,
@@ -33,22 +33,18 @@ export default async function HomePage() {
   const supabase = await getSupabaseServer();
   const empresa = await getVitrineEmpresa(supabase);
 
-  let imoveis: Imovel[] = [];
   let disponiveis: number | null = null;
   let portfolio: number | null = null;
 
   if (empresa) {
-    const [lista, contagem, soma] = await Promise.all([
-      listarImoveis(supabase, empresa.id, {}),
+    const [contagem, soma] = await Promise.all([
       contarDisponiveis(supabase, empresa.id),
       valorPortfolio(supabase, empresa.id),
     ]);
-    imoveis = lista.imoveis;
     disponiveis = contagem;
     portfolio = soma;
   }
 
-  const emDestaque = imoveis.slice(0, 8);
   const anos = new Date().getFullYear() - BRAND.since;
 
   const numeros = [
@@ -72,23 +68,17 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero imoveis={imoveis} />
+      <Hero numeros={numeros.slice(0, 3)} />
 
-      {/* 2. Números reais */}
-      <section aria-label="Números da Smagnoto" className="border-b border-line bg-cream">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 py-10 md:grid-cols-4">
-          {numeros.map((n) => (
-            <div key={n.label}>
-              <p className="text-3xl font-bold text-navy-950">{n.valor}</p>
-              <p className="mt-1 text-sm font-semibold text-ink">{n.label}</p>
-              <p className="text-xs text-mute">{n.sub}</p>
-            </div>
-          ))}
+      {/* 2. Imóveis em destaque — slider de alto padrão (fotos reais do Pexels) no lugar da antiga faixa de números */}
+      <section className="bg-shell">
+        <div className="mx-auto max-w-6xl px-5 py-14">
+          <DestaqueSlider />
         </div>
       </section>
 
       {/* 3. Condomínios */}
-      <section id="condominios" className="relative isolate scroll-mt-24 overflow-hidden border-b border-line bg-navy-950 text-white">
+      <section id="condominios" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
         <SectionVideo src="/videos/condominios.mp4" poster="/videos/condominios.jpg" />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold md:text-3xl">
@@ -125,50 +115,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. Destaques */}
-      <section className="border-b border-line bg-shell">
-        <div className="mx-auto max-w-6xl px-5 py-14">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h2 className="text-2xl font-bold text-navy-950 md:text-3xl">Imóveis em destaque</h2>
-              <p className="mt-2 text-sm text-mute">
-                Seleção atual da nossa carteira em {BRAND.area.join(", ")}.
-              </p>
-            </div>
-            <Link href="/imoveis" className="btn btn-outline btn-sm">
-              Ver todos os imóveis <ArrowRight size={14} aria-hidden />
-            </Link>
-          </div>
-
-          {emDestaque.length > 0 ? (
-            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {emDestaque.map((imovel) => (
-                <ImovelCardPopOut key={imovel.id} imovel={imovel} />
-              ))}
-            </div>
-          ) : (
-            <div className="mt-8 rounded-2xl border border-line bg-white p-8 text-center">
-              <h3 className="text-lg font-bold text-navy-950">O catálogo online está sendo montado.</h3>
-              <p className="mx-auto mt-2 max-w-lg text-sm text-mute">
-                Ainda não conseguimos exibir imóveis por aqui. Fale com um corretor: atendemos em
-                horário comercial e enviamos opções no WhatsApp.
-              </p>
-              <a
-                href={linkWhatsTelefone(BRAND.whatsapp, "Olá! Quero conhecer as opções de imóveis da Smagnoto.")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-navy mt-5"
-              >
-                <MessageCircle size={16} aria-hidden />
-                Falar com um corretor
-              </a>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* 5. Avaliação */}
-      <section id="avaliar" className="relative isolate scroll-mt-24 overflow-hidden border-b border-line bg-navy-950 text-white">
+      {/* 3. Avaliação */}
+      <section id="avaliar" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
         <SectionVideo src="/videos/avaliacao.mp4" poster="/videos/avaliacao.jpg" />
         <div className="relative mx-auto grid max-w-6xl gap-8 px-5 py-14 lg:grid-cols-2 lg:items-center">
           <div>
@@ -205,8 +153,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6. Tipos — seção clara termina com o fio padrão antes da seção escura (contato) */}
-      <section className="border-b border-line">
+      {/* 4. Tipos — seção clara sem fio de divisão (pedido: sem linhas entre seções) */}
+      <section>
         <div className="mx-auto max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold text-navy-950 md:text-3xl">O que você está procurando?</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -227,8 +175,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 7. Contato */}
-      <section className="relative isolate overflow-hidden border-b border-line bg-navy-950 text-white">
+      {/* 5. Contato */}
+      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
         <SectionVideo src="/videos/contato.mp4" poster="/videos/contato.jpg" />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <div className="grid gap-10 lg:grid-cols-2">
@@ -270,11 +218,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 8. Corretores — depois do contato; herói com o vídeo "corretor" da pasta de docs */}
-      <section className="relative isolate overflow-hidden border-b border-line bg-navy-950 text-white">
-        <SectionVideo src="/videos/hero-corretor.mp4" poster="/videos/hero-corretor.jpg" />
+      {/* 6. Corretores — depois do contato; herói com o vídeo "corretor2" da pasta de docs */}
+      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
+        <SectionVideo src="/videos/hero-corretor2.mp4" poster="/videos/hero-corretor2.jpg" />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
-          <h2 className="text-2xl font-bold md:text-3xl">Três corretores, não um call center</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">Corretores, não um call center.</h2>
           <p className="mt-3 max-w-2xl text-sm text-navy-200">
             Quem atende você é quem mostra o imóvel e acompanha a proposta até a assinatura.
           </p>

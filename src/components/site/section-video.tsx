@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 type Props = {
-  /** Arquivo mp4 em /public (ex.: /videos/hero-condominio.mp4). */
-  src: string;
-  /** Pôster jpg do mesmo vídeo — aparece antes do carregamento e no reduced-motion. */
+  /** Arquivo mp4 em /public, ou lista de mp4 tocados em sequência (herói rotativo). */
+  src: string | string[];
+  /** Pôster jpg do primeiro vídeo — aparece antes do carregamento e no reduced-motion. */
   poster: string;
-  /** Gradiente da marca por cima do vídeo. Omitir usa o OVERLAY_PADRAO. */
-  overlay?: CSSProperties;
+  /** Gradiente da marca por cima do vídeo. Omitir usa o OVERLAY_PADRAO; `false` = sem overlay. */
+  overlay?: CSSProperties | false;
+  /** Opacidade do vídeo (0–1). Padrão 1; heróis leves usam 0.2. */
+  opacity?: number;
   /** Hero: pré-carrega o vídeo (é o LCP da página). */
   eager?: boolean;
 };
@@ -26,9 +28,13 @@ export const OVERLAY_PADRAO: CSSProperties = {
 /**
  * Fundo de vídeo de uma seção: ocupa todo o bloco, toca sozinho quando a seção
  * entra na tela, pausa quando sai e respeita prefers-reduced-motion (fica no pôster).
+ * Com uma lista em `src`, rota entre os vídeos (um termina → começa o próximo).
  */
-export function SectionVideo({ src, poster, overlay, eager = false }: Props) {
+export function SectionVideo({ src, poster, overlay, opacity = 1, eager = false }: Props) {
   const ref = useRef<HTMLVideoElement>(null);
+  const lista = Array.isArray(src) ? src : [src];
+  const cicla = lista.length > 1;
+  const [idx, setIdx] = useState(0);
 
   useEffect(() => {
     const el = ref.current;
@@ -48,20 +54,39 @@ export function SectionVideo({ src, poster, overlay, eager = false }: Props) {
     return () => io.disconnect();
   }, []);
 
+  // rotação: ao terminar um vídeo, parta para o próximo da lista
+  useEffect(() => {
+    if (!cicla) return;
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const trocar = () => setIdx((i) => (i + 1) % lista.length);
+    el.addEventListener("ended", trocar);
+    return () => el.removeEventListener("ended", trocar);
+  }, [cicla, lista.length]);
+
+  // src trocado pela rotação: volta a tocar (mesmo pausado/off-screen o IO reage no próximo ciclo)
+  useEffect(() => {
+    if (idx === 0) return;
+    const el = ref.current;
+    if (!el) return;
+    el.play().catch(() => {});
+  }, [idx]);
+
   return (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
       <video
         ref={ref}
         className="h-full w-full object-cover"
+        style={opacity === 1 ? undefined : { opacity }}
         poster={poster}
         muted
-        loop
+        loop={!cicla}
         playsInline
         preload={eager ? "auto" : "none"}
-      >
-        <source src={src} type="video/mp4" />
-      </video>
-      <div className="absolute inset-0" style={overlay ?? OVERLAY_PADRAO} />
+        src={lista[idx]}
+      />
+      {overlay !== false && <div className="absolute inset-0" style={overlay ?? OVERLAY_PADRAO} />}
     </div>
   );
 }

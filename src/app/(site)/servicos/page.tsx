@@ -99,7 +99,7 @@ export default async function ServicosPage({
   return (
     <main className="bg-cream">
       {/* Hero */}
-      <section className="border-b border-line bg-navy-950 text-white">
+      <section className="bg-navy-950 text-white">
         <div className="max-w-6xl mx-auto px-5 py-14 md:py-20">
           <p className="text-gold-500 text-[11px] font-bold tracking-[0.2em] uppercase mb-3">
             Serviços para o seu imóvel · {BRAND.short}
