@@ -6,33 +6,31 @@ import type { Imovel } from "./queries";
 import { TRANSACAO_LABEL, linkCondominio, linkImovel, localImovel, precoImovel } from "./imovel-ui";
 
 /**
- * Faixa de imóveis deslizando no hero (loop infinito: conteúdo duplicado 2x,
+ * Faixa de imóveis deslizando no hero (loop infinito: o grupo é duplicado 2x,
  * a cópia é aria-hidden; pausa no hover via CSS `.hero-marquee`).
+ * Cada grupo junta os imóveis do banco + os 10 condomínios oficiais, garantindo
+ * largura maior que a viewport — loop sem buraco mesmo com poucos imóveis.
  */
 export function HeroMarquee({ imoveis }: { imoveis: Imovel[] }) {
   const itens = imoveis.slice(0, 10);
 
-  if (itens.length === 0) {
-    return (
-      <div className="mt-10 md:mt-14 pb-10 md:pb-14 overflow-hidden">
-        <div className="hero-marquee flex w-max">
-          <FaixaCondominios />
-          <div aria-hidden className="flex">
-            <FaixaCondominios />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="mt-10 md:mt-14 pb-10 md:pb-14 overflow-hidden">
       <div className="hero-marquee flex w-max">
-        <FaixaImoveis imoveis={itens} />
+        <GrupoFaixa itens={itens} />
         <div aria-hidden className="flex">
-          <FaixaImoveis imoveis={itens} />
+          <GrupoFaixa itens={itens} />
         </div>
       </div>
+    </div>
+  );
+}
+
+function GrupoFaixa({ itens }: { itens: Imovel[] }) {
+  return (
+    <div className="flex">
+      <FaixaImoveis imoveis={itens} />
+      <FaixaCondominios />
     </div>
   );
 }

@@ -8,15 +8,7 @@ import { SectionVideo } from "./section-video";
 export function Hero({ imoveis }: { imoveis: Imovel[] }) {
   return (
     <section className="relative isolate overflow-hidden bg-navy-950 text-white">
-      <SectionVideo
-        src="/videos/hero-condominio.mp4"
-        poster="/videos/hero-condominio.jpg"
-        eager
-        overlay={{
-          backgroundImage:
-            "linear-gradient(100deg, #012439 0%, rgba(1,36,57,0.92) 45%, rgba(1,36,57,0.68) 100%)",
-        }}
-      />
+      <SectionVideo src="/videos/hero-condominio.mp4" poster="/videos/hero-condominio.jpg" eager />
 
       <div className="relative mx-auto max-w-6xl px-5 pt-12 md:pt-16">
         <p className="text-[11px] md:text-xs font-bold uppercase tracking-[0.24em] text-gold-500">

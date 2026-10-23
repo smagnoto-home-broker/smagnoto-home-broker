@@ -167,3 +167,10 @@ body {
 .hero-marquee:hover {
   animation-play-state: paused;
 }
+@media (prefers-reduced-motion: reduce) {
+  /* Faixa estática e alinhada à esquerda — nunca congela deslocada para fora da tela. */
+  .hero-marquee,
+  .hero-marquee-slow {
+    animation: none;
+  }
+}

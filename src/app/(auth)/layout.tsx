@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
 import { BRAND } from "@/lib/brand";
+import { SectionVideo } from "@/components/site/section-video";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* Painel de marca */}
       <aside className="hidden lg:flex flex-col justify-between bg-navy-950 text-white p-10 relative overflow-hidden">
+        <SectionVideo src="/videos/corretores.mp4" poster="/videos/corretores.jpg" />
         <div
           className="absolute inset-0 opacity-[0.16]"
           style={{

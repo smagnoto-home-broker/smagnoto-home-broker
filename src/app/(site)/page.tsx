@@ -75,7 +75,7 @@ export default async function HomePage() {
       <Hero imoveis={imoveis} />
 
       {/* 2. Números reais */}
-      <section aria-label="Números da Smagnoto" className="border-b border-line bg-cream">
+      <section aria-label="Números da Smagnoto" className="bg-cream">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 py-10 md:grid-cols-4">
           {numeros.map((n) => (
             <div key={n.label}>
@@ -89,14 +89,7 @@ export default async function HomePage() {
 
       {/* 3. Condomínios */}
       <section id="condominios" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
-        <SectionVideo
-          src="/videos/condominios.mp4"
-          poster="/videos/condominios.jpg"
-          overlay={{
-            backgroundImage:
-              "linear-gradient(180deg, rgba(1,36,57,0.94) 0%, rgba(1,36,57,0.86) 55%, rgba(1,36,57,0.94) 100%)",
-          }}
-        />
+        <SectionVideo src="/videos/condominios.mp4" poster="/videos/condominios.jpg" />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold md:text-3xl">
             Escolha primeiro o condomínio.
@@ -176,14 +169,7 @@ export default async function HomePage() {
 
       {/* 5. Avaliação */}
       <section id="avaliar" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
-        <SectionVideo
-          src="/videos/avaliacao.mp4"
-          poster="/videos/avaliacao.jpg"
-          overlay={{
-            backgroundImage:
-              "linear-gradient(100deg, #012439 0%, rgba(1,36,57,0.94) 50%, rgba(1,36,57,0.80) 100%)",
-          }}
-        />
+        <SectionVideo src="/videos/avaliacao.mp4" poster="/videos/avaliacao.jpg" />
         <div className="relative mx-auto grid max-w-6xl gap-8 px-5 py-14 lg:grid-cols-2 lg:items-center">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold-500">
@@ -241,14 +227,7 @@ export default async function HomePage() {
 
       {/* 7. Corretores */}
       <section className="relative isolate overflow-hidden bg-navy-950 text-white">
-        <SectionVideo
-          src="/videos/corretores.mp4"
-          poster="/videos/corretores.jpg"
-          overlay={{
-            backgroundImage:
-              "linear-gradient(180deg, rgba(1,36,57,0.93) 0%, rgba(1,36,57,0.85) 55%, rgba(1,36,57,0.93) 100%)",
-          }}
-        />
+        <SectionVideo src="/videos/corretores.mp4" poster="/videos/corretores.jpg" />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold md:text-3xl">Três corretores, não um call center</h2>
           <p className="mt-3 max-w-2xl text-sm text-navy-200">
@@ -289,14 +268,7 @@ export default async function HomePage() {
 
       {/* 8. Contato */}
       <section className="relative isolate overflow-hidden bg-navy-950 text-white">
-        <SectionVideo
-          src="/videos/contato.mp4"
-          poster="/videos/contato.jpg"
-          overlay={{
-            backgroundImage:
-              "linear-gradient(180deg, rgba(1,36,57,0.93) 0%, rgba(1,36,57,0.86) 55%, rgba(1,36,57,0.95) 100%)",
-          }}
-        />
+        <SectionVideo src="/videos/contato.mp4" poster="/videos/contato.jpg" />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
