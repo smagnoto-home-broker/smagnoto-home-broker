@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
-import { ArrowRight, Building2, Check, MessageCircle, Phone } from "lucide-react";
-import { BRAND, CONDOMINIOS_DESTAQUE, CORRETORES } from "@/lib/brand";
+import { ArrowRight, Check, MessageCircle, Phone } from "lucide-react";
+import { BRAND, CORRETORES } from "@/lib/brand";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getVitrineEmpresa } from "@/lib/site-company";
 import { Hero } from "@/components/site/hero";
@@ -9,16 +10,24 @@ import { SectionVideo } from "@/components/site/section-video";
 import { LeadForm } from "@/components/site/lead-form";
 import { DestaqueSlider } from "@/components/site/destaque-slider";
 import { contarDisponiveis, valorPortfolio } from "@/components/site/queries";
-import {
-  TIPOS_BUSCA,
-  linkCondominio,
-  linkWhatsTelefone,
-  whatsAvaliacao,
-} from "@/components/site/imovel-ui";
+import { TIPOS_BUSCA, linkWhatsTelefone, whatsAvaliacao } from "@/components/site/imovel-ui";
 
 /** Números oficiais do site de referência da agência (usados só como fallback). */
 const IMOVELS_OFICIAIS = 235;
 const CONDOMINIOS_OFICIAIS = 31;
+
+/**
+ * Os 5 cards de tipo da seção Condomínios — fotos oficiais baixadas do site do
+ * cliente (smagnoto.com.br) com a marca já aplicada; ficam numa faixa que
+ * mostra a leva inteira, pausa, desliza e pausa de novo (pedido da rodada).
+ */
+const CARDS_TIPO = [
+  { label: "Sobrados em Condomínio", foto: "/fotos/tipo-sobrado.png", href: "/imoveis?tipo=casa&q=sobrado" },
+  { label: "Terrenos em Condomínio", foto: "/fotos/tipo-terreno.png", href: "/imoveis?tipo=terreno" },
+  { label: "Casas em Condomínio", foto: "/fotos/tipo-casa.png", href: "/imoveis?tipo=casa&q=condom%C3%ADnio" },
+  { label: "Apartamentos", foto: "/fotos/tipo-apartamento.png", href: "/imoveis?tipo=apartamento" },
+  { label: "Coberturas", foto: "/fotos/tipo-cobertura.png", href: "/imoveis?q=cobertura" },
+] as const;
 
 export const metadata: Metadata = {
   title: {
@@ -77,10 +86,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 3. Condomínios */}
+      {/* 3. Condomínios — seção largura do Contato (max-w-6xl); só os 5 cards de tipo numa
+          faixa que rola pela tela, mostra a leva toda, pausa e volta a movimentar */}
       <section id="condominios" className="relative isolate flex min-h-[600px] scroll-mt-24 flex-col justify-center overflow-hidden bg-navy-950 text-white">
         <SectionVideo src="/videos/condominios.mp4" poster="/videos/condominios.jpg" fade />
-        <div className="relative mx-auto max-w-6xl px-5 py-14">
+        {/* w-full: sem ele o flex-item vira fit-content e o w-max da faixa infla a seção */}
+        <div className="relative mx-auto w-full max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold md:text-3xl">
             Escolha primeiro o condomínio.
             <br />
@@ -90,27 +101,36 @@ export default async function HomePage() {
             Atendemos os condomínios fechados de {BRAND.area[0]} e região. Comece pelo condomínio que
             você já conhece — o resto a gente mostra.
           </p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {CONDOMINIOS_DESTAQUE.map((nome) => (
-              <Link
-                key={nome}
-                href={linkCondominio(nome)}
-                className="group overflow-hidden rounded-2xl border border-white/12 bg-white/[0.07] backdrop-blur-sm transition-colors hover:bg-white/[0.13]"
-              >
-                <span className="flex h-24 items-end border-b border-white/10 p-4">
-                  <Building2 size={20} className="text-gold-500" aria-hidden />
-                </span>
-                <span className="block p-4">
-                  <span className="block text-sm font-bold">{nome}</span>
-                  <span className="mt-1 block text-xs text-navy-200">
-                    Condomínio fechado · {BRAND.area[0]} e região
-                  </span>
-                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-gold-500">
-                    Ver imóveis <ArrowRight size={13} aria-hidden />
-                  </span>
-                </span>
-              </Link>
-            ))}
+          <div className="mt-8 overflow-hidden">
+            <div className="tipos-marquee flex w-max md:w-[200%]">
+              {[0, 1].map((copia) => (
+                <div
+                  key={copia}
+                  aria-hidden={copia === 1 ? true : undefined}
+                  className="flex shrink-0 gap-4 pr-4 md:w-1/2"
+                >
+                  {CARDS_TIPO.map((t) => (
+                    <Link
+                      key={t.label}
+                      href={t.href}
+                      tabIndex={copia === 1 ? -1 : undefined}
+                      className="group w-[150px] shrink-0 overflow-hidden rounded-2xl border border-white/12 bg-white/[0.07] backdrop-blur-sm transition-colors hover:bg-white/[0.13] sm:w-[180px] md:w-auto md:min-w-0 md:flex-1 md:basis-0"
+                    >
+                      <span className="relative block aspect-[16/10] overflow-hidden">
+                        <Image
+                          src={t.foto}
+                          alt=""
+                          fill
+                          sizes="(min-width: 768px) 210px, (min-width: 640px) 180px, 150px"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </span>
+                      <span className="block px-3 py-2.5 text-xs font-bold sm:text-sm">{t.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

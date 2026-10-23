@@ -174,3 +174,26 @@ body {
     animation: none;
   }
 }
+
+/* Cards de tipo da seção Condomínios: mostra a leva inteira, pausa, desliza e pausa de novo */
+@keyframes tipos-marquee {
+  0%,
+  30% {
+    transform: translateX(0);
+  }
+  70%,
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.tipos-marquee {
+  animation: tipos-marquee 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.tipos-marquee:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tipos-marquee {
+    animation: none;
+  }
+}
