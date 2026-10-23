@@ -7,7 +7,7 @@ import { getVitrineEmpresa } from "@/lib/site-company";
 import { Hero } from "@/components/site/hero";
 import { SectionVideo } from "@/components/site/section-video";
 import { LeadForm } from "@/components/site/lead-form";
-import { PropertyCard } from "@/components/site/property-card";
+import { ImovelCardPopOut } from "@/components/site/imovel-card-popout";
 import { contarDisponiveis, listarImoveis, valorPortfolio, type Imovel } from "@/components/site/queries";
 import {
   TIPOS_BUSCA,
@@ -150,7 +150,7 @@ export default async function HomePage() {
           {emDestaque.length > 0 ? (
             <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {emDestaque.map((imovel) => (
-                <PropertyCard key={imovel.id} imovel={imovel} />
+                <ImovelCardPopOut key={imovel.id} imovel={imovel} />
               ))}
             </div>
           ) : (

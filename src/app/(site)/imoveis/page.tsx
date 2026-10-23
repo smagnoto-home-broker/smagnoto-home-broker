@@ -4,7 +4,7 @@ import { Search, SlidersHorizontal, X } from "lucide-react";
 import { BRAND, CONDOMINIOS_DESTAQUE } from "@/lib/brand";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getVitrineEmpresa } from "@/lib/site-company";
-import { PropertyCard } from "@/components/site/property-card";
+import { ImovelCardPopOut } from "@/components/site/imovel-card-popout";
 import { TIPOS_BUSCA, linkWhatsTelefone } from "@/components/site/imovel-ui";
 import {
   ORDENS,
@@ -259,7 +259,7 @@ export default async function ImoveisPage({ searchParams }: { searchParams: Prom
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {imoveis.map((imovel) => (
-                <PropertyCard key={imovel.id} imovel={imovel} />
+                <ImovelCardPopOut key={imovel.id} imovel={imovel} />
               ))}
             </div>
           )}
