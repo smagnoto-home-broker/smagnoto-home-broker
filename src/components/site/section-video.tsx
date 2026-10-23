@@ -11,6 +11,8 @@ type Props = {
   overlay?: CSSProperties | false;
   /** Opacidade do vídeo (0–1). Padrão 1; heróis leves usam 0.2. */
   opacity?: number;
+  /** Esfuma o topo e o rodapé no navy sólido: costura a transição entre seções escuras (evita "linha solta"). */
+  fade?: boolean;
   /** Hero: pré-carrega o vídeo (é o LCP da página). */
   eager?: boolean;
 };
@@ -30,7 +32,7 @@ export const OVERLAY_PADRAO: CSSProperties = {
  * entra na tela, pausa quando sai e respeita prefers-reduced-motion (fica no pôster).
  * Com uma lista em `src`, rota entre os vídeos (um termina → começa o próximo).
  */
-export function SectionVideo({ src, poster, overlay, opacity = 1, eager = false }: Props) {
+export function SectionVideo({ src, poster, overlay, opacity = 1, fade = false, eager = false }: Props) {
   const ref = useRef<HTMLVideoElement>(null);
   const lista = Array.isArray(src) ? src : [src];
   const cicla = lista.length > 1;
@@ -87,6 +89,18 @@ export function SectionVideo({ src, poster, overlay, opacity = 1, eager = false 
         src={lista[idx]}
       />
       {overlay !== false && <div className="absolute inset-0" style={overlay ?? OVERLAY_PADRAO} />}
+      {fade && (
+        <>
+          <div
+            className="absolute inset-x-0 top-0 h-[15%]"
+            style={{ backgroundImage: "linear-gradient(180deg, #012439 0%, rgba(1,36,57,0) 100%)" }}
+          />
+          <div
+            className="absolute inset-x-0 bottom-0 h-[15%]"
+            style={{ backgroundImage: "linear-gradient(0deg, #012439 0%, rgba(1,36,57,0) 100%)" }}
+          />
+        </>
+      )}
     </div>
   );
 }

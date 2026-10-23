@@ -70,16 +70,16 @@ export default async function HomePage() {
     <>
       <Hero numeros={numeros.slice(0, 3)} />
 
-      {/* 2. Imóveis em destaque — slider de alto padrão (fotos reais do Pexels) no lugar da antiga faixa de números */}
-      <section className="bg-shell">
+      {/* 2. Imóveis em destaque — slider de alto padrão (fotos reais do Pexels); altura mínima igual à do Contato */}
+      <section className="flex min-h-[600px] flex-col justify-center bg-shell">
         <div className="mx-auto max-w-6xl px-5 py-14">
           <DestaqueSlider />
         </div>
       </section>
 
       {/* 3. Condomínios */}
-      <section id="condominios" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
-        <SectionVideo src="/videos/condominios.mp4" poster="/videos/condominios.jpg" />
+      <section id="condominios" className="relative isolate flex min-h-[600px] scroll-mt-24 flex-col justify-center overflow-hidden bg-navy-950 text-white">
+        <SectionVideo src="/videos/condominios.mp4" poster="/videos/condominios.jpg" fade />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold md:text-3xl">
             Escolha primeiro o condomínio.
@@ -115,9 +115,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 3. Avaliação */}
-      <section id="avaliar" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-950 text-white">
-        <SectionVideo src="/videos/avaliacao.mp4" poster="/videos/avaliacao.jpg" />
+      {/* 4. Avaliação */}
+      <section id="avaliar" className="relative isolate flex min-h-[600px] scroll-mt-24 flex-col justify-center overflow-hidden bg-navy-950 text-white">
+        <SectionVideo src="/videos/avaliacao.mp4" poster="/videos/avaliacao.jpg" fade />
         <div className="relative mx-auto grid max-w-6xl gap-8 px-5 py-14 lg:grid-cols-2 lg:items-center">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold-500">
@@ -153,8 +153,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. Tipos — seção clara sem fio de divisão (pedido: sem linhas entre seções) */}
-      <section>
+      {/* 5. Tipos — seção clara sem fio de divisão (pedido: sem linhas entre seções) */}
+      <section className="flex min-h-[600px] flex-col justify-center">
         <div className="mx-auto max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold text-navy-950 md:text-3xl">O que você está procurando?</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -175,9 +175,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. Contato */}
-      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
-        <SectionVideo src="/videos/contato.mp4" poster="/videos/contato.jpg" />
+      {/* 6. Contato */}
+      <section className="relative isolate flex min-h-[600px] flex-col justify-center overflow-hidden bg-navy-950 text-white">
+        <SectionVideo src="/videos/contato.mp4" poster="/videos/contato.jpg" fade />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
@@ -218,9 +218,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6. Corretores — depois do contato; herói com o vídeo "corretor2" da pasta de docs */}
-      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
-        <SectionVideo src="/videos/hero-corretor2.mp4" poster="/videos/hero-corretor2.jpg" />
+      {/* 7. Corretores — depois do contato; herói com o vídeo "corretor2" da pasta de docs */}
+      <section className="relative isolate flex min-h-[600px] flex-col justify-center overflow-hidden bg-navy-950 text-white">
+        <SectionVideo src="/videos/hero-corretor2.mp4" poster="/videos/hero-corretor2.jpg" fade />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold md:text-3xl">Corretores, não um call center.</h2>
           <p className="mt-3 max-w-2xl text-sm text-navy-200">
