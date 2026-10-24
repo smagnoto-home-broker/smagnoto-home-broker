@@ -12,8 +12,8 @@
 
 | Ambiente | Pasta local | Branch | Banco/Backend | Deploy |
 |---|---|---|---|---|
-| Produção | `F:\Projetos\smagnoto-home-broker` (hoje **vazia**; não é repositório) | `main` | Supabase `ustqwxwdejkfwzfrlitc` (citado na migration; **não verificado**) | Vercel, conta `cybersat201-1250` (Hobby), projeto `smagnoto-home-broker`: **push na `main` publica em Production**, sem checks. Qual Supabase ele usa: **A CONFIRMAR** |
-| Staging/dev | `F:\Projetos\smagnoto-home-broker-staging` (único repositório git; remoto `smagnoto-home-broker/smagnoto-home-broker` no GitHub) | hoje também `main` (**desvio**); criar `dev` e usar branches `feat/...` | Supabase `cbgvttxmskwybalefezk` (é o apontado por `.env.local`; **não verificado**) | Preview da Vercel por branch (deve usar variáveis do banco de staging: **A CONFIRMAR**) |
+| Produção | `F:\Projetos\smagnoto-home-broker` (hoje **vazia**; não é repositório) | `main` | **Hoje o site de produção usa o Supabase `cbgvttxmskwybalefezk`** (confirmado nas variáveis da Vercel em 23/10). O projeto `ustqwxwdejkfwzfrlitc` existe, mas está **sem schema** (baseline não aplicado) e sem uso | Vercel, conta `cybersat201-1250` (Hobby), projeto `smagnoto-home-broker`: **push na `main` publica em Production**, sem checks. Qual Supabase ele usa: **A CONFIRMAR** |
+| Staging/dev | `F:\Projetos\smagnoto-home-broker-staging` (único repositório git; remoto `smagnoto-home-broker/smagnoto-home-broker` no GitHub) | hoje também `main` (**desvio**); criar `dev` e usar branches `feat/...` | Supabase `cbgvttxmskwybalefezk` (é o apontado por `.env.local` e **é o mesmo banco da produção: não existe staging separado**) | Preview da Vercel por branch (deve usar variáveis do banco de staging: **A CONFIRMAR**) |
 
 Regras fixas:
 1. Nunca editar código na pasta ou branch de produção.
@@ -31,6 +31,8 @@ Regras fixas:
 - Variáveis de ambiente (só nomes; valores ficam em `.env.local`, ignorado pelo Git): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`, `SITE_COMPANY_SLUG`; usadas no código e ainda não documentadas: `SITE_COMPANY_ID`, `AI_GATEWAY_API_KEY`, `AI_GATEWAY_BASE_URL`, `AI_GATEWAY_MODEL`.
 - Migrations: `supabase/migrations/`. Baseline `20261022090000_baseline_smagnoto.sql` e hardening `20261023230000_hardening_auth_storage.sql` (**não aplicada**). Estado em `supabase/migrations/README.md`. Como é aplicada e em qual projeto: **a confirmar** (sem README de estado). Não há ferramenta de aplicação configurada no repo.
 - Next.js 16 tem mudanças de API: ler `node_modules/next/dist/docs/` antes de assumir uma API.
+
+> **Atenção:** como staging e produção compartilham o banco `cbgv…`, toda migration e todo SQL nele devem ser tratados como produção (backup validado + "pode").
 
 ## Segurança específica do projeto
 
@@ -57,6 +59,7 @@ Regras fixas:
 - 2026-10-23 — Código legado Lovable/Vite está em `F:\Projetos\smagnoto-home-broker-docs\imobiliária` e `...\smagnoto-codigo-completo_v1`. É histórico, fora do Git; não é o código vivo.
 - 2026-10-23 — `.gitignore` ignora `.env*`, inclusive um futuro `.env.example`. Ao criá-lo, liberar com `!.env.example`.
 
+- 2026-10-23 — Staging e produção usam o mesmo banco (`cbgv…`); a produção real (`ustq…`) está vazia. Regra resultante: tratar o `cbgv…` como produção até existir separação.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

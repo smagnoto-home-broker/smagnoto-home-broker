@@ -211,3 +211,13 @@ Não verificado: estado real dos bancos (sem acesso), configuração do GitHub (
 - `AGENTS.md`, `CLAUDE.md`, `docs/PADRAO-ENGENHARIA-IA.md`.
 
 **Não executei (exigem seu "pode" por ação, conforme o padrão, seção 1, regra 1):** criar ou apagar usuários, aplicar migration em qualquer banco, push, merge, mudar configuração da Vercel ou do Supabase.
+
+---
+
+## 13. Atualização — 23/10/2026 23:57 (variáveis da Vercel e consultas no Supabase)
+
+- **Confirmado:** a Vercel Production usa `NEXT_PUBLIC_SUPABASE_URL` apontando para `cbgvttxmskwybalefezk` (o banco chamado "staging"). **Não existe separação de banco entre staging e produção.** O projeto `ustqwxwdejkfwzfrlitc` está sem schema (a tabela `public.user_roles` não existe).
+- A variável só existe no ambiente **Production** da Vercel; **Preview não tem variáveis**, então previews de branch tendem a falhar no build.
+- Dados no `cbgv…`: empresa `smagnoto` com 1 imóvel, 3 leads e 1 prestador; as empresas `smagnoto-home-broker` e `zz-imob-e2e-staging` estão vazias. O número "235 imóveis" exibido na home é texto fixo do código, não contagem do banco.
+- Resultado: A2 (ambientes) fica **Alta confirmada**; todo SQL e migration no `cbgv…` exige backup validado e "pode".
+- Foram criados os admins `admin@smagnoto.com.br` em `ustq…` e `cbgv…` (senhas diferentes, conforme combinado); cadastro público desligado em `ustq…`.
