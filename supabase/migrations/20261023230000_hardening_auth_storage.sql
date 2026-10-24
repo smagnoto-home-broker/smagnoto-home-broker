@@ -1,7 +1,7 @@
 -- =====================================================================
 -- Smagnoto Home Broker — HARDENING (auditoria de 23/10/2026)
 -- Data: 2026-10-23 · Pedido: docs/AUDITORIA-INICIAL.md (A4, A5, M1, B1)
--- ESTADO: NAO APLICADA em nenhum ambiente. Testar primeiro em staging
+-- ESTADO: APLICADA em 24/10/2026 no projeto cbgvttxmskwybalefezk (banco vivo), apos backup validado e "pode" do Joaquim.
 -- (projeto cbgvttxmskwybalefezk) com usuario simulado; backup validado e
 -- "pode" do Joaquim antes de aplicar em producao (ustqwxwdejkfwzfrlitc).
 -- Decisoes:

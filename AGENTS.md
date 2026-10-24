@@ -70,3 +70,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+- 2026-10-24 — Migration `20261023230000_hardening_auth_storage.sql` aplicada no `cbgv…` (o banco vivo) depois de backup validado (`pg_dump`, 7-Zip AES-256). Verificado: 1 usuário, 1 empresa, `handle_new_user` sem super_admin automático, login OK. Para backup nesta máquina o `db.<ref>.supabase.co` não alcança (IPv6): usar o host do Session pooler (`-DbHost aws-1-sa-east-1.pooler.supabase.com -DbUser postgres.<ref>`). Joaquim classificou o projeto como demonstração e relaxou as demais regras de produção por enquanto.
