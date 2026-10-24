@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { InputTelefone } from "@/components/ui/input-telefone";
 import { MessageCircle } from "lucide-react";
 import { BRAND, SERVICE_CATEGORIES } from "@/lib/brand";
 import { criarSolicitacao } from "@/actions/service-requests";
@@ -132,14 +133,13 @@ export function FormSolicitacao({
           <label className="label" htmlFor="telefone">
             Telefone / WhatsApp *
           </label>
-          <input
+          <InputTelefone
             id="telefone"
             name="telefone"
             className="field"
             required
             aria-invalid={!!erros.telefone}
             autoComplete="tel"
-            placeholder="(19) 99999-0000"
           />
           {erros.telefone && <p className="text-xs text-red-600 mt-1">{erros.telefone}</p>}
         </div>

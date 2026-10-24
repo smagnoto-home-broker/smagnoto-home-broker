@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { InputTelefone } from "@/components/ui/input-telefone";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SERVICE_CATEGORIES } from "@/lib/brand";
@@ -136,14 +137,14 @@ export function FormPrestador({ inicial, providerId }: { inicial?: PrestadorForm
           <label className="label" htmlFor="phone">
             Telefone
           </label>
-          <input id="phone" name="phone" className="field" defaultValue={inicial?.phone ?? ""} placeholder="(19) 99999-0000" />
+          <InputTelefone id="phone" name="phone" className="field" defaultValue={inicial?.phone ?? ""} />
         </div>
 
         <div>
           <label className="label" htmlFor="whatsapp">
             WhatsApp
           </label>
-          <input id="whatsapp" name="whatsapp" className="field" defaultValue={inicial?.whatsapp ?? ""} placeholder="(19) 99999-0000" />
+          <InputTelefone id="whatsapp" name="whatsapp" className="field" defaultValue={inicial?.whatsapp ?? ""} />
         </div>
 
         <div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ArrowLeft, Save } from "lucide-react";
+import { InputTelefone } from "@/components/ui/input-telefone";
 import {
   INTERESSES,
   LABEL_ORIGEM,
@@ -95,14 +96,13 @@ export function LeadForm({
             <label className="label" htmlFor="phone">
               Telefone / WhatsApp *
             </label>
-            <input
+            <InputTelefone
               id="phone"
               name="phone"
               className="field"
               required
               minLength={8}
               defaultValue={valores.phone}
-              placeholder="(19) 99999-9999"
               autoComplete="tel"
             />
           </div>
