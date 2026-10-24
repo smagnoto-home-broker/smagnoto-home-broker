@@ -24,13 +24,13 @@ New-Item -ItemType Directory -Force -Path $dir | Out-Null
 
 $sec = Read-Host "Senha do banco (postgres) do projeto $ProjectRef" -AsSecureString
 $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec)
-$pwd = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+$dbpass = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
 [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
-$url = "postgresql://$($DbUser):$([uri]::EscapeDataString($pwd))@$($DbHost):$($DbPort)/postgres"
+$url = "postgresql://$($DbUser):$([uri]::EscapeDataString($dbpass))@$($DbHost):$($DbPort)/postgres"
 
 supabase db dump --db-url $url -f (Join-Path $dir "schema.sql")
 supabase db dump --db-url $url --data-only --use-copy -f (Join-Path $dir "dados.sql")
-$pwd = $null; $url = $null
+$dbpass = $null; $url = $null
 
 $ok = $true
 foreach ($f in @("schema.sql","dados.sql")) {
