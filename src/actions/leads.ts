@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireCompany } from "@/lib/supabase/server";
+import { gestao } from "@/lib/papeis";
 import { INTERESSES, ORIGENS, STATUS_LEAD, parseBairros } from "./leads-meta";
 import type { EstadoForm } from "./imoveis-meta";
 
@@ -154,7 +155,7 @@ export async function excluirLead(formData: FormData): Promise<EstadoForm> {
   const id = z.uuid("Identificador inválido.").safeParse(formData.get("id"));
   if (!id.success) return { erro: "Identificador do lead inválido." };
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requireCompany(gestao());
   const { data, error } = await supabase
     .from("lead")
     .delete()

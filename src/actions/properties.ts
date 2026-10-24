@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireCompany } from "@/lib/supabase/server";
+import { gestao } from "@/lib/papeis";
 import { slugify } from "@/lib/format";
 import {
   STATUS_IMOVEL,
@@ -175,7 +176,7 @@ export async function excluirImovel(formData: FormData): Promise<EstadoForm> {
   const id = z.uuid("Identificador inválido.").safeParse(formData.get("id"));
   if (!id.success) return { erro: "Identificador do imóvel inválido." };
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requireCompany(gestao());
   const { data, error } = await supabase
     .from("property")
     .delete()

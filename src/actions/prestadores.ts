@@ -6,6 +6,7 @@ import { ptBR } from "date-fns/locale";
 import { z } from "zod";
 import { SERVICE_CATEGORIES } from "@/lib/brand";
 import { requireCompany } from "@/lib/supabase/server";
+import { financeiro } from "@/lib/papeis";
 
 /** Caminho do módulo (as abas vêm de searchParams, por isso revalidamos a rota raiz). */
 const PATH = "/sistema/prestadores";
@@ -80,7 +81,7 @@ const prestadorSchema = z.object({
  * `document` e `email` só são aceitos aqui (formulário interno) — nunca em página pública.
  */
 export async function salvarPrestador(entrada: unknown, providerId?: string | null): Promise<Resultado> {
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requireCompany(financeiro());
 
   const parsed = prestadorSchema.safeParse(entrada);
   if (!parsed.success) {
@@ -141,7 +142,7 @@ export async function salvarPrestador(entrada: unknown, providerId?: string | nu
  * por isso a mensagem de erro diz exatamente isso em vez de sugerir novo clique.
  */
 export async function registrarPagamento(providerId: string, referencia: string): Promise<Resultado> {
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requireCompany(financeiro());
 
   const m = /^(\d{4})-(0[1-9]|1[0-2])$/.exec((referencia ?? "").trim());
   if (!m) return { ok: false, erro: "Informe o mês de referência (AAAA-MM)." };
@@ -215,7 +216,7 @@ export async function registrarPagamento(providerId: string, referencia: string)
 
 /** Cancela ou reativa a assinatura de um prestador. */
 export async function alterarAssinatura(providerId: string, novoStatus: string): Promise<Resultado> {
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requireCompany(financeiro());
 
   if (!(STATUS_ASSINATURA as readonly string[]).includes(novoStatus)) {
     return { ok: false, erro: "Status de assinatura inválido." };
