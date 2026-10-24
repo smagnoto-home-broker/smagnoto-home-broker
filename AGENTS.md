@@ -5,6 +5,7 @@
 - Este arquivo governa todo o repositório. Instruções do Joaquim no chat e regras de segurança da plataforma têm precedência.
 - O padrão geral de engenharia está em `docs/PADRAO-ENGENHARIA-IA.md` e **vale integralmente** aqui. Este arquivo só traz o que é específico do projeto.
 - Git, código, migrations e documentação versionada são a fonte da verdade. Memória de IA é auxiliar.
+- Entrega de mudanças (validar, PR, backup, migration, merge): `docs/PROCESSO-ENTREGA-PR.md` **vale integralmente**, na ordem ali descrita.
 - Estado inicial e achados abertos: `docs/AUDITORIA-INICIAL.md` (23/10/2026). Ler antes de qualquer mudança.
 - Idioma: português do Brasil.
 
@@ -12,21 +13,21 @@
 
 | Ambiente | Pasta local | Branch | Banco/Backend | Deploy |
 |---|---|---|---|---|
-| Produção | `F:\Projetos\smagnoto-home-broker` (hoje **vazia**; não é repositório) | `main` | **Hoje o site de produção usa o Supabase `cbgvttxmskwybalefezk`** (confirmado nas variáveis da Vercel em 23/10). O projeto `ustqwxwdejkfwzfrlitc` existe, mas está **sem schema** (baseline não aplicado) e sem uso | Vercel, conta `cybersat201-1250` (Hobby), projeto `smagnoto-home-broker`: **push na `main` publica em Production**, sem checks. Qual Supabase ele usa: **A CONFIRMAR** |
-| Staging/dev | `F:\Projetos\smagnoto-home-broker-staging` (único repositório git; remoto `smagnoto-home-broker/smagnoto-home-broker` no GitHub) | hoje também `main` (**desvio**); criar `dev` e usar branches `feat/...` | Supabase `cbgvttxmskwybalefezk` (é o apontado por `.env.local` e **é o mesmo banco da produção: não existe staging separado**) | Preview da Vercel por branch (deve usar variáveis do banco de staging: **A CONFIRMAR**) |
+| Produção | `F:\Projetos\smagnoto-home-broker` (hoje **vazia**; não é repositório) | `main` | **Hoje o site de produção usa o Supabase `cbgvttxmskwybalefezk`** (confirmado nas variáveis da Vercel em 23/10). O projeto `ustqwxwdejkfwzfrlitc` existe, mas está **sem schema** (baseline não aplicado) e sem uso | Vercel, conta `cybersat201-1250` (Hobby), projeto `smagnoto-home-broker`: **push na `main` publica em Production**, sem checks. Usa o Supabase `cbgv…` (confirmado). Branch `main` na Vercel = Production |
+| Staging/dev | `F:\Projetos\smagnoto-home-broker-staging` (único repositório git; remoto `smagnoto-home-broker/smagnoto-home-broker` no GitHub) | qualquer branch que não seja `main` (`feat/...`, `chore/...`); não existe branch `dev` | Supabase `cbgvttxmskwybalefezk` (é o apontado por `.env.local` e **é o mesmo banco da produção: não existe staging separado**) | Preview da Vercel por branch. O ambiente Preview **ainda não tem variáveis de ambiente** (suspeita de causa dos erros 500 nos Previews, a confirmar no log) |
 
 Regras fixas:
 1. Nunca editar código na pasta ou branch de produção.
 2. Nada vai para produção sem backup validado e sem o "pode" do Joaquim no chat, para cada ação (migration e merge).
 3. Nenhum SQL avulso em produção: toda mudança de banco é migration numerada, testada antes em staging.
 4. Antes de numerar uma migration, listar a pasta e usar o próximo número livre.
-5. Enquanto a tabela acima tiver "A CONFIRMAR", **não aplicar migration**; perguntar ao Joaquim. Push na `main` = deploy em produção: só com "pode".
+5. O banco `cbgv…` é o vivo: migration nele só com backup validado + "pode", conferência de leitura depois, e **antes** do merge quando o código depende dela. Merge na `main` = deploy em produção: só com "pode".
 6. Não trabalhar direto na `main`: criar branch a partir da `main` atualizada.
 
 ## Stack e comandos
 
 - Stack: Next.js 16.4.2 (App Router, Turbopack), React 19.3.0, TypeScript 5.9.3, Tailwind 4, Supabase (`@supabase/supabase-js` 2.118.0, `@supabase/ssr` 0.12.7), zod 4.6.7. Gerenciador: `bun@1.4.0` (`bun.lock`). Hospedagem: a confirmar (provável Vercel).
-- Validar (zero erros): `bun run type-check` e `bun run lint` (o script `type-check` foi adicionado em 23/10, ainda sem commit). Não há testes automatizados.
+- Validar (zero erros): `bun run type-check` e `bun run lint` (equivalentes: `npm run ...`). Não há testes automatizados.
 - Rodar local: `bun dev` (ou `npm run dev`) em `F:\Projetos\smagnoto-home-broker-staging`, porta 3000.
 - Variáveis de ambiente (só nomes; valores ficam em `.env.local`, ignorado pelo Git): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`, `SITE_COMPANY_SLUG`; usadas no código e ainda não documentadas: `SITE_COMPANY_ID`, `AI_GATEWAY_API_KEY`, `AI_GATEWAY_BASE_URL`, `AI_GATEWAY_MODEL`.
 - Migrations: `supabase/migrations/`. Baseline `20261022090000_baseline_smagnoto.sql` e hardening `20261023230000_hardening_auth_storage.sql` (**não aplicada**). Estado em `supabase/migrations/README.md`. Como é aplicada e em qual projeto: **a confirmar** (sem README de estado). Não há ferramenta de aplicação configurada no repo.
@@ -73,3 +74,5 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - 2026-10-24 — Migration `20261023230000_hardening_auth_storage.sql` aplicada no `cbgv…` (o banco vivo) depois de backup validado (`pg_dump`, 7-Zip AES-256). Verificado: 1 usuário, 1 empresa, `handle_new_user` sem super_admin automático, login OK. Para backup nesta máquina o `db.<ref>.supabase.co` não alcança (IPv6): usar o host do Session pooler (`-DbHost aws-1-sa-east-1.pooler.supabase.com -DbUser postgres.<ref>`). Joaquim classificou o projeto como demonstração e relaxou as demais regras de produção por enquanto.
 - 2026-10-24 — Integração com o Biosite Engine: Smagnoto é só cliente HTTP da API da engine (módulo `src/lib/biosite-engine/`, ações em `src/actions/biosite.ts`, tela `/sistema/biosite`). Proibido importar código entre os dois repositórios e usar tabelas de imóvel na engine. Plano em `docs/PLANO-INTEGRACAO-BIOSITE-ENGINE.md`. A pasta `F:\Projetos\cyber-os-solution-docs\bio-site` é cópia antiga do Smagnoto: não editar. A migration `20261024110000_biosite_link.sql` só vale depois de backup validado + "pode".
 - 2026-10-24 — Enviar PR: o terminal da IA não tem login no GitHub. Quem envia é o Joaquim, com `powershell -ExecutionPolicy Bypass -File "F:\Projetos\smagnoto-home-broker-staging\scripts\enviar-pr.ps1"` (push + abre o PR, nunca faz merge; exige `gh auth login` uma vez). Merge continua só com o "pode" do Joaquim.
+- 2026-10-24 — Adotado `docs/PROCESSO-ENTREGA-PR.md` (roteiro do portal-teologico-os adaptado). Descrição de PR completa em `.pr-body.md`; `scripts/enviar-pr.ps1` exige esse arquivo (ou `-Minimo`). Regra pelo Joaquim: o clique em Merge é sempre dele, com "pode" no chat.
+- 2026-10-24 — Supabase Free: limite de 2 projetos ativos (fonte: página de preços). Hoje há `cbgv…` (vivo) e `ustq…` (vazio). Projetos Free pausam após cerca de 1 semana sem uso: risco para o banco vivo.
