@@ -11,6 +11,7 @@ import {
   CalendarDays,
   FileText,
   HardHat,
+  Globe,
   LogOut,
   Menu,
   Target,
@@ -40,7 +41,10 @@ const NAV = [
   },
   {
     section: "Serviços",
-    items: [{ href: "/sistema/prestadores", label: "Prestadores", icon: HardHat }],
+    items: [
+      { href: "/sistema/prestadores", label: "Prestadores", icon: HardHat },
+      { href: "/sistema/biosite", label: "Biosite", icon: Globe },
+    ],
   },
 ] as const;
 
