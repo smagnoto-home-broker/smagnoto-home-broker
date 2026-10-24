@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { BRAND, CONDOMINIOS_DESTAQUE } from "@/lib/brand";
 import { SectionVideo } from "./section-video";
+import { TipoCarousel, type TipoCard } from "./tipo-carousel";
 
 /** Números exibidos como os 3 cards do herói (saem da antiga seção Números). */
 export type NumeroHero = { valor: string; label: string; sub: string };
@@ -18,10 +19,11 @@ const TIPOS_HERO = [
 
 /**
  * Hero em tela cheia (1 viewport): rotação das casas em vídeo NO ORIGINAL
- * (sem opacidade, com o overlay padrão de legibilidade), busca, os 3 cards de
- * números rentes à borda direita (xl) e os atalhos de tipo na base.
+ * (sem opacidade, com o overlay padrão de legibilidade), busca, coluna da
+ * direita com os 3 números quase rentes ao topo e o card de tipos com a base
+ * na linha dos atalhos (xl), e os atalhos por tipo na base.
  */
-export function Hero({ numeros }: { numeros: NumeroHero[] }) {
+export function Hero({ numeros, tipos }: { numeros: NumeroHero[]; tipos: TipoCard[] }) {
   return (
     <section className="relative isolate flex min-h-[calc(100svh-6.5rem)] flex-col overflow-hidden bg-navy-950 text-white">
       <SectionVideo
@@ -73,26 +75,36 @@ export function Hero({ numeros }: { numeros: NumeroHero[] }) {
           </form>
         </div>
 
-        {/* xl: sai do fluxo e ancora na seção — rente à borda direita da tela (40px), sem encostar */}
-        <div className="grid gap-3 lg:w-72 lg:shrink-0 xl:absolute xl:right-10 xl:top-1/2 xl:-translate-y-1/2">
-          {numeros.map((n) => (
-            <div key={n.label} className="rounded-2xl border border-white/12 bg-white/[0.07] p-5 backdrop-blur-sm">
-              <p className="text-3xl font-bold">{n.valor}</p>
-              <p className="mt-1 text-sm font-semibold">{n.label}</p>
-              <p className="text-xs text-navy-200">{n.sub}</p>
-            </div>
-          ))}
+        {/* xl: sai do fluxo e ancora na seção — rente à borda direita (40px), números
+            quase no topo (top-10) e o card com a linha de baixo NA MESMA linha de
+            baixo dos atalhos (bottom-6 = base dos botões). De 1280 a 1799px os
+            botões alcançariam a lateral do card, então nessa faixa ele mantém o
+            respiro (bottom-16) para nunca encobrir os atalhos */}
+        <div className="flex flex-col gap-3 lg:w-72 lg:shrink-0 xl:absolute xl:right-10 xl:top-10 xl:bottom-16 xl:justify-between min-[1800px]:bottom-6">
+          <div className="grid gap-3">
+            {numeros.map((n) => (
+              <div
+                key={n.label}
+                className="shrink-0 rounded-2xl border border-white/12 bg-white/[0.07] p-5 backdrop-blur-sm"
+              >
+                <p className="text-3xl font-bold">{n.valor}</p>
+                <p className="mt-1 text-sm font-semibold">{n.label}</p>
+                <p className="text-xs text-navy-200">{n.sub}</p>
+              </div>
+            ))}
+          </div>
+          <TipoCarousel cards={tipos} />
         </div>
       </div>
 
       {/* Atalhos por tipo sempre na base da seção: linha única no desktop,
-          caixas transparentes com borda na cor do botão Buscar imóveis */}
+          formato igual ao botão Buscar imóveis (rounded-xl), borda na cor do ouro */}
       <div className="z-10 mx-auto flex w-full max-w-6xl flex-wrap gap-2 px-5 pb-6 lg:flex-nowrap">
         {TIPOS_HERO.map((t) => (
           <Link
             key={t.label}
             href={t.href}
-            className="whitespace-nowrap rounded-full border border-gold-500 px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-gold-500 hover:text-navy-950 sm:px-3.5 sm:text-xs"
+            className="whitespace-nowrap rounded-xl border border-gold-500 px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-gold-500 hover:text-navy-950 sm:px-3.5 sm:text-xs"
           >
             {t.label}
           </Link>
