@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { format, startOfMonth } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import {
   Home,
   Users,
@@ -10,14 +8,15 @@ import {
   Megaphone,
 } from "lucide-react";
 import { requireCompany } from "@/lib/supabase/server";
+import { dataHoraCurtaBR, diaLongoBR, horaBR, horaCheiaBR, inicioDoMesBR, limitesDeHojeBR } from "@/lib/format";
 
 export const metadata = { title: "Painel" };
 
 export default async function PainelPage() {
   const { supabase, companyId, membership } = await requireCompany();
   const now = new Date();
-  const mesInicio = startOfMonth(now).toISOString();
-  const hoje = format(now, "yyyy-MM-dd");
+  const mesInicio = inicioDoMesBR(now);
+  const hojeLimites = limitesDeHojeBR(now);
 
   const [props_, leads, visitas, propostas, funil, leadsRecentes, visitasHoje] = await Promise.all([
     supabase
@@ -49,8 +48,8 @@ export default async function PainelPage() {
       .select("id, scheduled_at, status, lead_name, property_title, corretor_nome")
       .eq("company_id", companyId)
       .eq("status", "agendada")
-      .gte("scheduled_at", `${hoje}T00:00:00`)
-      .lt("scheduled_at", `${hoje}T23:59:59`)
+      .gte("scheduled_at", hojeLimites.inicio)
+      .lte("scheduled_at", hojeLimites.fim)
       .order("scheduled_at")
       .limit(5),
   ]);
@@ -92,7 +91,8 @@ export default async function PainelPage() {
     { label: "Propostas abertas", value: abertas.length, sub: `R$ ${fmtK(valorAberto)} em análise`, icon: FileText, href: "/sistema/propostas" },
   ];
 
-  const saudacao = now.getHours() < 12 ? "Bom dia" : now.getHours() < 18 ? "Boa tarde" : "Boa noite";
+  const horaAgora = horaCheiaBR(now);
+  const saudacao = horaAgora < 12 ? "Bom dia" : horaAgora < 18 ? "Boa tarde" : "Boa noite";
   const primeiroNome = membership.nome?.split(" ")[0] ?? "equipe";
 
   return (
@@ -110,7 +110,7 @@ export default async function PainelPage() {
         <div className="relative flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-gold-500 text-[11px] font-bold tracking-[0.2em] uppercase mb-2">
-              Painel da diretoria · {format(now, "EEEE, d 'de' MMMM", { locale: ptBR })}
+              Painel da diretoria · {diaLongoBR(now)}
             </p>
             <h1 className="text-2xl md:text-3xl font-bold">
               {saudacao}, {primeiroNome}.{" "}
@@ -189,7 +189,7 @@ export default async function PainelPage() {
               {visitasHoje.data.map((v) => (
                 <li key={v.id} className="flex items-center gap-3 rounded-lg border border-line p-2.5">
                   <span className="text-xs font-bold text-navy-950 bg-cream rounded px-1.5 py-1">
-                    {format(new Date(v.scheduled_at), "HH:mm")}
+                    {horaBR(v.scheduled_at)}
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-semibold text-navy-950 truncate">
@@ -241,7 +241,7 @@ export default async function PainelPage() {
                       </span>
                     </td>
                     <td className="py-2.5 text-mute">
-                      {format(new Date(l.created_at), "dd/MM/yy HH:mm")}
+                      {dataHoraCurtaBR(l.created_at)}
                     </td>
                   </tr>
                 ))}
