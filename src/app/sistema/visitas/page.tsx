@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { endOfDay, format, startOfDay, startOfMonth } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { CalendarDays, Clock, MessageCircle, Plus } from "lucide-react";
 import { requireCompany } from "@/lib/supabase/server";
+import { diaLongoBR, horaBR, hojeBR, inicioDoMesBR, limitesDeHojeBR } from "@/lib/format";
 import { FiltrosVisitas } from "./filtros";
 import {
   badgeVisitStatus,
@@ -44,9 +43,8 @@ export default async function VisitasPage({
   const corretorFiltro = ehUuid(corretorBruto) ? corretorBruto : null;
 
   const agora = new Date();
-  const hojeInicio = startOfDay(agora).toISOString();
-  const hojeFim = endOfDay(agora).toISOString();
-  const mesInicio = startOfMonth(agora).toISOString();
+  const { inicio: hojeInicio, fim: hojeFim } = limitesDeHojeBR(agora);
+  const mesInicio = inicioDoMesBR(agora);
 
   const contaVisit = () =>
     supabase.from("visit").select("id", { count: "exact", head: true }).eq("company_id", companyId);
@@ -84,20 +82,20 @@ export default async function VisitasPage({
       (!corretorFiltro || v.corretor_id === corretorFiltro),
   );
 
-  // Agrupa por dia (fuso local) mantendo a ordem ascendente.
+  // Agrupa por dia (fuso de Brasilia) mantendo a ordem ascendente.
   const grupos: Grupo[] = [];
   const indice = new Map<string, number>();
-  const hojeChave = format(agora, "yyyy-MM-dd");
+  const hojeChave = hojeBR(agora);
   for (const v of filtradas) {
     const d = new Date(v.scheduled_at);
-    const chave = format(d, "yyyy-MM-dd");
+    const chave = hojeBR(d);
     let pos = indice.get(chave);
     if (pos === undefined) {
       pos = grupos.length;
       indice.set(chave, pos);
       grupos.push({
         chave,
-        titulo: format(d, "EEEE, d 'de' MMMM", { locale: ptBR }),
+        titulo: diaLongoBR(d),
         ehHoje: chave === hojeChave,
         itens: [],
       });
@@ -196,7 +194,7 @@ export default async function VisitasPage({
                     <li key={v.id} className="flex flex-wrap items-center gap-3 p-3">
                       <span className="flex items-center gap-1.5 text-sm font-bold text-navy-950 bg-shell border border-line rounded-lg px-2 py-1.5 shrink-0">
                         <Clock size={13} className="text-navy-400" aria-hidden="true" />
-                        {format(new Date(v.scheduled_at), "HH:mm")}
+                        {horaBR(v.scheduled_at)}
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block text-sm font-semibold text-navy-950 truncate">
