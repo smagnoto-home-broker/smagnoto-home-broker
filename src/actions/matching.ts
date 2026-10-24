@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { brl } from "@/lib/format";
 import { requireCompany } from "@/lib/supabase/server";
+import { anonimizarTexto } from "@/lib/anonimizar";
 
 const TIPOS = ["casa", "apartamento", "terreno", "comercial", "rural"] as const;
 const TRANSACOES = ["venda", "aluguel", "temporada"] as const;
@@ -253,7 +254,8 @@ async function explicacoesIA(
           {
             role: "user",
             content: JSON.stringify({
-              cliente: { nome: leadName, ...prefs },
+              // LGPD: o nome e o contato do lead NAO vao ao servico externo; so as preferencias.
+              cliente: { ...prefs, notes: anonimizarTexto(prefs.notes, [leadName]) },
               imoveis: itens.map((i) => ({
                 id: i.property.id,
                 titulo: i.property.title,
