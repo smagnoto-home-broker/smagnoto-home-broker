@@ -1,8 +1,9 @@
 "use server";
 
-import { z } from "zod";
+import type { ZodError } from "zod";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getVitrineEmpresa } from "@/lib/site-company";
+import { MAX_DIAS_VISITA, leadSchema, somarDias, visitaSchema } from "@/lib/validacao-publica";
 
 /**
  * Ações públicas do site (visitante anônimo, sem sessão).
@@ -19,32 +20,6 @@ export type ResultadoPublico = {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const leadSchema = z.object({
-  nome: z.string().trim().min(2, "Informe seu nome."),
-  telefone: z.string().trim().min(8, "Informe um WhatsApp válido, com DDD."),
-  email: z
-    .string()
-    .trim()
-    .max(200, "E-mail muito longo.")
-    .refine(
-      (v) => v === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
-      "Informe um e-mail válido ou deixe em branco.",
-    ),
-  procurando: z.enum(["venda", "aluguel", "temporada", "quero_vender"]).optional(),
-  mensagem: z.string().trim().min(3, "Escreva uma breve mensagem.").max(1000, "Mensagem muito longa."),
-  propertyId: z.string().trim().optional(),
-});
-
-const visitaSchema = z.object({
-  nome: z.string().trim().min(2, "Informe seu nome."),
-  telefone: z.string().trim().min(8, "Informe um WhatsApp válido, com DDD."),
-  data: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Escolha uma data válida."),
-  horario: z.string().regex(/^\d{2}:\d{2}$/, "Escolha um horário válido."),
-  observacao: z.string().trim().max(500, "Observação muito longa.").optional(),
-  propertyId: z.string().trim(),
-  propertyTitulo: z.string().trim().min(1).max(200),
-});
-
 const LABEL_PROCURA: Record<string, string> = {
   venda: "Compra (venda)",
   aluguel: "Aluguel",
@@ -52,7 +27,7 @@ const LABEL_PROCURA: Record<string, string> = {
   quero_vender: "Quero vender meu imóvel",
 };
 
-function primeiraMensagem(erro: z.ZodError): string {
+function primeiraMensagem(erro: ZodError): string {
   return erro.issues[0]?.message ?? "Confira os dados informados.";
 }
 
@@ -128,8 +103,12 @@ export async function agendarVisitaPublica(input: unknown): Promise<ResultadoPub
   if (Number.isNaN(new Date(scheduledAt).getTime())) {
     return { ok: false, erro: "Data ou horário inválidos." };
   }
-  if (d.data < hojeIsoBrasilia()) {
+  const hoje = hojeIsoBrasilia();
+  if (d.data < hoje) {
     return { ok: false, erro: "Escolha uma data a partir de hoje." };
+  }
+  if (d.data > somarDias(hoje, MAX_DIAS_VISITA)) {
+    return { ok: false, erro: "Escolha uma data nos próximos meses." };
   }
 
   const supabase = await getSupabaseServer();
