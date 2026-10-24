@@ -43,3 +43,6 @@ next-env.d.ts
 
 # supabase cli
 supabase/.temp/
+
+# descricao do PR gerada pela IA (usada por scripts/enviar-pr.ps1)
+.pr-body.md
