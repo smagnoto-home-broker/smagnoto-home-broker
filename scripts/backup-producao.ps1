@@ -1,5 +1,5 @@
 # Backup do banco Smagnoto (somente leitura no banco). ASCII puro, sem acentos.
-# Requisitos: pg_dump (PostgreSQL client 17 ou maior) e 7-Zip. NAO precisa de Docker.
+# Requisitos: 7-Zip e (pg_dump 17+ OU Docker Desktop rodando; o script escolhe sozinho).
 # Uso (PowerShell):
 #   powershell -ExecutionPolicy Bypass -File "F:\Projetos\smagnoto-home-broker-staging\scripts\backup-producao.ps1" -ProjectRef cbgvttxmskwybalefezk
 # A senha do banco e a senha do arquivo .7z sao pedidas no terminal e NUNCA gravadas.
@@ -24,9 +24,14 @@ if (-not (Get-Command pg_dump -ErrorAction SilentlyContinue)) {
     Select-Object -First 1
   if ($bin) { $env:Path += ";$bin" }
 }
-foreach ($t in @("pg_dump","7z")) {
-  if (-not (Get-Command $t -ErrorAction SilentlyContinue)) { Write-Host "ERRO: '$t' nao encontrado."; exit 1 }
+$useDocker = -not (Get-Command pg_dump -ErrorAction SilentlyContinue)
+if ($useDocker) {
+  if (-not (Get-Command docker -ErrorAction SilentlyContinue)) { Write-Host "ERRO: nem pg_dump nem docker encontrados."; exit 1 }
+  docker info *> $null
+  if ($LASTEXITCODE -ne 0) { Write-Host "ERRO: Docker Desktop nao esta rodando."; exit 1 }
+  Write-Host "pg_dump nao encontrado: usando Docker (imagem postgres:17)."
 }
+if (-not (Get-Command 7z -ErrorAction SilentlyContinue)) { Write-Host "ERRO: '7z' nao encontrado."; exit 1 }
 
 $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $dir = Join-Path $OutDir "$ProjectRef-$stamp"
@@ -41,10 +46,12 @@ $env:PGSSLMODE = "require"
 $ok = $true
 try {
   Write-Host "Exportando estrutura (schema public)..."
-  & pg_dump -h $DbHost -p $DbPort -U $DbUser -d postgres --schema-only --no-owner --no-privileges -n public -f (Join-Path $dir "schema.sql")
+  if ($useDocker) { & docker run --rm -e PGPASSWORD -e PGSSLMODE -v "${dir}:/out" postgres:17 pg_dump -h $DbHost -p $DbPort -U $DbUser -d postgres --schema-only --no-owner --no-privileges -n public -f /out/schema.sql }
+  else { & pg_dump -h $DbHost -p $DbPort -U $DbUser -d postgres --schema-only --no-owner --no-privileges -n public -f (Join-Path $dir "schema.sql") }
   if ($LASTEXITCODE -ne 0) { Write-Host "ERRO: pg_dump da estrutura falhou (codigo $LASTEXITCODE)."; $ok = $false }
   Write-Host "Exportando dados (schemas public e auth)..."
-  & pg_dump -h $DbHost -p $DbPort -U $DbUser -d postgres --data-only --no-owner --no-privileges -n public -n auth -f (Join-Path $dir "dados.sql")
+  if ($useDocker) { & docker run --rm -e PGPASSWORD -e PGSSLMODE -v "${dir}:/out" postgres:17 pg_dump -h $DbHost -p $DbPort -U $DbUser -d postgres --data-only --no-owner --no-privileges -n public -n auth -f /out/dados.sql }
+  else { & pg_dump -h $DbHost -p $DbPort -U $DbUser -d postgres --data-only --no-owner --no-privileges -n public -n auth -f (Join-Path $dir "dados.sql") }
   if ($LASTEXITCODE -ne 0) { Write-Host "ERRO: pg_dump dos dados falhou (codigo $LASTEXITCODE)."; $ok = $false }
 } finally {
   Remove-Item Env:\PGPASSWORD -ErrorAction SilentlyContinue
