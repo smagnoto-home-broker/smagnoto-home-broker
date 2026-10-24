@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireCompany } from "@/lib/supabase/server";
+import { podeGerir } from "@/lib/papeis";
 import { brl, m2 } from "@/lib/format";
 import { ListFilter, MapPin, Pencil, Plus } from "lucide-react";
 import { Foto } from "./foto";
@@ -68,7 +69,8 @@ export default async function ImoveisPage({
   // Remove caracteres que quebram o filtro `.or()` do PostgREST.
   const qBusca = q.replace(/[,%()\\]/g, " ").trim();
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId, membership } = await requireCompany();
+  const podeExcluir = podeGerir(membership.role);
 
   let consulta = supabase
     .from("property")
@@ -257,7 +259,7 @@ export default async function ImoveisPage({
                       <Pencil size={14} aria-hidden /> Editar
                     </Link>
                     <span className="flex-1" />
-                    <ExcluirButton id={p.id} titulo={p.title} />
+                    {podeExcluir && <ExcluirButton id={p.id} titulo={p.title} />}
                   </div>
                 </div>
               </li>

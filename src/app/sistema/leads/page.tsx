@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { startOfMonth } from "date-fns";
 import { requireCompany } from "@/lib/supabase/server";
+import { podeGerir } from "@/lib/papeis";
 import { dataHoraBR } from "@/lib/format";
 import { ListFilter, Plus } from "lucide-react";
 import { ExcluirButton } from "./excluir-button";
@@ -48,7 +49,8 @@ export default async function LeadsPage({
   // Remove caracteres que quebram o filtro `.or()` do PostgREST.
   const qBusca = q.replace(/[,%()\\]/g, " ").trim();
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId, membership } = await requireCompany();
+  const podeExcluir = podeGerir(membership.role);
   const mesInicio = startOfMonth(new Date()).toISOString();
 
   let consulta = supabase
@@ -242,7 +244,7 @@ export default async function LeadsPage({
                       >
                         Editar
                       </Link>
-                      <ExcluirButton id={l.id} nome={l.name} />
+                      {podeExcluir && <ExcluirButton id={l.id} nome={l.name} />}
                     </div>
                   </td>
                 </tr>
