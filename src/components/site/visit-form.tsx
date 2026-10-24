@@ -3,6 +3,7 @@
 import { useActionState, useId, useState } from "react";
 import { CalendarDays, MessageCircle } from "lucide-react";
 import { agendarVisitaPublica, type ResultadoPublico } from "@/actions/public";
+import { InputTelefone } from "@/components/ui/input-telefone";
 import { BRAND } from "@/lib/brand";
 import { linkWhatsTelefone } from "./imovel-ui";
 
@@ -133,16 +134,14 @@ export function VisitForm({ propertyId, propertyTitulo }: { propertyId: string; 
           <label className="label" htmlFor={`${uid}-telefone`}>
             WhatsApp
           </label>
-          <input
+          <InputTelefone
             id={`${uid}-telefone`}
             name="telefone"
             className="field"
             required
-            inputMode="tel"
             autoComplete="tel"
-            placeholder="(19) 99999-9999"
             value={form.telefone}
-            onChange={set("telefone")}
+            onValor={(v) => setForm((f) => ({ ...f, telefone: v }))}
           />
         </div>
         <div>

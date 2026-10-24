@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useActionState } from "react";
+import { InputTelefone } from "@/components/ui/input-telefone";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -656,12 +657,11 @@ export function ImovelForm({ acao, inicial }: { acao: AcaoForm; inicial?: Imovel
             <label className="label" htmlFor="owner_phone">
               Telefone
             </label>
-            <input
+            <InputTelefone
               id="owner_phone"
               name="owner_phone"
               className="field"
               defaultValue={valores.owner_phone}
-              placeholder="(19) 99999-9999"
               autoComplete="off"
             />
           </div>
