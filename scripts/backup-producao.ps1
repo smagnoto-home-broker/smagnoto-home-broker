@@ -5,9 +5,16 @@
 # A senha do banco e a senha do arquivo .7z sao pedidas no terminal e NUNCA gravadas.
 param(
   [Parameter(Mandatory=$true)][string]$ProjectRef,
-  [string]$OutDir = "F:\Projetos\backups-smagnoto"
+  [string]$OutDir = "F:\Projetos\backups-smagnoto",
+  [string]$DbHost = "db.$ProjectRef.supabase.co",
+  [string]$DbUser = "postgres",
+  [int]$DbPort = 5432
 )
+# Se a conexao direta falhar (IPv6), use o "Session pooler" do botao Connect do Supabase:
+#   -DbHost aws-...pooler.supabase.com -DbUser postgres.<ref>
 $ErrorActionPreference = "Stop"
+$p7z = "C:\Program Files\7-Zip"
+if (-not (Get-Command 7z -ErrorAction SilentlyContinue) -and (Test-Path (Join-Path $p7z "7z.exe"))) { $env:Path += ";$p7z" }
 foreach ($t in @("supabase","7z")) {
   if (-not (Get-Command $t -ErrorAction SilentlyContinue)) { Write-Host "ERRO: '$t' nao encontrado no PATH."; exit 1 }
 }
@@ -19,7 +26,7 @@ $sec = Read-Host "Senha do banco (postgres) do projeto $ProjectRef" -AsSecureStr
 $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec)
 $pwd = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
 [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
-$url = "postgresql://postgres:$([uri]::EscapeDataString($pwd))@db.$ProjectRef.supabase.co:5432/postgres"
+$url = "postgresql://$($DbUser):$([uri]::EscapeDataString($pwd))@$($DbHost):$($DbPort)/postgres"
 
 supabase db dump --db-url $url -f (Join-Path $dir "schema.sql")
 supabase db dump --db-url $url --data-only --use-copy -f (Join-Path $dir "dados.sql")
