@@ -10,6 +10,7 @@ import { SectionVideo } from "@/components/site/section-video";
 import { LeadForm } from "@/components/site/lead-form";
 import { DestaqueSlider } from "@/components/site/destaque-slider";
 import { contarDisponiveis, valorPortfolio } from "@/components/site/queries";
+import type { TipoCard } from "@/components/site/tipo-carousel";
 import { TIPOS_BUSCA, linkWhatsTelefone, whatsAvaliacao } from "@/components/site/imovel-ui";
 
 /** Números oficiais do site de referência da agência (usados só como fallback). */
@@ -17,17 +18,18 @@ const IMOVELS_OFICIAIS = 235;
 const CONDOMINIOS_OFICIAIS = 31;
 
 /**
- * Os 5 cards de tipo da seção Condomínios — fotos oficiais baixadas do site do
- * cliente (smagnoto.com.br) com a marca já aplicada; ficam numa faixa que
- * mostra a leva inteira, pausa, desliza e pausa de novo (pedido da rodada).
+ * Os 5 cards de tipo — fotos oficiais baixadas do site do cliente
+ * (smagnoto.com.br) com a marca já aplicada. O herói passa um de cada vez
+ * com CTA abaixo do título (pedido da rodada); a seção Condomínios mantém
+ * a faixa com a leva inteira.
  */
-const CARDS_TIPO = [
-  { label: "Sobrados em Condomínio", foto: "/fotos/tipo-sobrado.png", href: "/imoveis?tipo=casa&q=sobrado" },
-  { label: "Terrenos em Condomínio", foto: "/fotos/tipo-terreno.png", href: "/imoveis?tipo=terreno" },
-  { label: "Casas em Condomínio", foto: "/fotos/tipo-casa.png", href: "/imoveis?tipo=casa&q=condom%C3%ADnio" },
-  { label: "Apartamentos", foto: "/fotos/tipo-apartamento.png", href: "/imoveis?tipo=apartamento" },
-  { label: "Coberturas", foto: "/fotos/tipo-cobertura.png", href: "/imoveis?q=cobertura" },
-] as const;
+const CARDS_TIPO: TipoCard[] = [
+  { label: "Sobrados em Condomínio", foto: "/fotos/tipo-sobrado.png", href: "/imoveis?tipo=casa&q=sobrado", cta: "Ver sobrados" },
+  { label: "Terrenos em Condomínio", foto: "/fotos/tipo-terreno.png", href: "/imoveis?tipo=terreno", cta: "Ver terrenos" },
+  { label: "Casas em Condomínio", foto: "/fotos/tipo-casa.png", href: "/imoveis?tipo=casa&q=condom%C3%ADnio", cta: "Ver casas" },
+  { label: "Apartamentos", foto: "/fotos/tipo-apartamento.png", href: "/imoveis?tipo=apartamento", cta: "Ver apartamentos" },
+  { label: "Coberturas", foto: "/fotos/tipo-cobertura.png", href: "/imoveis?q=cobertura", cta: "Ver coberturas" },
+];
 
 export const metadata: Metadata = {
   title: {
@@ -77,7 +79,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero numeros={numeros.slice(0, 3)} />
+      <Hero numeros={numeros.slice(0, 3)} tipos={CARDS_TIPO} />
 
       {/* 2. Imóveis em destaque — slider de alto padrão (fotos reais do Pexels); altura mínima igual à do Contato */}
       <section className="flex min-h-[600px] flex-col justify-center bg-shell">
