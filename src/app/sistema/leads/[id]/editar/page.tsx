@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { requireCompany } from "@/lib/supabase/server";
+import { podeGerir } from "@/lib/papeis";
 import { brl, dataHoraBR } from "@/lib/format";
 import { editarLead } from "@/actions/leads";
 import {
@@ -46,7 +47,7 @@ export default async function EditarLeadPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   if (!z.uuid().safeParse(id).success) notFound();
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId, membership } = await requireCompany();
 
   const [leadRes, imoveisRes, equipeRes] = await Promise.all([
     supabase.from("lead").select(COLS).eq("id", id).eq("company_id", companyId).maybeSingle(),
@@ -126,10 +127,12 @@ export default async function EditarLeadPage({ params }: { params: Promise<{ id:
 
       <LeadForm acao={editarLead} imoveis={imoveis} responsaveis={responsaveis} inicial={valores} editando />
 
-      <div className="flex items-center gap-3 pt-2 border-t border-line">
-        <p className="text-xs text-mute flex-1">Precisou encerrar este contato? A exclusão é definitiva.</p>
-        <ExcluirButton id={lead.id} nome={lead.name} />
-      </div>
+      {podeGerir(membership.role) && (
+        <div className="flex items-center gap-3 pt-2 border-t border-line">
+          <p className="text-xs text-mute flex-1">Precisou encerrar este contato? A exclusão é definitiva.</p>
+          <ExcluirButton id={lead.id} nome={lead.name} />
+        </div>
+      )}
     </div>
   );
 }

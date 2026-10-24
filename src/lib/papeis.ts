@@ -10,3 +10,8 @@ export const PAPEIS_FINANCEIRO = ["owner", "admin", "financeiro"] as const;
 /** requireCompany espera string[] mutavel. */
 export const gestao = (): string[] => [...PAPEIS_GESTAO];
 export const financeiro = (): string[] => [...PAPEIS_FINANCEIRO];
+
+/** Pode excluir registros? (usado para esconder o botao; a trava real esta na action). */
+export function podeGerir(papel: string | null | undefined): boolean {
+  return !!papel && (PAPEIS_GESTAO as readonly string[]).includes(papel);
+}
