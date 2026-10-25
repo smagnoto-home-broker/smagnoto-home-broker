@@ -77,10 +77,9 @@ export function Hero({ numeros, tipos }: { numeros: NumeroHero[]; tipos: TipoCar
 
         {/* xl: sai do fluxo e ancora na seção — rente à borda direita (40px), números
             quase no topo (top-10) e o card com a linha de baixo NA MESMA linha de
-            baixo dos atalhos (bottom-6 = base dos botões). De 1280 a 1799px os
-            botões alcançariam a lateral do card, então nessa faixa ele mantém o
-            respiro (bottom-16) para nunca encobrir os atalhos */}
-        <div className="flex flex-col gap-3 lg:w-72 lg:shrink-0 xl:absolute xl:right-10 xl:top-10 xl:bottom-16 xl:justify-between min-[1800px]:bottom-6">
+            baixo dos atalhos (bottom-6 = base dos botões). Em xl a linha de atalhos
+            é encurtada à esquerda do card (largura calculada) para nunca encobri-lo */}
+        <div className="flex flex-col gap-3 lg:w-72 lg:shrink-0 xl:absolute xl:right-10 xl:top-10 xl:bottom-6 xl:justify-between">
           <div className="grid gap-3">
             {numeros.map((n) => (
               <div
@@ -99,12 +98,12 @@ export function Hero({ numeros, tipos }: { numeros: NumeroHero[]; tipos: TipoCar
 
       {/* Atalhos por tipo sempre na base da seção: linha única no desktop,
           formato igual ao botão Buscar imóveis (rounded-xl), borda na cor do ouro */}
-      <div className="z-10 mx-auto grid w-full max-w-6xl grid-cols-2 gap-2 px-5 pb-6 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="z-10 mx-auto grid w-full max-w-6xl grid-cols-2 gap-2 px-5 pb-6 sm:grid-cols-3 lg:grid-cols-6 xl:ml-[max(0px,calc((100vw-72rem)/2))] xl:w-[min(72rem,calc(100vw-21.5rem-max(0px,(100vw-72rem)/2)))]">
         {TIPOS_HERO.map((t) => (
           <Link
             key={t.label}
             href={t.href}
-            className="group flex flex-col items-center justify-center rounded-xl border-2 border-gold-500 bg-navy-950/60 px-4 py-2.5 text-center backdrop-blur-sm transition-colors hover:bg-gold-500 hover:text-navy-950"
+            className="group flex flex-col items-center justify-center mx-px rounded-xl border border-gold-500 bg-navy-950/60 px-4 py-2.5 text-center backdrop-blur-sm transition-colors hover:bg-gold-500 hover:text-navy-950"
           >
             <span className="text-base font-bold leading-tight">{t.label}</span>
             <span className="text-xs font-semibold leading-tight text-gold-400 group-hover:text-navy-950">{t.sub}</span>
