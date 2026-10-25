@@ -70,7 +70,7 @@ export function TipoCarousel({ cards }: { cards: TipoCard[] }) {
         })}
       </div>
       <div className="p-4">
-        <p className="text-sm font-bold">{card.label}</p>
+        <p className="text-center text-sm font-bold">{card.label}</p>
         <Link href={card.href} className="btn btn-gold btn-sm mt-3 w-full">
           {card.cta}
         </Link>
