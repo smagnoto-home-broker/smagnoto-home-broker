@@ -7,14 +7,14 @@ import { TipoCarousel, type TipoCard } from "./tipo-carousel";
 /** Números exibidos como os 3 cards do herói (saem da antiga seção Números). */
 export type NumeroHero = { valor: string; label: string; sub: string };
 
-/** Atalhos por tipo na base do herói — sempre visíveis, borda na cor do botão Buscar imóveis. */
+/** Atalhos por tipo na base do herói — duas linhas (tipo + detalhe), formato do botão Buscar imóveis. */
 const TIPOS_HERO = [
-  { label: "Apartamento", href: "/imoveis?tipo=apartamento" },
-  { label: "Casa em Condomínio", href: "/imoveis?tipo=casa&q=condom%C3%ADnio" },
-  { label: "Cobertura", href: "/imoveis?q=cobertura" },
-  { label: "Sobrado em Condomínio", href: "/imoveis?tipo=casa&q=sobrado" },
-  { label: "Terreno em Condomínio", href: "/imoveis?tipo=terreno" },
-  { label: "Chácara em Condomínio", href: "/imoveis?q=ch%C3%A1cara" },
+  { label: "Apartamento", sub: "em condomínio", href: "/imoveis?tipo=apartamento" },
+  { label: "Casa", sub: "em condomínio", href: "/imoveis?tipo=casa&q=condom%C3%ADnio" },
+  { label: "Cobertura", sub: "alto padrão", href: "/imoveis?q=cobertura" },
+  { label: "Sobrado", sub: "em condomínio", href: "/imoveis?tipo=casa&q=sobrado" },
+  { label: "Terreno", sub: "em condomínio", href: "/imoveis?tipo=terreno" },
+  { label: "Chácara", sub: "em condomínio", href: "/imoveis?q=ch%C3%A1cara" },
 ] as const;
 
 /**
@@ -99,14 +99,15 @@ export function Hero({ numeros, tipos }: { numeros: NumeroHero[]; tipos: TipoCar
 
       {/* Atalhos por tipo sempre na base da seção: linha única no desktop,
           formato igual ao botão Buscar imóveis (rounded-xl), borda na cor do ouro */}
-      <div className="z-10 mx-auto flex w-full max-w-6xl flex-wrap gap-2 px-5 pb-6 lg:flex-nowrap">
+      <div className="z-10 mx-auto grid w-full max-w-6xl grid-cols-2 gap-2 px-5 pb-6 sm:grid-cols-3 lg:grid-cols-6">
         {TIPOS_HERO.map((t) => (
           <Link
             key={t.label}
             href={t.href}
-            className="whitespace-nowrap rounded-xl border border-gold-500 px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-gold-500 hover:text-navy-950 sm:px-3.5 sm:text-xs"
+            className="group flex flex-col items-center justify-center rounded-xl border-2 border-gold-500 bg-navy-950/60 px-4 py-2.5 text-center backdrop-blur-sm transition-colors hover:bg-gold-500 hover:text-navy-950"
           >
-            {t.label}
+            <span className="text-base font-bold leading-tight">{t.label}</span>
+            <span className="text-xs font-semibold leading-tight text-gold-400 group-hover:text-navy-950">{t.sub}</span>
           </Link>
         ))}
       </div>
