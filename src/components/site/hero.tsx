@@ -7,14 +7,14 @@ import { TipoCarousel, type TipoCard } from "./tipo-carousel";
 /** Números exibidos como os 3 cards do herói (saem da antiga seção Números). */
 export type NumeroHero = { valor: string; label: string; sub: string };
 
-/** Atalhos por tipo na base do herói — sempre visíveis, borda na cor do botão Buscar imóveis. */
+/** Atalhos por tipo na base do herói — duas linhas (tipo + detalhe), formato do botão Buscar imóveis. */
 const TIPOS_HERO = [
-  { label: "Apartamento", href: "/imoveis?tipo=apartamento" },
-  { label: "Casa em Condomínio", href: "/imoveis?tipo=casa&q=condom%C3%ADnio" },
-  { label: "Cobertura", href: "/imoveis?q=cobertura" },
-  { label: "Sobrado em Condomínio", href: "/imoveis?tipo=casa&q=sobrado" },
-  { label: "Terreno em Condomínio", href: "/imoveis?tipo=terreno" },
-  { label: "Chácara em Condomínio", href: "/imoveis?q=ch%C3%A1cara" },
+  { label: "Apartamento", sub: "em condomínio", href: "/imoveis?tipo=apartamento" },
+  { label: "Casa", sub: "em condomínio", href: "/imoveis?tipo=casa&q=condom%C3%ADnio" },
+  { label: "Cobertura", sub: "alto padrão", href: "/imoveis?q=cobertura" },
+  { label: "Sobrado", sub: "em condomínio", href: "/imoveis?tipo=casa&q=sobrado" },
+  { label: "Terreno", sub: "em condomínio", href: "/imoveis?tipo=terreno" },
+  { label: "Chácara", sub: "em condomínio", href: "/imoveis?q=ch%C3%A1cara" },
 ] as const;
 
 /**
@@ -77,10 +77,9 @@ export function Hero({ numeros, tipos }: { numeros: NumeroHero[]; tipos: TipoCar
 
         {/* xl: sai do fluxo e ancora na seção — rente à borda direita (40px), números
             quase no topo (top-10) e o card com a linha de baixo NA MESMA linha de
-            baixo dos atalhos (bottom-6 = base dos botões). De 1280 a 1799px os
-            botões alcançariam a lateral do card, então nessa faixa ele mantém o
-            respiro (bottom-16) para nunca encobrir os atalhos */}
-        <div className="flex flex-col gap-3 lg:w-72 lg:shrink-0 xl:absolute xl:right-10 xl:top-10 xl:bottom-16 xl:justify-between min-[1800px]:bottom-6">
+            baixo dos atalhos (bottom-6 = base dos botões). Em xl a linha de atalhos
+            é encurtada à esquerda do card (largura calculada) para nunca encobri-lo */}
+        <div className="flex flex-col gap-3 lg:w-72 lg:shrink-0 xl:absolute xl:right-10 xl:top-10 xl:bottom-6 xl:justify-between">
           <div className="grid gap-3">
             {numeros.map((n) => (
               <div
@@ -99,14 +98,15 @@ export function Hero({ numeros, tipos }: { numeros: NumeroHero[]; tipos: TipoCar
 
       {/* Atalhos por tipo sempre na base da seção: linha única no desktop,
           formato igual ao botão Buscar imóveis (rounded-xl), borda na cor do ouro */}
-      <div className="z-10 mx-auto flex w-full max-w-6xl flex-wrap gap-2 px-5 pb-6 lg:flex-nowrap">
+      <div className="z-10 mx-auto grid w-full max-w-6xl grid-cols-2 gap-2 px-5 pb-6 sm:grid-cols-3 lg:grid-cols-6 xl:ml-[max(0px,calc((100vw-72rem)/2))] xl:w-[min(72rem,calc(100vw-21.5rem-max(0px,(100vw-72rem)/2)))]">
         {TIPOS_HERO.map((t) => (
           <Link
             key={t.label}
             href={t.href}
-            className="whitespace-nowrap rounded-xl border border-gold-500 px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-gold-500 hover:text-navy-950 sm:px-3.5 sm:text-xs"
+            className="group flex flex-col items-center justify-center mx-px rounded-xl border border-gold-500/60 bg-white/[0.07] px-4 py-2.5 text-center backdrop-blur-sm transition-colors hover:border-gold-500 hover:bg-gold-500/30"
           >
-            {t.label}
+            <span className="text-base font-bold leading-tight">{t.label}</span>
+            <span className="text-xs font-semibold leading-tight text-gold-400 group-hover:text-white">{t.sub}</span>
           </Link>
         ))}
       </div>
