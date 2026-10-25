@@ -103,7 +103,7 @@ export function Hero({ numeros, tipos }: { numeros: NumeroHero[]; tipos: TipoCar
           <Link
             key={t.label}
             href={t.href}
-            className="group flex flex-col items-center justify-center mx-px rounded-xl border border-gold-500/60 bg-navy-950/60 px-4 py-2.5 text-center backdrop-blur-sm transition-colors hover:bg-gold-500 hover:text-navy-950"
+            className="group flex flex-col items-center justify-center mx-px rounded-xl border border-gold-500/60 bg-white/[0.07] px-4 py-2.5 text-center backdrop-blur-sm transition-colors hover:bg-gold-500 hover:text-navy-950"
           >
             <span className="text-base font-bold leading-tight">{t.label}</span>
             <span className="text-xs font-semibold leading-tight text-gold-400 group-hover:text-navy-950">{t.sub}</span>
