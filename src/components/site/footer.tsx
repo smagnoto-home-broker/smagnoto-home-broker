@@ -79,11 +79,11 @@ const REDES: { label: string; href: string; icon: ReactElement }[] = [
   { label: "YouTube", href: SOCIALS.youtube, icon: <YoutubeIcon /> },
 ];
 
-/** Redes sociais flutuando na extremidade esquerda da tela, na vertical (some no celular). */
+/** Redes sociais flutuando na extremidade esquerda da tela, na vertical (36 px no celular, 41 px no desktop). */
 export function RedesFlutuantes() {
   return (
     <ul
-      className="fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-2 md:flex"
+      className="fixed left-2 top-1/2 z-40 flex -translate-y-1/2 flex-col gap-2 md:left-3"
       aria-label={`Redes sociais da ${BRAND.short}`}
     >
       {REDES.map((r) => (
@@ -94,7 +94,7 @@ export function RedesFlutuantes() {
             rel="noopener noreferrer"
             aria-label={r.label}
             title={r.label}
-            className="inline-flex h-[41px] w-[41px] items-center justify-center rounded-full border border-gold-500/60 bg-navy-950/80 text-white shadow-lg backdrop-blur-sm transition-colors hover:border-gold-500 hover:text-gold-500 [&_svg]:h-[17px] [&_svg]:w-[17px]"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border-[2.3px] border-gold-500/60 md:h-[41px] md:w-[41px] bg-navy-950/80 text-white shadow-lg backdrop-blur-sm transition-colors hover:border-gold-500 hover:text-gold-500 [&_svg]:h-[17px] [&_svg]:w-[17px]"
           >
             {r.icon}
           </a>
