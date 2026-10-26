@@ -17,6 +17,7 @@ import {
   Target,
   ShieldCheck,
   KeyRound,
+  Wallet,
   X,
 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
@@ -47,7 +48,10 @@ const NAV = [
   },
   {
     section: "Locação",
-    items: [{ href: "/sistema/locacao", label: "Painel da locação", icon: KeyRound }],
+    items: [
+      { href: "/sistema/locacao", label: "Painel da locação", icon: KeyRound },
+      { href: "/sistema/financeiro", label: "Financeiro", icon: Wallet },
+    ],
   },
   {
     section: "Serviços",
