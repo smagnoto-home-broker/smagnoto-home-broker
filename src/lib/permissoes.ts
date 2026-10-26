@@ -53,3 +53,8 @@ export function pode(papel: string | null | undefined, modulo: Modulo, acao: Aca
 export function modulosVisiveis(papel: string | null | undefined): Modulo[] {
   return MODULOS.filter((m) => pode(papel, m, "ver"));
 }
+
+/** Papeis que tem a acao no modulo (para guardas de servidor). */
+export function papeisCom(modulo: Modulo, acao: Acao): string[] {
+  return Object.keys(MATRIZ).filter((p) => pode(p, modulo, acao));
+}

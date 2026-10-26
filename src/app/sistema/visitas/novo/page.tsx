@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 import { FormNovaVisita } from "./form";
 
 export const metadata = { title: "Nova visita" };
@@ -16,7 +16,7 @@ export default async function NovaVisitaPage({
 }: {
   searchParams: Promise<{ lead?: string; imovel?: string }>;
 }) {
-  const { supabase, companyId, membership } = await requireCompany();
+  const { supabase, companyId, membership } = await requirePermissao("visitas", "criar");
   const sp = await searchParams;
 
   const [leadsRes, imoveisRes, corretoresRes] = await Promise.all([

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 import { criarLead } from "@/actions/leads";
 import type { Opcao } from "@/actions/leads-meta";
 import { LeadForm } from "../lead-form";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Novo lead" };
 
 export default async function NovoLeadPage() {
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("leads", "criar");
 
   const [imoveisRes, equipeRes] = await Promise.all([
     supabase.from("property").select("id, title, code").eq("company_id", companyId).order("title").limit(500),

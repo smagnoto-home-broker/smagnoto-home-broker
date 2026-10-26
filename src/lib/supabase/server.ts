@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { papeisCom, type Acao, type Modulo } from "@/lib/permissoes";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -61,4 +62,9 @@ export async function requireCompany(allowedRoles?: string[]) {
   if (membership.must_change_password) redirect("/trocar-senha");
 
   return { supabase, user, membership, companyId: membership.company_id as string };
+}
+
+/** Exige membership ativo cujo papel tenha a acao no modulo (matriz em permissoes.ts). */
+export async function requirePermissao(modulo: Modulo, acao: Acao) {
+  return requireCompany(papeisCom(modulo, acao));
 }

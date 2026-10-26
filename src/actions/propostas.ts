@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 
 /** Status reais do enum proposal_status_enum — sem status inventado. */
 const PROPOSAL_STATUS = ["em_analise", "aceita", "recusada", "contra_proposta"] as const;
@@ -54,7 +54,7 @@ export async function criarProposta(input: {
   if (!parsed.success) return { ok: false, erro: "Revise os campos da proposta." };
   const d = parsed.data;
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("propostas", "criar");
 
   try {
     const { data: lead, error: leadErr } = await supabase
@@ -124,7 +124,7 @@ export async function editarProposta(input: {
   if (!parsed.success) return { ok: false, erro: "Revise os campos da proposta." };
   const d = parsed.data;
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("propostas", "editar");
 
   try {
     if (d.corretor_id) {
@@ -175,7 +175,7 @@ export async function mudarStatusProposta(input: {
   const parsed = statusSchema.safeParse(input);
   if (!parsed.success) return { ok: false, erro: "Status inválido." };
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("propostas", "editar");
 
   try {
     const { data, error } = await supabase

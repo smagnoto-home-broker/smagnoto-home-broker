@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { CalendarDays, Clock, MessageCircle, Plus } from "lucide-react";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 import { diaLongoBR, horaBR, hojeBR, inicioDoMesBR, limitesDeHojeBR } from "@/lib/format";
 import { FiltrosVisitas } from "./filtros";
 import {
@@ -34,7 +34,7 @@ export default async function VisitasPage({
 }: {
   searchParams: Promise<{ status?: string; corretor?: string }>;
 }) {
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("visitas", "ver");
   const sp = await searchParams;
 
   const statusBruto = sp.status ?? "";

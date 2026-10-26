@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 
 /** Status reais do enum visit_status_enum. */
 const VISIT_STATUS = ["agendada", "realizada", "cancelada", "no_show"] as const;
@@ -46,7 +46,7 @@ export async function criarVisita(input: {
   if (!parsed.success) return { ok: false, erro: "Revise os campos da visita." };
   const d = parsed.data;
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("visitas", "criar");
 
   try {
     let lead_name: string | null = null;
@@ -123,7 +123,7 @@ export async function editarVisita(input: {
   if (!parsed.success) return { ok: false, erro: "Revise os campos da visita." };
   const d = parsed.data;
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("visitas", "editar");
 
   try {
     const { data, error } = await supabase
@@ -156,7 +156,7 @@ export async function mudarStatusVisita(input: {
   const parsed = statusSchema.safeParse(input);
   if (!parsed.success) return { ok: false, erro: "Status inválido." };
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("visitas", "editar");
 
   try {
     const { data, error } = await supabase

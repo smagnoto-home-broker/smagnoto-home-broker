@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 
 /** Etapas reais do enum lead_status_enum — não criar etapas/aliases extras. */
 const LEAD_STATUS = [
@@ -38,7 +38,7 @@ export async function moverLead(input: {
   if (de === para) return { ok: true };
 
   // Fora do try: redirect() do requireCompany deve propagar.
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("funil", "editar");
 
   try {
     const { data, error } = await supabase
