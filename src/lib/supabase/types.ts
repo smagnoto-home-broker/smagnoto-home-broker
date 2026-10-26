@@ -898,6 +898,268 @@ export type Database = {
           },
         ]
       }
+      cobranca: {
+        Row: {
+          company_id: string
+          competencia: string
+          contrato_id: string
+          created_at: string
+          id: string
+          pago_centavos: number | null
+          pago_em: string | null
+          status: string
+          total_centavos: number
+          updated_at: string
+          vencimento: string
+        }
+        Insert: {
+          company_id: string
+          competencia: string
+          contrato_id: string
+          created_at?: string
+          id?: string
+          pago_centavos?: number | null
+          pago_em?: string | null
+          status?: string
+          total_centavos: number
+          updated_at?: string
+          vencimento: string
+        }
+        Update: {
+          company_id?: string
+          competencia?: string
+          contrato_id?: string
+          created_at?: string
+          id?: string
+          pago_centavos?: number | null
+          pago_em?: string | null
+          status?: string
+          total_centavos?: number
+          updated_at?: string
+          vencimento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cobranca_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cobranca_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contrato_locacao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cobranca_item: {
+        Row: {
+          cobranca_id: string
+          company_id: string
+          descricao: string | null
+          id: string
+          tipo: string
+          valor_centavos: number
+        }
+        Insert: {
+          cobranca_id: string
+          company_id: string
+          descricao?: string | null
+          id?: string
+          tipo: string
+          valor_centavos: number
+        }
+        Update: {
+          cobranca_id?: string
+          company_id?: string
+          descricao?: string | null
+          id?: string
+          tipo?: string
+          valor_centavos?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cobranca_item_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cobranca_item_cobranca_id_fkey"
+            columns: ["cobranca_id"]
+            isOneToOne: false
+            referencedRelation: "cobranca"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contrato_locacao: {
+        Row: {
+          beneficiarios: Json
+          company_id: string
+          created_at: string
+          data_fim: string
+          data_inicio: string
+          dia_vencimento: number
+          garantia: string | null
+          id: string
+          indice_reajuste: string
+          irrf_centavos: number
+          locador_nome: string
+          locatario_email: string | null
+          locatario_nome: string
+          locatario_telefone: string | null
+          property_id: string
+          status: string
+          taxa_adm_bps: number
+          updated_at: string
+          valor_aluguel: number
+          valor_condominio: number
+          valor_iptu: number
+          valor_seguro: number
+        }
+        Insert: {
+          beneficiarios?: Json
+          company_id: string
+          created_at?: string
+          data_fim: string
+          data_inicio: string
+          dia_vencimento?: number
+          garantia?: string | null
+          id?: string
+          indice_reajuste?: string
+          irrf_centavos?: number
+          locador_nome: string
+          locatario_email?: string | null
+          locatario_nome: string
+          locatario_telefone?: string | null
+          property_id: string
+          status?: string
+          taxa_adm_bps?: number
+          updated_at?: string
+          valor_aluguel: number
+          valor_condominio?: number
+          valor_iptu?: number
+          valor_seguro?: number
+        }
+        Update: {
+          beneficiarios?: Json
+          company_id?: string
+          created_at?: string
+          data_fim?: string
+          data_inicio?: string
+          dia_vencimento?: number
+          garantia?: string | null
+          id?: string
+          indice_reajuste?: string
+          irrf_centavos?: number
+          locador_nome?: string
+          locatario_email?: string | null
+          locatario_nome?: string
+          locatario_telefone?: string | null
+          property_id?: string
+          status?: string
+          taxa_adm_bps?: number
+          updated_at?: string
+          valor_aluguel?: number
+          valor_condominio?: number
+          valor_iptu?: number
+          valor_seguro?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contrato_locacao_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contrato_locacao_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "property"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      repasse: {
+        Row: {
+          aluguel_recebido: number
+          cobranca_id: string
+          company_id: string
+          contrato_id: string
+          created_at: string
+          distribuicao: Json
+          id: string
+          irrf: number
+          liquido: number
+          pago_em: string | null
+          reembolsos: number
+          status: string
+          taxa_adm: number
+          updated_at: string
+        }
+        Insert: {
+          aluguel_recebido: number
+          cobranca_id: string
+          company_id: string
+          contrato_id: string
+          created_at?: string
+          distribuicao?: Json
+          id?: string
+          irrf?: number
+          liquido: number
+          pago_em?: string | null
+          reembolsos?: number
+          status?: string
+          taxa_adm: number
+          updated_at?: string
+        }
+        Update: {
+          aluguel_recebido?: number
+          cobranca_id?: string
+          company_id?: string
+          contrato_id?: string
+          created_at?: string
+          distribuicao?: Json
+          id?: string
+          irrf?: number
+          liquido?: number
+          pago_em?: string | null
+          reembolsos?: number
+          status?: string
+          taxa_adm?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "repasse_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repasse_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contrato_locacao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repasse_cobranca_id_fkey"
+            columns: ["cobranca_id"]
+            isOneToOne: true
+            referencedRelation: "cobranca"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       zone: {
         Row: {
           city: string | null
