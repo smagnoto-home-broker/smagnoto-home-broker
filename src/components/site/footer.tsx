@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactElement } from "react";
-import { Globe, Mail, MapPin, MessageCircle, Newspaper, Phone } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { BRAND, CONDOMINIOS_DESTAQUE, SOCIALS } from "@/lib/brand";
 import { WHATS_SITE, linkCondominio } from "./imovel-ui";
@@ -72,14 +72,37 @@ function YoutubeIcon() {
 }
 
 const REDES: { label: string; href: string; icon: ReactElement }[] = [
-  { label: "Site oficial", href: SOCIALS.site, icon: <Globe size={16} aria-hidden /> },
-  { label: "Blog", href: SOCIALS.blog, icon: <Newspaper size={16} aria-hidden /> },
   { label: "WhatsApp", href: SOCIALS.whatsapp, icon: <MessageCircle size={16} aria-hidden /> },
   { label: "Instagram", href: SOCIALS.instagram, icon: <InstagramIcon /> },
   { label: "Facebook", href: SOCIALS.facebook, icon: <FacebookIcon /> },
   { label: "TikTok", href: SOCIALS.tiktok, icon: <TikTokIcon /> },
   { label: "YouTube", href: SOCIALS.youtube, icon: <YoutubeIcon /> },
 ];
+
+/** Redes sociais flutuando na extremidade esquerda da tela, na vertical (some no celular). */
+export function RedesFlutuantes() {
+  return (
+    <ul
+      className="fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-2 md:flex"
+      aria-label={`Redes sociais da ${BRAND.short}`}
+    >
+      {REDES.map((r) => (
+        <li key={r.label}>
+          <a
+            href={r.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={r.label}
+            title={r.label}
+            className="inline-flex h-[41px] w-[41px] items-center justify-center rounded-full border border-gold-500/60 bg-navy-950/80 text-white shadow-lg backdrop-blur-sm transition-colors hover:border-gold-500 hover:text-gold-500 [&_svg]:h-[17px] [&_svg]:w-[17px]"
+          >
+            {r.icon}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 const COLUNA_IMOVEIS = [
   { label: "Comprar imóvel", href: "/imoveis?transacao=venda" },
@@ -131,22 +154,6 @@ export function SiteFooter() {
                 {BRAND.whatsapp}
               </a>
             </li>
-          </ul>
-          <ul className="flex flex-wrap items-center gap-2 pt-3" aria-label={`Redes sociais da ${BRAND.short}`}>
-            {REDES.map((r) => (
-              <li key={r.label}>
-                <a
-                  href={r.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={r.label}
-                  title={r.label}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/15 text-navy-300 hover:border-gold-500 hover:text-white transition-colors"
-                >
-                  {r.icon}
-                </a>
-              </li>
-            ))}
           </ul>
         </div>
 
