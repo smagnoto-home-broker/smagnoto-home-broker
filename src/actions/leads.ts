@@ -154,7 +154,7 @@ export async function excluirLead(formData: FormData): Promise<EstadoForm> {
   const id = z.uuid("Identificador inválido.").safeParse(formData.get("id"));
   if (!id.success) return { erro: "Identificador do lead inválido." };
 
-  const { supabase, companyId } = await requirePermissao("leads", "excluir"));
+  const { supabase, companyId } = await requirePermissao("leads", "excluir");
   const { data, error } = await supabase
     .from("lead")
     .delete()
