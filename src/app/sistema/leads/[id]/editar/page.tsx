@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { z } from "zod";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 import { podeGerir } from "@/lib/papeis";
 import { brl, dataHoraBR } from "@/lib/format";
 import { editarLead } from "@/actions/leads";
@@ -47,7 +47,7 @@ export default async function EditarLeadPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   if (!z.uuid().safeParse(id).success) notFound();
 
-  const { supabase, companyId, membership } = await requireCompany();
+  const { supabase, companyId, membership } = await requirePermissao("leads", "editar");
 
   const [leadRes, imoveisRes, equipeRes] = await Promise.all([
     supabase.from("lead").select(COLS).eq("id", id).eq("company_id", companyId).maybeSingle(),

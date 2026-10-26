@@ -26,3 +26,11 @@ test("mascaras", () => {
   assert.equal(mascararTelefone("(19) 99854-0008"), "(19) *****-0008");
   assert.equal(mascararEmail("anderson@smagnoto.com.br"), "a***@smagnoto.com.br");
 });
+
+test("papeisCom lista so quem tem a acao (financeiro nao mexe em leads)", async () => {
+  const { papeisCom } = await import("./permissoes");
+  const edit = papeisCom("leads", "editar");
+  assert.ok(edit.includes("owner") && edit.includes("corretor"));
+  assert.ok(!edit.includes("financeiro") && !edit.includes("captador"));
+  assert.deepEqual(papeisCom("leads", "excluir").sort(), ["admin", "owner"]);
+});

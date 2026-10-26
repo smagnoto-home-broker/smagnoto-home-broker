@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { brl, dataHoraBR } from "@/lib/format";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 import { FormEditarProposta } from "./form";
 import { StatusProposta } from "./status";
 import { rotuloPropostaStatus } from "../../rotulos";
@@ -31,7 +31,7 @@ export default async function EditarPropostaPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("propostas", "editar");
 
   const [propostaRes, corretoresRes] = await Promise.all([
     supabase

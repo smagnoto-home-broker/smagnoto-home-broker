@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { startOfMonth } from "date-fns";
 import { FileText, Plus } from "lucide-react";
 import { brl, dataBR } from "@/lib/format";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 import { FiltrosPropostas } from "./filtros";
 import { badgePropostaStatus, ehPropostaStatus, rotuloPropostaStatus } from "./rotulos";
 
@@ -24,7 +24,7 @@ export default async function PropostasPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("propostas", "ver");
   const sp = await searchParams;
 
   const statusBruto = sp.status ?? "";

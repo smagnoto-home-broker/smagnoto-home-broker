@@ -2,8 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireCompany } from "@/lib/supabase/server";
-import { gestao } from "@/lib/papeis";
+import { requireCompany, requirePermissao } from "@/lib/supabase/server";
 import { INTERESSES, ORIGENS, STATUS_LEAD, parseBairros } from "./leads-meta";
 import type { EstadoForm } from "./imoveis-meta";
 
@@ -98,7 +97,7 @@ export async function criarLead(_prevState: EstadoForm, formData: FormData): Pro
     return { erro: parsed.error.issues[0]?.message ?? "Confira os dados do formulário." };
   }
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("leads", "criar");
   const registro = baseRegistro(parsed.data, companyId);
 
   if (registro.interest_property_id && !(await vinculoValido(supabase, "property", registro.interest_property_id, companyId))) {
@@ -124,7 +123,7 @@ export async function editarLead(_prevState: EstadoForm, formData: FormData): Pr
     return { erro: parsed.error.issues[0]?.message ?? "Confira os dados do formulário." };
   }
 
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("leads", "editar");
   const registro = baseRegistro(parsed.data, companyId);
 
   if (registro.interest_property_id && !(await vinculoValido(supabase, "property", registro.interest_property_id, companyId))) {
@@ -155,7 +154,7 @@ export async function excluirLead(formData: FormData): Promise<EstadoForm> {
   const id = z.uuid("Identificador inválido.").safeParse(formData.get("id"));
   if (!id.success) return { erro: "Identificador do lead inválido." };
 
-  const { supabase, companyId } = await requireCompany(gestao());
+  const { supabase, companyId } = await requirePermissao("leads", "excluir");
   const { data, error } = await supabase
     .from("lead")
     .delete()

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Users } from "lucide-react";
-import { requireCompany } from "@/lib/supabase/server";
+import { requirePermissao } from "@/lib/supabase/server";
 import { Kanban } from "./kanban";
 import type { LeadCard } from "./etapas";
 
@@ -21,7 +21,7 @@ type LeadRow = {
 type ImovelRow = { id: string; title: string };
 
 export default async function PipelinePage() {
-  const { supabase, companyId } = await requireCompany();
+  const { supabase, companyId } = await requirePermissao("funil", "ver");
 
   const [leadsRes, imoveisRes] = await Promise.all([
     supabase
