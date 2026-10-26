@@ -31,6 +31,7 @@ const NAV = [
     items: [
       { href: "/sistema/imoveis", label: "Imóveis", icon: Home },
       { href: "/sistema/qualidade", label: "Qualidade do cadastro", icon: ShieldCheck },
+      { href: "/sistema/proprietarios", label: "Proprietários", icon: Users },
     ],
   },
   {
