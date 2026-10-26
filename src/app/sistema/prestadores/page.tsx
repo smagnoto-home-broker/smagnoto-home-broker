@@ -161,15 +161,13 @@ export default async function PrestadoresPage({ searchParams }: Props) {
             /servicos <span aria-hidden>↗</span>
           </Link>
         </div>
-        <div className="flex flex-col items-start gap-2 sm:items-end">
-          <div className="flex items-center gap-2">
-            <Link href="/servicos" className="btn btn-outline btn-sm">
-              Abrir portal
-            </Link>
-            <CopiarPortal path="/servicos" />
-          </div>
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <Link href="/servicos" className="btn btn-outline btn-sm">
+            Abrir portal
+          </Link>
+          <CopiarPortal path="/servicos" />
           {/* Abas dentro do card — clicar troca a lista que fica logo abaixo do card */}
-          <nav className="flex gap-2" aria-label="Seções de prestadores">
+          <nav className="flex items-center gap-2" aria-label="Seções de prestadores">
             <Link
               aria-current={aba === "prestadores" ? "page" : undefined}
               href="/sistema/prestadores?aba=prestadores"
@@ -349,7 +347,12 @@ export default async function PrestadoresPage({ searchParams }: Props) {
                 </thead>
                 <tbody>
                   {solicitacoes.map((s) => (
-                    <LinhaSolicitacao key={s.id} req={s} providers={todosProviders} formatarData={dataHoraBR} />
+                    <LinhaSolicitacao
+                      key={s.id}
+                      req={s}
+                      providers={todosProviders}
+                      criadaEm={dataHoraBR(s.created_at)}
+                    />
                   ))}
                 </tbody>
               </table>

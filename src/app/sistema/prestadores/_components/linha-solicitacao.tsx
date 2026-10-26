@@ -26,11 +26,12 @@ const STATUS_SOLICITACAO = [
 export function LinhaSolicitacao({
   req,
   providers,
-  formatarData,
+  criadaEm,
 }: {
   req: SolicitacaoLinha;
   providers: { id: string; name: string }[];
-  formatarData: (iso: string) => string;
+  /** Data já formatada no servidor (funções não passam de Server para Client Component). */
+  criadaEm: string;
 }) {
   const [pendente, start] = useTransition();
   const [status, setStatus] = useState(req.status);
@@ -110,7 +111,7 @@ export function LinhaSolicitacao({
           ))}
         </select>
       </td>
-      <td className="py-2.5 text-mute whitespace-nowrap">{formatarData(req.created_at)}</td>
+      <td className="py-2.5 text-mute whitespace-nowrap">{criadaEm}</td>
     </tr>
   );
 }
