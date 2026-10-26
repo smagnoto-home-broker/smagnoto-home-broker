@@ -17,9 +17,15 @@ type Props = {
   eager?: boolean;
 };
 
+/** Película leve (24% / 17% / 13%) — herói principal e seção Corretores da home. */
+export const OVERLAY_LEVE: CSSProperties = {
+  backgroundImage:
+    "linear-gradient(100deg, rgba(1,36,57,0.24) 0%, rgba(1,36,57,0.17) 45%, rgba(1,36,57,0.13) 100%)",
+};
+
 /**
- * Overlay padrão de qualquer hero: navy da marca em diagonal (lado do texto em
- * 88% para contraste, lado do vídeo em 66% — faixa aprovada de alívio 65–75%).
+ * Overlay padrão das seções com vídeo: navy da marca em diagonal (lado do texto em
+ * 88% para contraste, lado do vídeo em 66%).
  * Toda seção/hero que usar <SectionVideo> sem overlay recebe este automaticamente.
  */
 export const OVERLAY_PADRAO: CSSProperties = {
