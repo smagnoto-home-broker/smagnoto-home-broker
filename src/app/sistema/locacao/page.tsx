@@ -1,4 +1,7 @@
+import Link from "next/link";
 import { requirePermissao } from "@/lib/supabase/server";
+import { pode } from "@/lib/permissoes";
+import { darBaixaCobranca, gerarCobrancaDoMes } from "@/actions/locacao";
 import { formatarBRL } from "@/lib/dinheiro";
 import { resumirLocacao, situacaoCobranca } from "@/lib/locacao/cobranca";
 
@@ -6,7 +9,9 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Locação" };
 
 export default async function LocacaoPage() {
-  const { supabase, companyId } = await requirePermissao("locacao", "ver");
+  const { supabase, companyId, membership } = await requirePermissao("locacao", "ver");
+  const podeCriar = pode(membership.role, "locacao", "criar");
+  const podeEditar = pode(membership.role, "locacao", "editar");
   const hoje = new Date().toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" });
 
   const [{ data: contratos }, { data: cobrancas }] = await Promise.all([
@@ -41,6 +46,9 @@ export default async function LocacaoPage() {
         <p className="text-sm text-mute">
           Contratos ativos e cobranças. Multa de 2% + juros de 1% ao mês sobre o atraso.
         </p>
+        {podeCriar && (
+          <Link href="/sistema/locacao/novo" className="btn btn-primary btn-sm mt-3 inline-flex">Novo contrato</Link>
+        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -61,9 +69,35 @@ export default async function LocacaoPage() {
         ))}
       </div>
 
-      {(contratos ?? []).length === 0 && (
-        <p className="text-sm text-mute">Nenhum contrato cadastrado ainda. O cadastro de contratos chega no próximo PR.</p>
-      )}
+      <div className="card divide-y divide-line">
+        <p className="p-4 font-semibold text-navy-950">Contratos ativos</p>
+        {(contratos ?? []).length === 0 && <p className="p-4 text-sm text-mute">Nenhum contrato cadastrado ainda.</p>}
+        {(contratos ?? []).map((c) => {
+          const aberta = lista.find((x) => x.contrato_id === c.id && x.status === "aberta");
+          return (
+            <div key={c.id} className="p-4 flex items-center justify-between gap-3 text-sm">
+              <div>
+                <p className="text-navy-950 font-medium">{c.locatario_nome}</p>
+                <p className="text-mute">{formatarBRL(c.valor_aluguel)} · vence dia {c.dia_vencimento} · até {c.data_fim.split("-").reverse().join("/")}</p>
+              </div>
+              <div className="flex gap-2">
+                {podeCriar && (
+                  <form action={gerarCobrancaDoMes}>
+                    <input type="hidden" name="contrato_id" value={c.id} />
+                    <button type="submit" className="btn btn-ghost btn-sm">Gerar cobrança do mês</button>
+                  </form>
+                )}
+                {podeEditar && aberta && (
+                  <form action={darBaixaCobranca}>
+                    <input type="hidden" name="cobranca_id" value={aberta.id} />
+                    <button type="submit" className="btn btn-primary btn-sm">Dar baixa ({formatarBRL(aberta.total_centavos)})</button>
+                  </form>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
