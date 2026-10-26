@@ -16,6 +16,7 @@ import {
   Menu,
   Target,
   ShieldCheck,
+  KeyRound,
   X,
 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
@@ -43,6 +44,10 @@ const NAV = [
       { href: "/sistema/propostas", label: "Propostas", icon: FileText },
       { href: "/sistema/matching", label: "Recomendações", icon: Target },
     ],
+  },
+  {
+    section: "Locação",
+    items: [{ href: "/sistema/locacao", label: "Painel da locação", icon: KeyRound }],
   },
   {
     section: "Serviços",
