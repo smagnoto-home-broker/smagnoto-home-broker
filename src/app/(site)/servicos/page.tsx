@@ -119,7 +119,7 @@ export default async function ServicosPage({
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {PROFISSOES.map((p) => (
-              <ProfissaoCard key={p.slug} nome={p.nome} foto={`/fotos/prof-${p.slug}.jpg`} />
+              <ProfissaoCard key={p.slug} nome={p.nome} slug={p.slug} />
             ))}
           </div>
         </div>
