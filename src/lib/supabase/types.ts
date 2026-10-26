@@ -949,6 +949,15 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
+      registrar_auditoria: {
+        Args: {
+          _acao: string
+          _entidade: string
+          _entidade_id?: string
+          _metadata?: Json
+        }
+        Returns: string
+      }
     }
     Enums: {
       company_status_enum: "active" | "trial" | "blocked"

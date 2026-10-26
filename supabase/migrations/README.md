@@ -7,6 +7,7 @@ Regra: listar esta pasta e usar o proximo numero livre. Toda mudanca de banco em
 | `20261022090000_baseline_smagnoto.sql` | Schema completo, RLS, grants, gatilhos | **NAO VERIFICADO** (staging tem dados: aplicada, ao que tudo indica) | **NAO VERIFICADO** |
 | `20261023230000_hardening_auth_storage.sql` | Auditoria A4, A5, M1, B1 | **APLICADA em 24/10/2026** (backup validado 20261024-011628 antes; conferencia: 1 usuario, 1 empresa, 1 membro, handle_new_user sem super_admin automatico; login testado) | NAO APLICADA (banco vazio, sem baseline) |
 | `20261024110000_biosite_link.sql` | Vinculo company <-> biosite (integracao Biosite Engine) | NAO APLICADA (exige backup validado + "pode"; banco cbgv... e o vivo) | NAO APLICADA |
+| `20261026150000_auditoria_lgpd.sql` | F1b: audit_log imutavel, registrar_auditoria(), lgpd_consent, expurgo de propostas | NAO APLICADA (exige backup validado + "pode") | NAO APLICADA |
 
 Atualizar a tabela com a data e o backup que antecedeu cada aplicacao em producao.
 
