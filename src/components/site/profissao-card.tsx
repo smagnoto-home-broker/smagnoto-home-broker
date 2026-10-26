@@ -1,19 +1,42 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef } from "react";
 
 /**
- * Card de profissão com foto real (Pexels, licença livre) no lugar do vídeo —
- * mesmo formato 3/4 e o mesmo gradiente de legenda do antigo VideoCardProfissao.
- * Cards de listagem ficam leves: nada de WebGL nem de decodificação de vídeo.
+ * Card de profissão com vídeo curto em loop (Pexels, licença livre; 7 s, 360×480,
+ * sem áudio, ~100–500 KB). Só toca enquanto está visível na tela e fica no pôster
+ * com prefers-reduced-motion. Mesmo formato 3/4 e gradiente de legenda de antes.
  */
-export function ProfissaoCard({ nome, foto }: { nome: string; foto: string }) {
+export function ProfissaoCard({ nome, slug }: { nome: string; slug: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e?.isIntersecting) void v.play().catch(() => {});
+        else v.pause();
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+
   return (
     <article className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/15">
-      <Image
-        src={foto}
-        alt=""
-        fill
-        sizes="(min-width: 1024px) 210px, (min-width: 640px) 33vw, 45vw"
-        className="object-cover"
+      <video
+        ref={ref}
+        className="absolute inset-0 h-full w-full object-cover"
+        src={`/videos/prof-${slug}.mp4`}
+        poster={`/videos/prof-${slug}.jpg`}
+        muted
+        loop
+        playsInline
+        preload="none"
+        aria-hidden
       />
       <div
         aria-hidden
