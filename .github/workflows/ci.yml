@@ -14,3 +14,7 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run type-check
       - run: bun run lint
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: bun run test
