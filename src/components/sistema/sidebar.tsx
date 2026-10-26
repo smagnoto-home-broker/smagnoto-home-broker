@@ -15,6 +15,7 @@ import {
   LogOut,
   Menu,
   Target,
+  ShieldCheck,
   X,
 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
@@ -27,7 +28,10 @@ const NAV = [
   },
   {
     section: "Carteira",
-    items: [{ href: "/sistema/imoveis", label: "Imóveis", icon: Home }],
+    items: [
+      { href: "/sistema/imoveis", label: "Imóveis", icon: Home },
+      { href: "/sistema/qualidade", label: "Qualidade do cadastro", icon: ShieldCheck },
+    ],
   },
   {
     section: "Comercial",
