@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bath, BedDouble, Car, ChevronLeft, ChevronRight, Ruler } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 
@@ -61,7 +61,17 @@ const DESTAQUES: Destaque[] = [
 export function DestaqueSlider() {
   const [i, setI] = useState(0);
   const [foto, setFoto] = useState(0);
+  const [pausado, setPausado] = useState(false);
   const d = DESTAQUES[i];
+
+  /* Carrossel: a foto grande passa sozinha pelas fotos do imóvel; pausa com o mouse
+     em cima e fica parada se o visitante prefere menos movimento. */
+  useEffect(() => {
+    if (pausado) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => setFoto((v) => (v + 1) % DESTAQUES[i].fotos.length), 4000);
+    return () => clearInterval(id);
+  }, [pausado, i]);
 
   const ir = (delta: number) => {
     setI((v) => (v + delta + DESTAQUES.length) % DESTAQUES.length);
@@ -98,15 +108,27 @@ export function DestaqueSlider() {
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:items-center">
-        <div className="overflow-hidden rounded-2xl border border-line bg-white">
-          <Image
-            src={d.fotos[foto]}
-            alt={`${d.nome} — ${d.bairro}`}
-            width={1400}
-            height={1050}
-            className="aspect-[4/3] w-full object-cover"
-            priority
-          />
+        <div
+          className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-white"
+          onMouseEnter={() => setPausado(true)}
+          onMouseLeave={() => setPausado(false)}
+        >
+          <div
+            className="flex h-full transition-transform duration-700 ease-out"
+            style={{ transform: `translateX(-${foto * 100}%)` }}
+          >
+            {d.fotos.map((f, fi) => (
+              <Image
+                key={f}
+                src={f}
+                alt={`${d.nome} — ${d.bairro}`}
+                width={1400}
+                height={1050}
+                className="h-full w-full shrink-0 object-cover"
+                priority={fi === 0}
+              />
+            ))}
+          </div>
         </div>
 
         <div>

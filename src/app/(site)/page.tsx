@@ -1,17 +1,17 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
-import { ArrowRight, Check, MessageCircle, Phone } from "lucide-react";
+import { Check, MessageCircle, Phone } from "lucide-react";
 import { BRAND, CORRETORES } from "@/lib/brand";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getVitrineEmpresa } from "@/lib/site-company";
 import { Hero } from "@/components/site/hero";
-import { SectionVideo } from "@/components/site/section-video";
+import { OVERLAY_LEVE, SectionVideo } from "@/components/site/section-video";
 import { LeadForm } from "@/components/site/lead-form";
+import { ExemplosCarrossel } from "@/components/site/exemplos-carrossel";
 import { DestaqueSlider } from "@/components/site/destaque-slider";
 import { contarDisponiveis, valorPortfolio } from "@/components/site/queries";
 import type { TipoCard } from "@/components/site/tipo-carousel";
-import { TIPOS_BUSCA, linkWhatsTelefone, whatsAvaliacao } from "@/components/site/imovel-ui";
+import { linkWhatsTelefone, whatsAvaliacao } from "@/components/site/imovel-ui";
 
 /** Números oficiais do site de referência da agência (usados só como fallback). */
 const IMOVELS_OFICIAIS = 235;
@@ -30,6 +30,17 @@ const CARDS_TIPO: TipoCard[] = [
   { label: "Apartamentos", foto: "/fotos/tipo-apartamento.png", href: "/imoveis?tipo=apartamento", cta: "Ver apartamentos" },
   { label: "Coberturas", foto: "/fotos/tipo-cobertura.png", href: "/imoveis?q=cobertura", cta: "Ver coberturas" },
 ];
+
+/** Fotos de exemplo (Pexels, licença livre) — 3 por tipo, na ordem: grande + 2 menores. */
+const pexels = (id: number) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=600`;
+const EXEMPLOS_TIPO: Record<string, string[]> = {
+  "Sobrados em Condomínio": [7031407, 8134816, 12458357].map(pexels),
+  "Terrenos em Condomínio": [4525178, 9203777, 20074182].map(pexels),
+  "Casas em Condomínio": [8134821, 7587470, 4913326].map(pexels),
+  Apartamentos: [12029115, 11631278, 11643330].map(pexels),
+  Coberturas: [7045918, 17082212, 33634443].map(pexels),
+};
 
 export const metadata: Metadata = {
   title: {
@@ -82,64 +93,55 @@ export default async function HomePage() {
       <Hero numeros={numeros.slice(0, 3)} tipos={CARDS_TIPO} />
 
       {/* 2. Imóveis em destaque — slider de alto padrão (fotos reais do Pexels); altura mínima igual à do Contato */}
-      <section className="flex min-h-[600px] flex-col justify-center bg-shell">
+      <section className="flex min-h-[600px] flex-col justify-center border-t border-gold-500/25 bg-shell">
         <div className="mx-auto max-w-6xl px-5 py-14">
           <DestaqueSlider />
         </div>
       </section>
 
-      {/* 3. Condomínios — seção largura do Contato (max-w-6xl); só os 5 cards de tipo numa
-          faixa que rola pela tela, mostra a leva toda, pausa e volta a movimentar */}
-      <section id="condominios" className="relative isolate flex min-h-[600px] scroll-mt-24 flex-col justify-center overflow-hidden bg-navy-950 text-white">
-        <SectionVideo src="/videos/condominios.mp4" poster="/videos/condominios.jpg" fade />
-        {/* w-full: sem ele o flex-item vira fit-content e o w-max da faixa infla a seção */}
-        <div className="relative mx-auto w-full max-w-6xl px-5 py-14">
-          <h2 className="text-2xl font-bold md:text-3xl">
-            Escolha primeiro o condomínio.
-            <br />
-            Depois a casa.
-          </h2>
-          <p className="mt-3 max-w-2xl text-sm text-navy-200">
-            Atendemos os condomínios fechados de {BRAND.area[0]} e região. Comece pelo condomínio que
-            você já conhece — o resto a gente mostra.
-          </p>
-          <div className="mt-8 overflow-hidden">
-            <div className="tipos-marquee flex w-max md:w-[200%]">
-              {[0, 1].map((copia) => (
-                <div
-                  key={copia}
-                  aria-hidden={copia === 1 ? true : undefined}
-                  className="flex shrink-0 gap-4 pr-4 md:w-1/2"
-                >
-                  {CARDS_TIPO.map((t) => (
-                    <Link
-                      key={t.label}
-                      href={t.href}
-                      tabIndex={copia === 1 ? -1 : undefined}
-                      className="group w-[150px] shrink-0 overflow-hidden rounded-2xl border border-white/12 bg-white/[0.07] backdrop-blur-sm transition-colors hover:bg-white/[0.13] sm:w-[180px] md:w-auto md:min-w-0 md:flex-1 md:basis-0"
-                    >
-                      <span className="relative block aspect-[16/10] overflow-hidden">
-                        <Image
-                          src={t.foto}
-                          alt=""
-                          fill
-                          sizes="(min-width: 768px) 210px, (min-width: 640px) 180px, 150px"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </span>
-                      <span className="block px-3 py-2.5 text-xs font-bold sm:text-sm">{t.label}</span>
-                    </Link>
-                  ))}
-                </div>
-              ))}
-            </div>
+      {/* 3. Condomínios — seção largura do Contato (max-w-6xl); 5 cards de tipo fixos,
+          cada um passa 3 fotos de exemplo, uma após a outra */}
+      <section id="condominios" className="relative border-t border-gold-500/25 isolate flex min-h-[760px] scroll-mt-24 flex-col justify-center overflow-hidden bg-navy-950 text-white">
+        <SectionVideo src="/videos/condominios.mp4" poster="/videos/condominios.jpg" />
+        {/* Título na largura padrão (max-w-6xl); a fileira de cards abaixo usa a largura toda da tela */}
+        <div className="relative mx-auto w-full max-w-[120rem] px-5 py-20">
+          <div className="mx-auto w-full max-w-6xl">
+            <h2 className="text-2xl font-bold md:text-3xl">
+              Escolha primeiro o condomínio.
+              <br />
+              Depois a casa.
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm text-navy-200">
+              Atendemos os condomínios fechados de {BRAND.area[0]} e região. Comece pelo condomínio que
+              você já conhece — o resto a gente mostra.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(18rem,1fr))]">
+            {CARDS_TIPO.map((t, idx) => (
+              <Link
+                key={t.label}
+                href={t.href}
+                className="group overflow-hidden rounded-2xl border border-white/12 bg-white/[0.07] backdrop-blur-sm transition-colors hover:bg-white/[0.13]"
+              >
+                <ExemplosCarrossel
+                  fotos={EXEMPLOS_TIPO[t.label] ?? []}
+                  alt={`Exemplo: ${t.label}`}
+                  sizes="(min-width: 1536px) 22vw, (min-width: 768px) 33vw, 100vw"
+                  atraso={idx * 700}
+                />
+                <span className="block p-4">
+                  <span className="block text-center text-sm font-bold">{t.label}</span>
+                  <span className="btn btn-gold btn-sm mt-3 w-full">{t.cta}</span>
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
       {/* 4. Avaliação */}
-      <section id="avaliar" className="relative isolate flex min-h-[600px] scroll-mt-24 flex-col justify-center overflow-hidden bg-navy-950 text-white">
-        <SectionVideo src="/videos/avaliacao.mp4" poster="/videos/avaliacao.jpg" fade />
+      <section id="avaliar" className="relative border-t border-gold-500/25 isolate flex min-h-[600px] scroll-mt-24 flex-col justify-center overflow-hidden bg-navy-950 text-white">
+        <SectionVideo src="/videos/avaliacao.mp4" poster="/videos/avaliacao.jpg" overlay={OVERLAY_LEVE} />
         <div className="relative mx-auto grid max-w-6xl gap-8 px-5 py-14 lg:grid-cols-2 lg:items-center">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold-500">
@@ -175,48 +177,26 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. Tipos — seção clara sem fio de divisão (pedido: sem linhas entre seções) */}
-      <section className="flex min-h-[600px] flex-col justify-center">
-        <div className="mx-auto max-w-6xl px-5 py-14">
-          <h2 className="text-2xl font-bold text-navy-950 md:text-3xl">O que você está procurando?</h2>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {TIPOS_BUSCA.map((t) => (
-              <Link
-                key={t.label}
-                href={t.href}
-                className="group flex items-center justify-between gap-4 rounded-2xl bg-navy-950 p-6 text-white transition-colors hover:bg-navy-800"
-              >
-                <span>
-                  <span className="block text-base font-bold">{t.label}</span>
-                  <span className="mt-1 block text-xs text-navy-200">{t.nota}</span>
-                </span>
-                <ArrowRight size={18} className="shrink-0 text-gold-500" aria-hidden />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Contato */}
-      <section className="relative isolate flex min-h-[600px] flex-col justify-center overflow-hidden bg-navy-950 text-white">
-        <SectionVideo src="/videos/contato.mp4" poster="/videos/contato.jpg" fade />
+      {/* 5. Contato */}
+      <section className="relative isolate flex min-h-[600px] flex-col justify-center overflow-hidden border-t border-gold-500/25 bg-navy-950 text-white">
+        <SectionVideo src="/videos/contato.mp4" poster="/videos/contato.jpg" />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
-          <div className="grid gap-10 lg:grid-cols-[1fr_440px]">
+          <div className="grid gap-10 lg:grid-cols-[1fr_440px] lg:items-center">
             <div>
               <h2 className="text-2xl font-bold md:text-3xl">Deixe seu contato</h2>
-              <p className="mt-3 max-w-lg text-sm text-navy-200">
+              <p className="mt-3 max-w-xl text-[16.7px] leading-relaxed text-navy-200">
                 Conta o que você procura — compra, aluguel ou venda. Respondemos em horário comercial,
                 com o número de WhatsApp que você deixar.
               </p>
-              <ul className="mt-6 space-y-2 text-sm">
+              <ul className="mt-6 space-y-2.5 text-[16.7px]">
                 <li className="flex items-center gap-2">
-                  <Phone size={15} className="text-gold-500" aria-hidden />
+                  <Phone size={18} className="text-gold-500" aria-hidden />
                   <a href={BRAND.phoneHref} className="hover:text-gold-500">
                     {BRAND.phone}
                   </a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <MessageCircle size={15} className="text-gold-500" aria-hidden />
+                  <MessageCircle size={18} className="text-gold-500" aria-hidden />
                   <a
                     href={linkWhatsTelefone(BRAND.whatsapp)}
                     target="_blank"
@@ -227,22 +207,25 @@ export default async function HomePage() {
                   </a>
                 </li>
               </ul>
-              <p className="mt-4 text-xs text-navy-200">
+              <p className="mt-4 text-[14.7px] leading-relaxed text-navy-200">
                 {BRAND.address} · {BRAND.city}
                 <br />
                 {BRAND.hours}
               </p>
             </div>
-            <div className="rounded-2xl bg-white p-5 text-navy-950 md:p-6">
-              <LeadForm />
+            {/* Mesmo card de 440px (largura fixa, senão a margem negativa só o esticaria), deslocado: em xl encosta a 20px da borda direita da tela */}
+            <div className="lg:w-[440px] lg:justify-self-end lg:-mr-12 xl:-mr-[calc((100vw-72rem)/2)]">
+              <div className="rounded-2xl bg-white p-5 text-navy-950 md:p-6">
+                <LeadForm />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* 7. Corretores — depois do contato; herói com o vídeo "corretor2" da pasta de docs */}
-      <section className="relative isolate flex min-h-[600px] flex-col justify-center overflow-hidden bg-navy-950 text-white">
-        <SectionVideo src="/videos/hero-corretor2.mp4" poster="/videos/hero-corretor2.jpg" fade />
+      <section className="relative isolate flex min-h-[600px] flex-col justify-center overflow-hidden border-t border-gold-500/25 bg-navy-950 text-white">
+        <SectionVideo src="/videos/hero-corretor2.mp4" poster="/videos/hero-corretor2.jpg" overlay={OVERLAY_LEVE} />
         <div className="relative mx-auto max-w-6xl px-5 py-14">
           <h2 className="text-2xl font-bold md:text-3xl">Corretores, não um call center.</h2>
           <p className="mt-3 max-w-2xl text-sm text-navy-200">
