@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   KeyRound,
   Wallet,
+  BarChart3,
   X,
 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
@@ -26,7 +27,10 @@ import { getSupabaseBrowser } from "@/lib/supabase/client";
 const NAV = [
   {
     section: "Visão geral",
-    items: [{ href: "/sistema", label: "Painel", icon: LayoutDashboard, exact: true }],
+    items: [
+      { href: "/sistema", label: "Painel", icon: LayoutDashboard, exact: true },
+      { href: "/sistema/gestao", label: "Gestão", icon: BarChart3 },
+    ],
   },
   {
     section: "Carteira",
