@@ -4,15 +4,16 @@ import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Save } from "lucide-react";
+import { InputMoeda } from "@/components/ui/input-moeda";
 import type { AcaoForm, EstadoForm } from "@/actions/imoveis-meta";
 
 type Imovel = { id: string; label: string };
 
-function Campo({ id, rotulo, ...props }: { id: string; rotulo: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+function Campo({ id, rotulo, moeda, ...props }: { id: string; rotulo: string; moeda?: boolean } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
       <label className="label" htmlFor={id}>{rotulo}</label>
-      <input id={id} name={id} className="input" {...props} />
+      {moeda ? (<InputMoeda id={id} name={id} className="input" required={props.required} placeholder={props.placeholder} />) : (<input id={id} name={id} className="input" {...props} />)}
     </div>
   );
 }
@@ -52,10 +53,10 @@ export function ContratoForm({ acao, imoveis }: { acao: AcaoForm; imoveis: Imove
       <section className="card p-5 space-y-4">
         <h2 className="font-bold text-navy-950">Valores (R$)</h2>
         <div className="grid sm:grid-cols-2 gap-4">
-          <Campo id="valor_aluguel" rotulo="Aluguel" inputMode="decimal" placeholder="3.450,00" required />
-          <Campo id="valor_condominio" rotulo="Condomínio" inputMode="decimal" placeholder="0,00" />
-          <Campo id="valor_iptu" rotulo="IPTU (mensal)" inputMode="decimal" placeholder="0,00" />
-          <Campo id="valor_seguro" rotulo="Seguro (mensal)" inputMode="decimal" placeholder="0,00" />
+          <Campo moeda id="valor_aluguel" rotulo="Aluguel" inputMode="decimal" placeholder="3.450,00" required />
+          <Campo moeda id="valor_condominio" rotulo="Condomínio" inputMode="decimal" placeholder="0,00" />
+          <Campo moeda id="valor_iptu" rotulo="IPTU (mensal)" inputMode="decimal" placeholder="0,00" />
+          <Campo moeda id="valor_seguro" rotulo="Seguro (mensal)" inputMode="decimal" placeholder="0,00" />
           <Campo id="taxa_adm_pct" rotulo="Taxa de administração (%)" inputMode="decimal" defaultValue="10" required />
           <Campo id="dia_vencimento" rotulo="Dia do vencimento (1-28)" type="number" min={1} max={28} defaultValue={5} required />
         </div>
