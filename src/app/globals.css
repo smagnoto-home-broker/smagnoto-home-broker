@@ -20,7 +20,7 @@
   --color-shell: #fafbfc; /* fundo do sistema */
   --color-ink: #10202e; /* texto principal */
   --color-mute: #5b6b7a; /* texto secundário */
-  --color-line: #e4e8ec; /* bordas */
+  --color-line: rgb(194 151 54 / 0.6); /* bordas: dourado da marca (gold-500 a 60%), igual ao botao do hero */
 
   --font-sans: var(--font-dm), "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
