@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Save } from "lucide-react";
+import { InputMoeda } from "@/components/ui/input-moeda";
 import type { AcaoForm, EstadoForm } from "@/actions/imoveis-meta";
 
 export function LancamentoForm({ acao, contas }: { acao: AcaoForm; contas: { id: string; label: string }[] }) {
@@ -30,7 +31,7 @@ export function LancamentoForm({ acao, contas }: { acao: AcaoForm; contas: { id:
           </select>
         </div>
         <div><label className="label" htmlFor="data">Data</label><input id="data" name="data" type="date" className="input" required /></div>
-        <div><label className="label" htmlFor="valor">Valor (R$)</label><input id="valor" name="valor" inputMode="decimal" placeholder="0,00" className="input" required /></div>
+        <div><label className="label" htmlFor="valor">Valor (R$)</label><InputMoeda id="valor" name="valor" className="input" required /></div>
         <div className="sm:col-span-4"><label className="label" htmlFor="descricao">Descrição</label><input id="descricao" name="descricao" className="input" required maxLength={200} /></div>
       </div>
       <p className="text-xs text-mute">O caixa (imobiliária ou terceiros) e o sentido vêm da natureza da conta.</p>
