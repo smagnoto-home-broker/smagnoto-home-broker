@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { redirect } from "next/navigation";
 import { requireCompany } from "@/lib/supabase/server";
 import { pode } from "@/lib/permissoes";
@@ -26,11 +27,18 @@ export default async function ProprietariosPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-navy-950">Proprietários</h1>
-        <p className="text-sm text-mute">
-          Montado a partir dos imóveis ativos. {completo ? "" : "Telefone e e-mail aparecem mascarados para o seu perfil (LGPD)."}
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-navy-950">Proprietários</h1>
+          <p className="text-sm text-mute">
+            Montado a partir dos imóveis ativos. {completo ? "" : "Telefone e e-mail aparecem mascarados para o seu perfil (LGPD)."}
+          </p>
+        </div>
+        {pode(papel, "imoveis", "criar") && (
+          <Link href="/sistema/imoveis/novo" className="btn btn-gold btn-sm">
+            <Plus size={15} aria-hidden /> Cadastrar proprietário
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Save } from "lucide-react";
+import { fimDoContrato } from "@/lib/datas";
 import { InputMoeda } from "@/components/ui/input-moeda";
 import type { AcaoForm, EstadoForm } from "@/actions/imoveis-meta";
 
@@ -13,7 +14,7 @@ function Campo({ id, rotulo, moeda, ...props }: { id: string; rotulo: string; mo
   return (
     <div>
       <label className="label" htmlFor={id}>{rotulo}</label>
-      {moeda ? (<InputMoeda id={id} name={id} className="input" required={props.required} placeholder={props.placeholder} />) : (<input id={id} name={id} className="input" {...props} />)}
+      {moeda ? (<InputMoeda id={id} name={id} className="field" required={props.required} placeholder={props.placeholder} />) : (<input id={id} name={id} className="field" {...props} />)}
     </div>
   );
 }
@@ -21,6 +22,14 @@ function Campo({ id, rotulo, moeda, ...props }: { id: string; rotulo: string; mo
 export function ContratoForm({ acao, imoveis }: { acao: AcaoForm; imoveis: Imovel[] }) {
   const router = useRouter();
   const [estado, enviar, pendente] = useActionState(acao, {} as EstadoForm);
+  // Prazo padrao de 12 meses: o fim acompanha inicio + prazo; pode ser trocado no calendario.
+  const [inicio, setInicio] = useState("");
+  const [meses, setMeses] = useState("12");
+  const [fim, setFim] = useState("");
+  const recalcular = (i: string, m: string) => {
+    const n = Number(m);
+    setFim(i && Number.isInteger(n) && n >= 1 && n <= 120 ? fimDoContrato(i, n) : "");
+  };
 
   useEffect(() => {
     if (!estado.ok) return;
@@ -38,7 +47,7 @@ export function ContratoForm({ acao, imoveis }: { acao: AcaoForm; imoveis: Imove
         <h2 className="font-bold text-navy-950">Partes</h2>
         <div>
           <label className="label" htmlFor="property_id">Imóvel</label>
-          <select id="property_id" name="property_id" className="input" required defaultValue="">
+          <select id="property_id" name="property_id" className="field" required defaultValue="">
             <option value="" disabled>Selecione…</option>
             {imoveis.map((i) => <option key={i.id} value={i.id}>{i.label}</option>)}
           </select>
@@ -63,12 +72,25 @@ export function ContratoForm({ acao, imoveis }: { acao: AcaoForm; imoveis: Imove
       </section>
       <section className="card p-5 space-y-4">
         <h2 className="font-bold text-navy-950">Vigência e reajuste</h2>
-        <div className="grid sm:grid-cols-3 gap-4">
-          <Campo id="data_inicio" rotulo="Início" type="date" required />
-          <Campo id="data_fim" rotulo="Fim" type="date" required />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label className="label" htmlFor="data_inicio">Início</label>
+            <input id="data_inicio" name="data_inicio" type="date" className="field" required value={inicio}
+              onChange={(e) => { setInicio(e.target.value); recalcular(e.target.value, meses); }} />
+          </div>
+          <div>
+            <label className="label" htmlFor="prazo_meses">Prazo (meses)</label>
+            <input id="prazo_meses" type="number" min={1} max={120} className="field" value={meses}
+              onChange={(e) => { setMeses(e.target.value); recalcular(inicio, e.target.value); }} />
+          </div>
+          <div>
+            <label className="label" htmlFor="data_fim">Fim</label>
+            <input id="data_fim" name="data_fim" type="date" className="field" required value={fim}
+              onChange={(e) => setFim(e.target.value)} />
+          </div>
           <div>
             <label className="label" htmlFor="indice_reajuste">Índice</label>
-            <select id="indice_reajuste" name="indice_reajuste" className="input" defaultValue="igpm">
+            <select id="indice_reajuste" name="indice_reajuste" className="field" defaultValue="igpm">
               <option value="igpm">IGP-M</option>
               <option value="ipca">IPCA</option>
               <option value="inpc">INPC</option>
@@ -76,7 +98,7 @@ export function ContratoForm({ acao, imoveis }: { acao: AcaoForm; imoveis: Imove
           </div>
         </div>
       </section>
-      <button type="submit" disabled={pendente} className="btn btn-primary">
+      <button type="submit" disabled={pendente} className="btn btn-gold">
         <Save size={16} aria-hidden /> {pendente ? "Salvando…" : "Salvar contrato"}
       </button>
     </form>

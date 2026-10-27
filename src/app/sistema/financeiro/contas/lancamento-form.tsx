@@ -25,17 +25,17 @@ export function LancamentoForm({ acao, contas }: { acao: AcaoForm; contas: { id:
       <div className="grid sm:grid-cols-4 gap-3">
         <div className="sm:col-span-2">
           <label className="label" htmlFor="conta_id">Conta</label>
-          <select id="conta_id" name="conta_id" className="input" required defaultValue="">
+          <select id="conta_id" name="conta_id" className="field" required defaultValue="">
             <option value="" disabled>Selecione…</option>
             {contas.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
           </select>
         </div>
-        <div><label className="label" htmlFor="data">Data</label><input id="data" name="data" type="date" className="input" required /></div>
-        <div><label className="label" htmlFor="valor">Valor (R$)</label><InputMoeda id="valor" name="valor" className="input" required /></div>
-        <div className="sm:col-span-4"><label className="label" htmlFor="descricao">Descrição</label><input id="descricao" name="descricao" className="input" required maxLength={200} /></div>
+        <div><label className="label" htmlFor="data">Data</label><input id="data" name="data" type="date" className="field" required /></div>
+        <div><label className="label" htmlFor="valor">Valor (R$)</label><InputMoeda id="valor" name="valor" className="field" required /></div>
+        <div className="sm:col-span-4"><label className="label" htmlFor="descricao">Descrição</label><input id="descricao" name="descricao" className="field" required maxLength={200} /></div>
       </div>
       <p className="text-xs text-mute">O caixa (imobiliária ou terceiros) e o sentido vêm da natureza da conta.</p>
-      <button type="submit" disabled={pendente} className="btn btn-primary btn-sm"><Save size={15} aria-hidden /> {pendente ? "Salvando…" : "Registrar"}</button>
+      <button type="submit" disabled={pendente} className="btn btn-gold btn-sm"><Save size={15} aria-hidden /> {pendente ? "Salvando…" : "Registrar"}</button>
     </form>
   );
 }
