@@ -19,6 +19,8 @@ import {
   KeyRound,
   Wallet,
   BarChart3,
+  FileSignature,
+  BookOpen,
   X,
 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
@@ -38,6 +40,7 @@ const NAV = [
       { href: "/sistema/imoveis", label: "Imóveis", icon: Home },
       { href: "/sistema/qualidade", label: "Qualidade do cadastro", icon: ShieldCheck },
       { href: "/sistema/proprietarios", label: "Proprietários", icon: Users },
+      { href: "/sistema/autorizacoes", label: "Autorizações", icon: FileSignature },
     ],
   },
   {
@@ -55,6 +58,7 @@ const NAV = [
     items: [
       { href: "/sistema/locacao", label: "Painel da locação", icon: KeyRound },
       { href: "/sistema/financeiro", label: "Financeiro", icon: Wallet },
+      { href: "/sistema/financeiro/contas", label: "Plano de contas", icon: BookOpen },
     ],
   },
   {

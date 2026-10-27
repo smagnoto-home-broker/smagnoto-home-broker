@@ -898,6 +898,161 @@ export type Database = {
           },
         ]
       }
+      autorizacao_imovel: {
+        Row: {
+          comissao_pct: number | null
+          company_id: string
+          created_at: string
+          data_inicio: string
+          data_vencimento: string
+          finalidade: string
+          id: string
+          observacoes: string | null
+          property_id: string
+          status: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          comissao_pct?: number | null
+          company_id: string
+          created_at?: string
+          data_inicio: string
+          data_vencimento: string
+          finalidade?: string
+          id?: string
+          observacoes?: string | null
+          property_id: string
+          status?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Update: {
+          comissao_pct?: number | null
+          company_id?: string
+          created_at?: string
+          data_inicio?: string
+          data_vencimento?: string
+          finalidade?: string
+          id?: string
+          observacoes?: string | null
+          property_id?: string
+          status?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "autorizacao_imovel_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autorizacao_imovel_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "property"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lancamento: {
+        Row: {
+          caixa: string
+          company_id: string
+          conta_id: string
+          created_at: string
+          data: string
+          descricao: string
+          id: string
+          origem: string
+          origem_id: string | null
+          sentido: string
+          valor_centavos: number
+        }
+        Insert: {
+          caixa: string
+          company_id: string
+          conta_id: string
+          created_at?: string
+          data: string
+          descricao: string
+          id?: string
+          origem?: string
+          origem_id?: string | null
+          sentido: string
+          valor_centavos: number
+        }
+        Update: {
+          caixa?: string
+          company_id?: string
+          conta_id?: string
+          created_at?: string
+          data?: string
+          descricao?: string
+          id?: string
+          origem?: string
+          origem_id?: string | null
+          sentido?: string
+          valor_centavos?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamento_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamento_conta_id_fkey"
+            columns: ["conta_id"]
+            isOneToOne: false
+            referencedRelation: "plano_conta"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plano_conta: {
+        Row: {
+          ativo: boolean
+          codigo: string
+          company_id: string
+          created_at: string
+          id: string
+          natureza: string
+          nome: string
+        }
+        Insert: {
+          ativo?: boolean
+          codigo: string
+          company_id: string
+          created_at?: string
+          id?: string
+          natureza: string
+          nome: string
+        }
+        Update: {
+          ativo?: boolean
+          codigo?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          natureza?: string
+          nome?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plano_conta_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cobranca: {
         Row: {
           company_id: string
