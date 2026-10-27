@@ -6,6 +6,9 @@ import { pode } from "@/lib/permissoes";
 import { mascararEmail, mascararTelefone, seSensivel } from "@/lib/mascara";
 import { agruparProprietarios, type ImovelProprietario } from "@/lib/proprietarios";
 import { formatarBRL } from "@/lib/dinheiro";
+import { registrarAuditoria } from "@/lib/auditoria";
+import { decifrar } from "@/lib/cripto-dados";
+import { formatarDocumento, mascararPorFinal, type TipoPessoa } from "@/lib/documento";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Proprietários" };
@@ -25,6 +28,25 @@ export default async function ProprietariosPage() {
 
   const r = agruparProprietarios((data ?? []) as unknown as ImovelProprietario[]);
 
+  const { data: cadastrados } = await supabase
+    .from("proprietario")
+    .select("id, nome, tipo_pessoa, documento_cifrado, documento_final, telefone, email")
+    .eq("company_id", companyId)
+    .order("nome")
+    .limit(500);
+  const docs = new Map<string, string>();
+  if (completo) {
+    for (const c of cadastrados ?? []) {
+      if (!c.documento_cifrado) continue;
+      try {
+        docs.set(c.id, formatarDocumento(decifrar(c.documento_cifrado)));
+      } catch {
+        /* chave ausente ou dado invalido: cai na versao mascarada */
+      }
+    }
+    if (docs.size > 0) await registrarAuditoria(supabase, { acao: "proprietario.ver_documento", entidade: "proprietario", metadata: { quantidade: docs.size } });
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -34,8 +56,8 @@ export default async function ProprietariosPage() {
             Montado a partir dos imóveis ativos. {completo ? "" : "Telefone e e-mail aparecem mascarados para o seu perfil (LGPD)."}
           </p>
         </div>
-        {pode(papel, "imoveis", "criar") && (
-          <Link href="/sistema/imoveis/novo" className="btn btn-gold btn-sm">
+        {pode(papel, "proprietarios", "criar") && (
+          <Link href="/sistema/proprietarios/novo" className="btn btn-gold btn-sm">
             <Plus size={15} aria-hidden /> Cadastrar proprietário
           </Link>
         )}
@@ -48,6 +70,24 @@ export default async function ProprietariosPage() {
         <div className="card p-4"><p className="text-3xl font-bold text-red-700">{r.semProprietario}</p><p className="text-xs text-mute">imóveis sem proprietário</p></div>
       </div>
 
+      <div className="card divide-y divide-line">
+        <p className="p-4 font-semibold text-navy-950">Cadastrados ({(cadastrados ?? []).length})</p>
+        {(cadastrados ?? []).length === 0 && <p className="p-4 text-sm text-mute">Nenhum proprietário cadastrado ainda. Use o botão “Cadastrar proprietário”.</p>}
+        {(cadastrados ?? []).map((c) => (
+          <div key={c.id} className="p-4 space-y-1">
+            <p className="font-semibold text-navy-950">{c.nome}</p>
+            <p className="text-xs text-mute">
+              {[
+                c.documento_final ? (docs.get(c.id) ?? mascararPorFinal(c.documento_final, c.tipo_pessoa as TipoPessoa)) : "",
+                c.telefone ? seSensivel(completo, c.telefone, mascararTelefone(c.telefone)) : "",
+                c.email ? seSensivel(completo, c.email, mascararEmail(c.email)) : "",
+              ].filter(Boolean).join(" · ") || "Sem contato informado"}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-sm font-semibold text-navy-950">Vindos do cadastro de imóveis</p>
       <div className="card divide-y divide-line">
         {r.proprietarios.length === 0 && <p className="p-4 text-sm text-mute">Nenhum proprietário cadastrado.</p>}
         {r.proprietarios.slice(0, 200).map((p) => (
