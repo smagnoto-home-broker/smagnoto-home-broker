@@ -958,6 +958,59 @@ export type Database = {
           },
         ]
       }
+      proprietario: {
+        Row: {
+          company_id: string
+          created_at: string
+          documento_cifrado: string | null
+          documento_final: string | null
+          documento_hash: string | null
+          email: string | null
+          id: string
+          nome: string
+          observacoes: string | null
+          telefone: string | null
+          tipo_pessoa: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          documento_cifrado?: string | null
+          documento_final?: string | null
+          documento_hash?: string | null
+          email?: string | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          telefone?: string | null
+          tipo_pessoa?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          documento_cifrado?: string | null
+          documento_final?: string | null
+          documento_hash?: string | null
+          email?: string | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          telefone?: string | null
+          tipo_pessoa?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proprietario_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lancamento: {
         Row: {
           caixa: string
