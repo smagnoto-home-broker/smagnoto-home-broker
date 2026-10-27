@@ -9,6 +9,8 @@ Regra: listar esta pasta e usar o proximo numero livre. Toda mudanca de banco em
 | `20261024110000_biosite_link.sql` | Vinculo company <-> biosite (integracao Biosite Engine) | NAO APLICADA (exige backup validado + "pode"; banco cbgv... e o vivo) | NAO APLICADA |
 | `20261026150000_auditoria_lgpd.sql` | F1b: audit_log imutavel, registrar_auditoria(), lgpd_consent, expurgo de propostas | **APLICADA em 26/10/2026** pelo SQL Editor (backup validado 20261026-143510 antes; conferencia: 2 tabelas, 3 funcoes, 4 gatilhos, 1 empresa, 1 membro intactos) | NAO APLICADA (banco vazio, sem baseline) |
 | `20261026200000_locacao.sql` | F4a: contrato_locacao, cobranca, cobranca_item, repasse (RLS owner/admin/financeiro) | **APLICADA em 26/10/2026** pelo SQL Editor (backup validado 20261026-195439; conferencia: 4 tabelas, 16 politicas, RLS nas 4, 0 contratos) | NAO APLICADA |
+| `20261026220000_autorizacao_imovel.sql` | F2d: autorizacao_imovel (venda/locacao, com vencimento; RLS owner/admin/corretor/captador) | NAO APLICADA (exige backup validado + "pode"; banco cbgv... e o vivo). Testada em Postgres 16 limpo | NAO APLICADA |
+| `20261026221000_plano_contas_lancamento.sql` | F5b: plano_conta e lancamento com dois caixas (trigger valida caixa x natureza; RLS owner/admin/financeiro) | NAO APLICADA (exige backup validado + "pode"; banco cbgv... e o vivo). Testada em Postgres 16 limpo: aplica, reaplica, rejeita caixa errado | NAO APLICADA |
 
 Atualizar a tabela com a data e o backup que antecedeu cada aplicacao em producao.
 
