@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { requirePermissao } from "@/lib/supabase/server";
 import { pode } from "@/lib/permissoes";
 import { diasParaVencer, nivelVencimento, resumirAutorizacoes, type NivelVencimento } from "@/lib/autorizacao";
@@ -39,10 +40,16 @@ export default async function AutorizacoesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-navy-950">Autorizações de imóveis</h1>
-        <p className="text-sm text-mute">Prazo da autorização de venda/locação de cada imóvel. Renove antes de vencer.</p>
-        {podeCriar && <Link href="/sistema/autorizacoes/nova" className="btn btn-primary btn-sm mt-3 inline-flex">Nova autorização</Link>}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-navy-950">Autorizações de imóveis</h1>
+          <p className="text-sm text-mute">Prazo da autorização de venda/locação de cada imóvel. Renove antes de vencer.</p>
+        </div>
+        {podeCriar && (
+          <Link href="/sistema/autorizacoes/nova" className="btn btn-gold btn-sm">
+            <Plus size={15} aria-hidden /> Nova autorização
+          </Link>
+        )}
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="card p-4"><p className="text-3xl font-bold text-navy-950">{r.ativas}</p><p className="text-xs text-mute">ativas</p></div>

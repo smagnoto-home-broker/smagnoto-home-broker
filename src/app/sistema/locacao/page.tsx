@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { requirePermissao } from "@/lib/supabase/server";
 import { pode } from "@/lib/permissoes";
 import { darBaixaCobranca, gerarCobrancaDoMes } from "@/actions/locacao";
@@ -41,13 +42,17 @@ export default async function LocacaoPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-navy-950">Locação</h1>
-        <p className="text-sm text-mute">
-          Contratos ativos e cobranças. Multa de 2% + juros de 1% ao mês sobre o atraso.
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-navy-950">Locação</h1>
+          <p className="text-sm text-mute">
+            Contratos ativos e cobranças. Multa de 2% + juros de 1% ao mês sobre o atraso.
+          </p>
+        </div>
         {podeCriar && (
-          <Link href="/sistema/locacao/novo" className="btn btn-primary btn-sm mt-3 inline-flex">Novo contrato</Link>
+          <Link href="/sistema/locacao/novo" className="btn btn-gold btn-sm">
+            <Plus size={15} aria-hidden /> Novo contrato
+          </Link>
         )}
       </div>
 
@@ -90,7 +95,7 @@ export default async function LocacaoPage() {
                 {podeEditar && aberta && (
                   <form action={darBaixaCobranca}>
                     <input type="hidden" name="cobranca_id" value={aberta.id} />
-                    <button type="submit" className="btn btn-primary btn-sm">Dar baixa ({formatarBRL(aberta.total_centavos)})</button>
+                    <button type="submit" className="btn btn-gold btn-sm">Dar baixa ({formatarBRL(aberta.total_centavos)})</button>
                   </form>
                 )}
               </div>

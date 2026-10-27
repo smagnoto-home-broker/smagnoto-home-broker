@@ -43,7 +43,7 @@ export default async function ContasPage() {
           <p className="text-sm text-mute">Nenhuma conta cadastrada.</p>
           {podeCriar && (
             <form action={criarPlanoPadrao}>
-              <button type="submit" className="btn btn-primary btn-sm">Criar plano de contas padrão</button>
+              <button type="submit" className="btn btn-gold btn-sm">Criar plano de contas padrão</button>
             </form>
           )}
         </div>
