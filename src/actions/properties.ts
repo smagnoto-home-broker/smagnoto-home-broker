@@ -59,6 +59,7 @@ const schemaImovel = z.object({
   tour_360_url: urlOpcional("Tour 360: cole uma URL válida (http:// ou https://)."),
   model_3d_url: urlOpcional("Modelo 3D: cole uma URL válida (http:// ou https://)."),
   panorama_url: urlOpcional("Panorama: cole a URL de uma imagem equiretangular válida."),
+  proprietario_id: z.union([z.uuid("Proprietário inválido."), z.literal("")]).optional(),
   owner_name: z.string().trim().optional(),
   owner_phone: z.string().trim().optional(),
   owner_email: z.union([z.email("E-mail do proprietário inválido."), z.literal("")]).optional(),
@@ -114,6 +115,7 @@ function paraRegistro(d: DadosImovel, companyId: string) {
     tour_360_url: vazio(d.tour_360_url),
     model_3d_url: vazio(d.model_3d_url),
     panorama_url: vazio(d.panorama_url),
+    proprietario_id: vazio(d.proprietario_id),
     owner_name: vazio(d.owner_name),
     owner_phone: vazio(d.owner_phone),
     owner_email: vazio(d.owner_email),
@@ -131,6 +133,22 @@ function paraRegistro(d: DadosImovel, companyId: string) {
   };
 }
 
+/** Garante que o proprietário escolhido é da mesma empresa (a FK sozinha não checa isso). */
+async function proprietarioDaEmpresa(
+  supabase: Awaited<ReturnType<typeof requireCompany>>["supabase"],
+  companyId: string,
+  proprietarioId: string | undefined,
+): Promise<boolean> {
+  if (!proprietarioId) return true;
+  const { data } = await supabase
+    .from("proprietario")
+    .select("id")
+    .eq("id", proprietarioId)
+    .eq("company_id", companyId)
+    .maybeSingle();
+  return Boolean(data);
+}
+
 export async function criarImovel(_prevState: EstadoForm, formData: FormData): Promise<EstadoForm> {
   const parsed = schemaImovel.safeParse(extrairDados(formData));
   if (!parsed.success) {
@@ -138,6 +156,9 @@ export async function criarImovel(_prevState: EstadoForm, formData: FormData): P
   }
 
   const { supabase, companyId } = await requireCompany();
+  if (!(await proprietarioDaEmpresa(supabase, companyId, parsed.data.proprietario_id))) {
+    return { erro: "Proprietário não encontrado nesta empresa." };
+  }
   const { error } = await supabase.from("property").insert(paraRegistro(parsed.data, companyId));
   if (error) return { erro: "Não foi possível salvar o imóvel. Tente novamente." };
 
@@ -155,6 +176,9 @@ export async function editarImovel(_prevState: EstadoForm, formData: FormData): 
   }
 
   const { supabase, companyId } = await requireCompany();
+  if (!(await proprietarioDaEmpresa(supabase, companyId, parsed.data.proprietario_id))) {
+    return { erro: "Proprietário não encontrado nesta empresa." };
+  }
   const { data, error } = await supabase
     .from("property")
     .update(paraRegistro(parsed.data, companyId))

@@ -391,6 +391,7 @@ export type Database = {
           neighborhood: string | null
           owner_email: string | null
           owner_name: string | null
+          proprietario_id: string | null
           owner_phone: string | null
           panorama_url: string | null
           parking: number | null
@@ -429,6 +430,7 @@ export type Database = {
           neighborhood?: string | null
           owner_email?: string | null
           owner_name?: string | null
+          proprietario_id?: string | null
           owner_phone?: string | null
           panorama_url?: string | null
           parking?: number | null
@@ -467,6 +469,7 @@ export type Database = {
           neighborhood?: string | null
           owner_email?: string | null
           owner_name?: string | null
+          proprietario_id?: string | null
           owner_phone?: string | null
           panorama_url?: string | null
           parking?: number | null

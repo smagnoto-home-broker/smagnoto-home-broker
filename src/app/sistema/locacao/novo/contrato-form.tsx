@@ -10,7 +10,7 @@ import { InputMoeda } from "@/components/ui/input-moeda";
 import { mascaraDocumento, type TipoPessoa } from "@/lib/documento";
 import type { AcaoForm, EstadoForm } from "@/actions/imoveis-meta";
 
-type Imovel = { id: string; label: string };
+type Imovel = { id: string; label: string; proprietarioId: string | null };
 
 function Campo({ id, rotulo, moeda, ...props }: { id: string; rotulo: string; moeda?: boolean } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
@@ -70,7 +70,22 @@ export function ContratoForm({
         <h2 className="font-bold text-navy-950">Partes</h2>
         <div>
           <label className="label" htmlFor="property_id">Imóvel</label>
-          <select id="property_id" name="property_id" className="field" required defaultValue="">
+          <select
+            id="property_id"
+            name="property_id"
+            className="field"
+            required
+            defaultValue=""
+            onChange={(e) => {
+              // O proprietário do imóvel vem preenchido; pode ser trocado abaixo.
+              const pid = imoveis.find((i) => i.id === e.target.value)?.proprietarioId;
+              const p = pid ? proprietarios.find((x) => x.id === pid) : undefined;
+              if (p) {
+                setPropId(p.id);
+                setLocador(p.nome);
+              }
+            }}
+          >
             <option value="" disabled>Selecione…</option>
             {imoveis.map((i) => <option key={i.id} value={i.id}>{i.label}</option>)}
           </select>

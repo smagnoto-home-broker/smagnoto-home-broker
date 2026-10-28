@@ -12,14 +12,14 @@ export default async function NovoContratoPage() {
   const { supabase, companyId } = await requirePermissao("locacao", "criar");
   const { data } = await supabase
     .from("property")
-    .select("id, title, code")
+    .select("id, title, code, proprietario_id")
     .eq("company_id", companyId)
     .neq("status", "inativo")
     .order("title")
     .limit(500);
   const { data: props } = await supabase.from("proprietario").select("id, nome").eq("company_id", companyId).order("nome").limit(500);
   const proprietarios = (props ?? []).map((p) => ({ id: p.id, nome: p.nome }));
-  const imoveis = (data ?? []).map((p) => ({ id: p.id, label: p.code ? `${p.title} (${p.code})` : p.title }));
+  const imoveis = (data ?? []).map((p) => ({ id: p.id, label: p.code ? `${p.title} (${p.code})` : p.title, proprietarioId: p.proprietario_id }));
 
   return (
     <div className="space-y-5">

@@ -12,7 +12,8 @@ Regra: listar esta pasta e usar o proximo numero livre. Toda mudanca de banco em
 | `20261026220000_autorizacao_imovel.sql` | F2d: autorizacao_imovel (venda/locacao, com vencimento; RLS owner/admin/corretor/captador) | **APLICADA em 26/10/2026** pelo SQL Editor (backup validado 20261026-221213; conferencia: 3 tabelas, 12 politicas, RLS nas 3 (junto com a F5b)) | NAO APLICADA |
 | `20261026221000_plano_contas_lancamento.sql` | F5b: plano_conta e lancamento com dois caixas (trigger valida caixa x natureza; RLS owner/admin/financeiro) | **APLICADA em 26/10/2026** pelo SQL Editor (backup validado 20261026-221213; conferencia: gatilho de caixa conferido) | NAO APLICADA |
 | `20261027120000_proprietario.sql` | F2e: proprietario com CPF/CNPJ cifrado no app (1 tabela nova; RLS por empresa) | **APLICADA em 27/10/2026** pelo SQL Editor (backup validado 20261027-220515; conferencia: 1 tabela, 4 policies, RLS ativo) | NAO APLICADA |
-| `20261027230000_contrato_proprietario_locatario_doc.sql` | F4d: contrato_locacao ganha proprietario_id e CPF/CNPJ do locatario cifrado (5 colunas nullable) | NAO APLICADA (exige backup e "pode") | NAO APLICADA |
+| `20261027230000_contrato_proprietario_locatario_doc.sql` | F4d: contrato_locacao ganha proprietario_id e CPF/CNPJ do locatario cifrado (5 colunas nullable) | **APLICADA em 28/10/2026** pelo SQL Editor (backup validado 20261027-234709; conferencia: 5 colunas, 1 indice) | NAO APLICADA |
+| `20261028120000_imovel_proprietario.sql` | F2f: property.proprietario_id (vinculo opcional imovel -> proprietario) | NAO APLICADA (exige backup e "pode") | NAO APLICADA |
 
 Atualizar a tabela com a data e o backup que antecedeu cada aplicacao em producao.
 

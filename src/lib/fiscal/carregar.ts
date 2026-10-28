@@ -45,13 +45,16 @@ export async function carregarDimob(supabase: Cli, companyId: string, ano: numbe
   }
 
   const comPagamento = new Set(pagamentos.map((p) => p.contrato_id));
-  const contratos = contratosAll.filter((c) => comPagamento.has(c.id));
-  const imovelIds = [...new Set(contratos.map((c) => c.property_id))];
+  const contratosPagos = contratosAll.filter((c) => comPagamento.has(c.id));
+  const imovelIds = [...new Set(contratosPagos.map((c) => c.property_id))];
+  const { data: imoveis } = imovelIds.length
+    ? await supabase.from("property").select("id, title, city, zip_code, proprietario_id").eq("company_id", companyId).in("id", imovelIds)
+    : { data: [] as { id: string; title: string; city: string | null; zip_code: string | null; proprietario_id: string | null }[] };
+  // Proprietário do contrato; se não houver, o do imóvel (vínculo feito no cadastro do imóvel).
+  const donoDoImovel = new Map((imoveis ?? []).map((i) => [i.id, i.proprietario_id]));
+  const contratos = contratosPagos.map((c) => ({ ...c, proprietario_id: c.proprietario_id ?? donoDoImovel.get(c.property_id) ?? null }));
   const propIds = [...new Set(contratos.map((c) => c.proprietario_id).filter((x): x is string => !!x))];
-  const [{ data: imoveis }, { data: proprietarios }] = await Promise.all([
-    imovelIds.length
-      ? supabase.from("property").select("id, title, city, zip_code").eq("company_id", companyId).in("id", imovelIds)
-      : Promise.resolve({ data: [] as { id: string; title: string; city: string | null; zip_code: string | null }[] }),
+  const [{ data: proprietarios }] = await Promise.all([
     propIds.length
       ? supabase.from("proprietario").select("id, nome, tipo_pessoa, documento_final, documento_cifrado").eq("company_id", companyId).in("id", propIds)
       : Promise.resolve({ data: [] as { id: string; nome: string; tipo_pessoa: string; documento_final: string | null; documento_cifrado: string | null }[] }),
