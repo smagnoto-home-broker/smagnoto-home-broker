@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { formatarDocumento, mascararPorFinal, normalizarDocumento, validarCnpj, validarCpf } from "./documento";
+import { formatarDocumento, mascaraDocumento, mascararPorFinal, normalizarDocumento, validarCnpj, validarCpf } from "./documento";
 
 test("CPF valido e invalido", () => {
   assert.equal(validarCpf("529.982.247-25"), true);
@@ -29,4 +29,13 @@ test("formatar e mascarar", () => {
   assert.equal(mascararPorFinal("4725", "pf"), "***.***.*47-25");
   assert.equal(mascararPorFinal("0181", "pj"), "**.***.***/**01-81");
   assert.equal(mascararPorFinal(null, "pf"), "");
+});
+
+test("mascaraDocumento: progressiva e limitada", () => {
+  assert.equal(mascaraDocumento("5299", "pf"), "529.9");
+  assert.equal(mascaraDocumento("52998224725999", "pf"), "529.982.247-25");
+  assert.equal(mascaraDocumento("abc529", "pf"), "529");
+  assert.equal(mascaraDocumento("11222333000181", "pj"), "11.222.333/0001-81");
+  assert.equal(mascaraDocumento("12abc34501de35", "pj"), "12.ABC.345/01DE-35");
+  assert.equal(mascaraDocumento("", "pj"), "");
 });
