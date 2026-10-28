@@ -20,7 +20,7 @@ export const metadata = { title: "Editar imóvel" };
 
 // Colunas explícitas: `owner_*` (PII) só é lido aqui, nunca em listagens.
 const COLS =
-  "id, title, slug, code, type, transaction, status, price, bedrooms, suites, bathrooms, parking, area_total, area_useful, condo_fee, iptu, zip_code, neighborhood, city, state, description, features, photos, listed_at, tour_360_url, model_3d_url, panorama_url, owner_name, owner_phone, owner_email, address, created_at";
+  "id, title, slug, code, type, transaction, status, price, bedrooms, suites, bathrooms, parking, area_total, area_useful, condo_fee, iptu, zip_code, neighborhood, city, state, description, features, photos, listed_at, tour_360_url, model_3d_url, panorama_url, owner_name, owner_phone, owner_email, proprietario_id, address, created_at";
 
 type ImovelBanco = {
   id: string;
@@ -53,6 +53,7 @@ type ImovelBanco = {
   owner_name: string | null;
   owner_phone: string | null;
   owner_email: string | null;
+  proprietario_id: string | null;
   address: Json | null;
   created_at: string;
 };
@@ -107,7 +108,15 @@ export default async function EditarImovelPage({ params }: { params: Promise<{ i
     owner_name: imovel.owner_name ?? "",
     owner_phone: imovel.owner_phone ?? "",
     owner_email: imovel.owner_email ?? "",
+    proprietario_id: imovel.proprietario_id ?? "",
   };
+  const { data: props } = await supabase
+    .from("proprietario")
+    .select("id, nome")
+    .eq("company_id", companyId)
+    .order("nome")
+    .limit(500);
+  const proprietarios = (props ?? []).map((p) => ({ id: p.id, nome: p.nome }));
 
   return (
     <div className="space-y-5">
@@ -121,7 +130,7 @@ export default async function EditarImovelPage({ params }: { params: Promise<{ i
           {imovel.code ? ` · Cód. ${imovel.code}` : ""} · na carteira desde {dataBR(imovel.created_at)}
         </p>
       </div>
-      <ImovelForm acao={editarImovel} inicial={valores} />
+      <ImovelForm acao={editarImovel} inicial={valores} proprietarios={proprietarios} />
     </div>
   );
 }

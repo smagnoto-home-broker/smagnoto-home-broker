@@ -53,11 +53,20 @@ const VAZIO: ImovelValores = {
   owner_name: "",
   owner_phone: "",
   owner_email: "",
+  proprietario_id: "",
 };
 
 const URL_LIVRE = /^https?:\/\/\S+/i;
 
-export function ImovelForm({ acao, inicial }: { acao: AcaoForm; inicial?: ImovelValores }) {
+export function ImovelForm({
+  acao,
+  inicial,
+  proprietarios = [],
+}: {
+  acao: AcaoForm;
+  inicial?: ImovelValores;
+  proprietarios?: { id: string; nome: string }[];
+}) {
   const valores = inicial ?? VAZIO;
   const editando = Boolean(inicial?.id);
   const router = useRouter();
@@ -645,6 +654,27 @@ export function ImovelForm({ acao, inicial }: { acao: AcaoForm; inicial?: Imovel
         <div>
           <h2 className="font-bold text-navy-950">Proprietário</h2>
           <p className="text-xs text-mute mt-0.5">Dados de contato de quem captou o imóvel.</p>
+        </div>
+        <div>
+          <label className="label" htmlFor="proprietario_id">
+            Proprietário cadastrado
+          </label>
+          <select
+            id="proprietario_id"
+            name="proprietario_id"
+            className="field"
+            defaultValue={valores.proprietario_id}
+          >
+            <option value="">Nenhum (usar só os dados abaixo)</option>
+            {proprietarios.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nome}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-mute mt-1">
+            Usado nos contratos, no DIMOB e no informe de rendimentos. Cadastre em Proprietários.
+          </p>
         </div>
         <div className="grid sm:grid-cols-3 gap-4">
           <div>

@@ -80,6 +80,7 @@ export type ImovelValores = {
   owner_name: string;
   owner_phone: string;
   owner_email: string;
+  proprietario_id: string;
 };
 
 /** Extrai rua/número do JSON `address` com narrowing (nunca non-null assertion). */

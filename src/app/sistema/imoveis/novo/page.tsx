@@ -1,11 +1,22 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { requireCompany } from "@/lib/supabase/server";
 import { criarImovel } from "@/actions/properties";
 import { ImovelForm } from "../imovel-form";
 
 export const metadata = { title: "Novo imóvel" };
 
-export default function NovoImovelPage() {
+export const dynamic = "force-dynamic";
+
+export default async function NovoImovelPage() {
+  const { supabase, companyId } = await requireCompany();
+  const { data: props } = await supabase
+    .from("proprietario")
+    .select("id, nome")
+    .eq("company_id", companyId)
+    .order("nome")
+    .limit(500);
+  const proprietarios = (props ?? []).map((p) => ({ id: p.id, nome: p.nome }));
   return (
     <div className="space-y-5">
       <div>
@@ -17,7 +28,7 @@ export default function NovoImovelPage() {
           Preencha os dados da ficha. Campos com * são obrigatórios; fotos e mídia imersiva são opcionais.
         </p>
       </div>
-      <ImovelForm acao={criarImovel} />
+      <ImovelForm acao={criarImovel} proprietarios={proprietarios} />
     </div>
   );
 }
