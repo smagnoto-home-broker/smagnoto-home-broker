@@ -21,6 +21,7 @@ import {
   BarChart3,
   FileSignature,
   BookOpen,
+  Compass,
   X,
 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
@@ -38,6 +39,7 @@ const NAV = [
     section: "Carteira",
     items: [
       { href: "/sistema/imoveis", label: "Imóveis", icon: Home },
+      { href: "/sistema/imoveis/imersivo", label: "Mídia 360", icon: Compass },
       { href: "/sistema/qualidade", label: "Qualidade do cadastro", icon: ShieldCheck },
       { href: "/sistema/proprietarios", label: "Proprietários", icon: Users },
       { href: "/sistema/autorizacoes", label: "Autorizações", icon: FileSignature },
@@ -106,7 +108,8 @@ export function Sidebar({ role, nome }: { role: string; nome: string }) {
               {group.items.map((item) => {
                 const active = "exact" in item
                   ? pathname === item.href
-                  : pathname.startsWith(item.href);
+                  : pathname.startsWith(item.href) &&
+                    !(item.href === "/sistema/imoveis" && pathname.startsWith("/sistema/imoveis/imersivo"));
                 const Icon = item.icon;
                 return (
                   <li key={item.href}>
