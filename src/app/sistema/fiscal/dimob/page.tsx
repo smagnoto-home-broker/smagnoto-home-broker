@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Download } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 import { requirePermissao } from "@/lib/supabase/server";
 import { pode } from "@/lib/permissoes";
 import { formatarBRL } from "@/lib/dinheiro";
@@ -55,9 +55,21 @@ export default async function DimobPage({ searchParams }: { searchParams: Promis
               <p className="font-semibold text-navy-950">{i.nome}</p>
               <p className="text-xs text-mute">{i.contratos} {i.contratos === 1 ? "contrato" : "contratos"} · comissão {formatarBRL(i.total.comissao)} · IRRF {formatarBRL(i.total.irrf)}</p>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-mute">aluguel {formatarBRL(i.total.aluguel)}</p>
-              <p className="font-semibold text-navy-950">líquido {formatarBRL(i.liquido)}</p>
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-sm text-mute">aluguel {formatarBRL(i.total.aluguel)}</p>
+                <p className="font-semibold text-navy-950">líquido {formatarBRL(i.liquido)}</p>
+              </div>
+              {podeExportar && (
+                <a
+                  href={`/sistema/fiscal/informe?ano=${ano}&chave=${encodeURIComponent(i.chave)}`}
+                  target="_blank"
+                  rel="noopener"
+                  className="btn btn-outline btn-sm"
+                >
+                  <FileText size={15} aria-hidden /> Informe (PDF)
+                </a>
+              )}
             </div>
           </div>
         ))}

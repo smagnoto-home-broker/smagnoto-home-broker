@@ -100,6 +100,11 @@ export function montarDimob(
   return linhas.sort((a, b) => a.locador.localeCompare(b.locador, "pt-BR") || a.locatario.localeCompare(b.locatario, "pt-BR"));
 }
 
+/** Chave que agrupa contratos do mesmo proprietário (cadastro ou, sem cadastro, nome do locador). */
+export function chaveProprietario(l: Pick<LinhaDimob, "proprietarioId" | "locador">): string {
+  return l.proprietarioId ? `id:${l.proprietarioId}` : `nome:${l.locador.trim().toLowerCase()}`;
+}
+
 export type InformeProprietario = {
   chave: string;
   proprietarioId: string | null;
@@ -113,7 +118,7 @@ export type InformeProprietario = {
 export function montarInforme(linhas: LinhaDimob[]): InformeProprietario[] {
   const mapa = new Map<string, InformeProprietario>();
   for (const l of linhas) {
-    const chave = l.proprietarioId ? `id:${l.proprietarioId}` : `nome:${l.locador.trim().toLowerCase()}`;
+    const chave = chaveProprietario(l);
     const atual = mapa.get(chave) ?? { chave, proprietarioId: l.proprietarioId, nome: l.locador, contratos: 0, total: zero(), liquido: 0 };
     atual.contratos += 1;
     atual.total = somarValores(atual.total, l.total);
