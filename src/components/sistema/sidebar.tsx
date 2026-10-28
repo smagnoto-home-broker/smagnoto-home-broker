@@ -59,6 +59,7 @@ const NAV = [
       { href: "/sistema/locacao", label: "Painel da locação", icon: KeyRound },
       { href: "/sistema/financeiro", label: "Financeiro", icon: Wallet },
       { href: "/sistema/financeiro/contas", label: "Plano de contas", icon: BookOpen },
+      { href: "/sistema/fiscal/dimob", label: "DIMOB e informe", icon: FileText },
     ],
   },
   {
