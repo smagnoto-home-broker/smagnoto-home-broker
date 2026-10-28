@@ -1,14 +1,24 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Save } from "lucide-react";
+import { InputTelefone } from "@/components/ui/input-telefone";
+import { mascaraDocumento, type TipoPessoa } from "@/lib/documento";
 import type { AcaoForm, EstadoForm } from "@/actions/imoveis-meta";
 
 export function ProprietarioForm({ acao, documentoDisponivel }: { acao: AcaoForm; documentoDisponivel: boolean }) {
   const router = useRouter();
   const [estado, enviar, pendente] = useActionState(acao, {} as EstadoForm);
+  // Campos controlados: se o servidor recusar (ex.: CPF invalido), nada do que foi digitado some.
+  const [nome, setNome] = useState("");
+  const [tipo, setTipo] = useState<TipoPessoa>("pf");
+  const [documento, setDocumento] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [email, setEmail] = useState("");
+  const [obs, setObs] = useState("");
+
   useEffect(() => {
     if (!estado.ok) return;
     toast.success("Proprietário cadastrado.");
@@ -28,31 +38,52 @@ export function ProprietarioForm({ acao, documentoDisponivel }: { acao: AcaoForm
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="sm:col-span-2">
             <label className="label" htmlFor="nome">Nome / razão social</label>
-            <input id="nome" name="nome" className="field" required minLength={2} maxLength={200} />
+            <input id="nome" name="nome" className="field" required minLength={2} maxLength={200} value={nome} onChange={(e) => setNome(e.target.value)} />
           </div>
           <div>
             <label className="label" htmlFor="tipo_pessoa">Tipo</label>
-            <select id="tipo_pessoa" name="tipo_pessoa" className="field" defaultValue="pf">
+            <select
+              id="tipo_pessoa"
+              name="tipo_pessoa"
+              className="field"
+              value={tipo}
+              onChange={(e) => {
+                const t = e.target.value as TipoPessoa;
+                setTipo(t);
+                setDocumento((d) => mascaraDocumento(d, t));
+              }}
+            >
               <option value="pf">Pessoa física (CPF)</option>
               <option value="pj">Pessoa jurídica (CNPJ)</option>
             </select>
           </div>
           <div>
-            <label className="label" htmlFor="documento">CPF / CNPJ</label>
-            <input id="documento" name="documento" className="field" maxLength={30} autoComplete="off" disabled={!documentoDisponivel} />
+            <label className="label" htmlFor="documento">{tipo === "pf" ? "CPF" : "CNPJ"}</label>
+            <input
+              id="documento"
+              name="documento"
+              className="field"
+              inputMode={tipo === "pf" ? "numeric" : "text"}
+              autoComplete="off"
+              maxLength={18}
+              placeholder={tipo === "pf" ? "000.000.000-00" : "00.000.000/0000-00"}
+              disabled={!documentoDisponivel}
+              value={documento}
+              onChange={(e) => setDocumento(mascaraDocumento(e.target.value, tipo))}
+            />
           </div>
           <div>
             <label className="label" htmlFor="telefone">Telefone</label>
-            <input id="telefone" name="telefone" className="field" inputMode="tel" maxLength={40} />
+            <InputTelefone id="telefone" name="telefone" className="field" value={telefone} onValor={setTelefone} />
           </div>
           <div>
             <label className="label" htmlFor="email">E-mail</label>
-            <input id="email" name="email" type="email" className="field" maxLength={200} />
+            <input id="email" name="email" type="email" className="field" maxLength={200} value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
         </div>
         <div>
           <label className="label" htmlFor="observacoes">Observações</label>
-          <textarea id="observacoes" name="observacoes" rows={3} maxLength={1000} className="field" />
+          <textarea id="observacoes" name="observacoes" rows={3} maxLength={1000} className="field" value={obs} onChange={(e) => setObs(e.target.value)} />
         </div>
       </section>
       <button type="submit" disabled={pendente} className="btn btn-gold"><Save size={16} aria-hidden /> {pendente ? "Salvando…" : "Salvar proprietário"}</button>

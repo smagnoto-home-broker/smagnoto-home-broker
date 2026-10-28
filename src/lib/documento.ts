@@ -57,3 +57,20 @@ export function mascararPorFinal(final: string | null | undefined, tipo: TipoPes
   const f = `${final.slice(0, 2)}-${final.slice(2)}`;
   return tipo === "pf" ? `***.***.*${f}` : `**.***.***/**${f}`;
 }
+
+function aplicarPadrao(chars: string, padrao: string): string {
+  let out = "";
+  let i = 0;
+  for (const p of padrao) {
+    if (i >= chars.length) break;
+    if (p === "X") out += chars[i++];
+    else out += p;
+  }
+  return out;
+}
+
+/** Mascara enquanto digita: CPF 000.000.000-00; CNPJ (numerico ou alfanumerico) 00.000.000/0000-00. */
+export function mascaraDocumento(valor: string, tipo: TipoPessoa): string {
+  if (tipo === "pf") return aplicarPadrao(valor.replace(/\D/g, "").slice(0, 11), "XXX.XXX.XXX-XX");
+  return aplicarPadrao(limparDocumento(valor).slice(0, 14), "XX.XXX.XXX/XXXX-XX");
+}
