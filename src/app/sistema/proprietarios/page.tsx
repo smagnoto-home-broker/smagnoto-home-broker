@@ -75,7 +75,14 @@ export default async function ProprietariosPage() {
         {(cadastrados ?? []).length === 0 && <p className="p-4 text-sm text-mute">Nenhum proprietário cadastrado ainda. Use o botão “Cadastrar proprietário”.</p>}
         {(cadastrados ?? []).map((c) => (
           <div key={c.id} className="p-4 space-y-1">
-            <p className="font-semibold text-navy-950">{c.nome}</p>
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-semibold text-navy-950">{c.nome}</p>
+              {pode(papel, "proprietarios", "editar") && (
+                <Link href={`/sistema/proprietarios/${c.id}/editar`} className="btn btn-outline btn-sm">
+                  Editar
+                </Link>
+              )}
+            </div>
             <p className="text-xs text-mute">
               {[
                 c.documento_final ? (docs.get(c.id) ?? mascararPorFinal(c.documento_final, c.tipo_pessoa as TipoPessoa)) : "",

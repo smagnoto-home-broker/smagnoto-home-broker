@@ -56,3 +56,66 @@ export async function criarProprietario(_prev: EstadoForm, formData: FormData): 
   revalidatePath("/sistema/proprietarios");
   return { ok: true };
 }
+
+export async function editarProprietario(_prev: EstadoForm, formData: FormData): Promise<EstadoForm> {
+  const id = z.uuid("Identificador inválido.").safeParse(formData.get("id"));
+  if (!id.success) return { erro: "Identificador do proprietário inválido." };
+  const bruto: Record<string, unknown> = {};
+  formData.forEach((v, k) => {
+    if (typeof v === "string") bruto[k] = v;
+  });
+  const p = schema.safeParse(bruto);
+  if (!p.success) return { erro: p.error.issues[0]?.message ?? "Confira os dados." };
+  const d = p.data;
+
+  const { supabase, companyId } = await requirePermissao("proprietarios", "editar");
+
+  const { data: atual } = await supabase
+    .from("proprietario")
+    .select("id, tipo_pessoa, documento_final")
+    .eq("id", id.data)
+    .eq("company_id", companyId)
+    .maybeSingle();
+  if (!atual) return { erro: "Proprietário não encontrado." };
+
+  const campos: Record<string, string | null> = {
+    nome: d.nome,
+    tipo_pessoa: d.tipo_pessoa,
+    telefone: d.telefone || null,
+    email: d.email || null,
+    observacoes: d.observacoes || null,
+  };
+
+  // Documento em branco = manter o atual (nunca é devolvido ao navegador).
+  let documentoAlterado = false;
+  if (d.documento) {
+    const r = protegerDocumento(d.documento, d.tipo_pessoa);
+    if (!r.ok) return { erro: r.erro };
+    campos.documento_cifrado = r.doc.cifrado;
+    campos.documento_hash = r.doc.hash;
+    campos.documento_final = r.doc.final;
+    documentoAlterado = true;
+  } else if (atual.documento_final && atual.tipo_pessoa !== d.tipo_pessoa) {
+    return { erro: "Ao trocar o tipo de pessoa, informe o CPF/CNPJ novamente." };
+  }
+
+  const { data, error } = await supabase
+    .from("proprietario")
+    .update(campos)
+    .eq("id", id.data)
+    .eq("company_id", companyId)
+    .select("id")
+    .maybeSingle();
+  if (error?.code === "23505") return { erro: "Já existe um proprietário com este CPF/CNPJ." };
+  if (error || !data) return { erro: "Não foi possível salvar. Tente novamente." };
+
+  await registrarAuditoria(supabase, {
+    acao: "proprietario.editar",
+    entidade: "proprietario",
+    entidadeId: id.data,
+    metadata: { documento_alterado: documentoAlterado },
+  });
+  revalidatePath("/sistema/proprietarios");
+  revalidatePath("/sistema/fiscal/dimob");
+  return { ok: true };
+}
