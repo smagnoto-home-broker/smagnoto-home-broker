@@ -1221,6 +1221,11 @@ export type Database = {
           locatario_email: string | null
           locatario_nome: string
           locatario_telefone: string | null
+          locatario_documento_cifrado: string | null
+          locatario_documento_final: string | null
+          locatario_documento_hash: string | null
+          locatario_tipo_pessoa: string
+          proprietario_id: string | null
           property_id: string
           status: string
           taxa_adm_bps: number
@@ -1245,6 +1250,11 @@ export type Database = {
           locatario_email?: string | null
           locatario_nome: string
           locatario_telefone?: string | null
+          locatario_documento_cifrado?: string | null
+          locatario_documento_final?: string | null
+          locatario_documento_hash?: string | null
+          locatario_tipo_pessoa?: string
+          proprietario_id?: string | null
           property_id: string
           status?: string
           taxa_adm_bps?: number
@@ -1269,6 +1279,11 @@ export type Database = {
           locatario_email?: string | null
           locatario_nome?: string
           locatario_telefone?: string | null
+          locatario_documento_cifrado?: string | null
+          locatario_documento_final?: string | null
+          locatario_documento_hash?: string | null
+          locatario_tipo_pessoa?: string
+          proprietario_id?: string | null
           property_id?: string
           status?: string
           taxa_adm_bps?: number
@@ -1279,6 +1294,13 @@ export type Database = {
           valor_seguro?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "contrato_locacao_proprietario_id_fkey"
+            columns: ["proprietario_id"]
+            isOneToOne: false
+            referencedRelation: "proprietario"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "contrato_locacao_company_id_fkey"
             columns: ["company_id"]

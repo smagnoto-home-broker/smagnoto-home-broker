@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requirePermissao } from "@/lib/supabase/server";
 import { paraCentavos } from "@/lib/dinheiro";
 import { registrarAuditoria } from "@/lib/auditoria";
+import { protegerDocumento, type DocumentoProtegido } from "@/lib/documento-protegido";
 import { itensDaCobranca, primeiroDiaDoMes, repasseDoContrato, vencimentoDaCompetencia } from "@/lib/locacao/gerar";
 import type { EstadoForm } from "./imoveis-meta";
 
@@ -28,8 +29,11 @@ const reais = (rotulo: string, obrigatorio = false) =>
 
 const schemaContrato = z.object({
   property_id: z.uuid("Selecione o imóvel."),
+  proprietario_id: z.union([z.uuid("Proprietário inválido."), z.literal("")]).optional(),
   locador_nome: z.string().trim().min(2, "Informe o proprietário (locador)."),
   locatario_nome: z.string().trim().min(2, "Informe o locatário."),
+  locatario_tipo_pessoa: z.enum(["pf", "pj"], "Tipo de pessoa do locatário inválido.").default("pf"),
+  locatario_documento: z.string().trim().max(30, "Documento muito longo.").optional(),
   locatario_telefone: z.string().trim().max(30).optional(),
   locatario_email: z.union([z.email("E-mail inválido."), z.literal("")]).optional(),
   valor_aluguel: reais("Aluguel", true),
@@ -63,13 +67,37 @@ export async function criarContrato(_prev: EstadoForm, formData: FormData): Prom
     .maybeSingle();
   if (!imovel) return { erro: "O imóvel não pertence à sua empresa." };
 
+  let locador = d.locador_nome;
+  if (d.proprietario_id) {
+    const { data: prop } = await supabase
+      .from("proprietario")
+      .select("id, nome")
+      .eq("id", d.proprietario_id)
+      .eq("company_id", companyId)
+      .maybeSingle();
+    if (!prop) return { erro: "O proprietário não pertence à sua empresa." };
+    locador = prop.nome;
+  }
+
+  let doc: DocumentoProtegido | null = null;
+  if (d.locatario_documento) {
+    const r = protegerDocumento(d.locatario_documento, d.locatario_tipo_pessoa);
+    if (!r.ok) return { erro: `Locatário: ${r.erro}` };
+    doc = r.doc;
+  }
+
   const { data, error } = await supabase
     .from("contrato_locacao")
     .insert({
       company_id: companyId,
       property_id: d.property_id,
-      locador_nome: d.locador_nome,
+      proprietario_id: d.proprietario_id || null,
+      locador_nome: locador,
       locatario_nome: d.locatario_nome,
+      locatario_tipo_pessoa: d.locatario_tipo_pessoa,
+      locatario_documento_cifrado: doc?.cifrado ?? null,
+      locatario_documento_hash: doc?.hash ?? null,
+      locatario_documento_final: doc?.final ?? null,
       locatario_telefone: d.locatario_telefone || null,
       locatario_email: d.locatario_email || null,
       valor_aluguel: d.valor_aluguel,
@@ -86,7 +114,7 @@ export async function criarContrato(_prev: EstadoForm, formData: FormData): Prom
     .single();
   if (error || !data) return { erro: "Não foi possível salvar o contrato. Tente novamente." };
 
-  await registrarAuditoria(supabase, { acao: "locacao.contrato.criar", entidade: "contrato_locacao", entidadeId: data.id });
+  await registrarAuditoria(supabase, { acao: "locacao.contrato.criar", entidade: "contrato_locacao", entidadeId: data.id, metadata: { com_documento_locatario: !!doc, com_proprietario: !!d.proprietario_id } });
   revalidatePath("/sistema/locacao");
   return { ok: true };
 }
