@@ -21,6 +21,7 @@ import {
   BarChart3,
   FileSignature,
   BookOpen,
+  Calculator,
   Compass,
   X,
 } from "lucide-react";
@@ -40,6 +41,7 @@ const NAV = [
     items: [
       { href: "/sistema/imoveis", label: "Imóveis", icon: Home },
       { href: "/sistema/imoveis/imersivo", label: "Mídia 360", icon: Compass },
+      { href: "/sistema/imoveis/viabilidade", label: "Viabilidade de terreno", icon: Calculator },
       { href: "/sistema/qualidade", label: "Qualidade do cadastro", icon: ShieldCheck },
       { href: "/sistema/proprietarios", label: "Proprietários", icon: Users },
       { href: "/sistema/autorizacoes", label: "Autorizações", icon: FileSignature },
@@ -109,7 +111,7 @@ export function Sidebar({ role, nome }: { role: string; nome: string }) {
                 const active = "exact" in item
                   ? pathname === item.href
                   : pathname.startsWith(item.href) &&
-                    !(item.href === "/sistema/imoveis" && pathname.startsWith("/sistema/imoveis/imersivo"));
+                    !(item.href === "/sistema/imoveis" && (pathname.startsWith("/sistema/imoveis/imersivo") || pathname.startsWith("/sistema/imoveis/viabilidade")));
                 const Icon = item.icon;
                 return (
                   <li key={item.href}>
