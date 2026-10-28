@@ -4,8 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePermissao } from "@/lib/supabase/server";
 import { registrarAuditoria } from "@/lib/auditoria";
-import { ChaveAusenteError, cifrar, hashDocumento } from "@/lib/cripto-dados";
-import { normalizarDocumento } from "@/lib/documento";
+import { protegerDocumento, type DocumentoProtegido } from "@/lib/documento-protegido";
 import type { EstadoForm } from "./imoveis-meta";
 
 const schema = z.object({
@@ -28,16 +27,11 @@ export async function criarProprietario(_prev: EstadoForm, formData: FormData): 
 
   const { supabase, companyId } = await requirePermissao("proprietarios", "criar");
 
-  let doc: { cifrado: string; hash: string; final: string } | null = null;
+  let doc: DocumentoProtegido | null = null;
   if (d.documento) {
-    const n = normalizarDocumento(d.documento, d.tipo_pessoa);
-    if (!n.ok) return { erro: n.erro };
-    try {
-      doc = { cifrado: cifrar(n.documento), hash: hashDocumento(n.documento), final: n.documento.slice(-4) };
-    } catch (e) {
-      if (e instanceof ChaveAusenteError) return { erro: "Cadastro com CPF/CNPJ indisponível: a chave de criptografia ainda não foi configurada." };
-      return { erro: "Não foi possível proteger o documento. Tente novamente." };
-    }
+    const r = protegerDocumento(d.documento, d.tipo_pessoa);
+    if (!r.ok) return { erro: r.erro };
+    doc = r.doc;
   }
 
   const { data, error } = await supabase
