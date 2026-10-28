@@ -86,6 +86,7 @@ export default async function LocacaoPage() {
                 <p className="text-mute">{formatarBRL(c.valor_aluguel)} · vence dia {c.dia_vencimento} · até {c.data_fim.split("-").reverse().join("/")}</p>
               </div>
               <div className="flex gap-2">
+                {podeEditar && <Link href={`/sistema/locacao/${c.id}/editar`} className="btn btn-outline btn-sm">Editar cadastro</Link>}
                 {podeCriar && (
                   <form action={gerarCobrancaDoMes}>
                     <input type="hidden" name="contrato_id" value={c.id} />

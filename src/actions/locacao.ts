@@ -190,3 +190,72 @@ export async function darBaixaCobranca(formData: FormData): Promise<void> {
   await registrarAuditoria(supabase, { acao: "locacao.cobranca.baixar", entidade: "cobranca", entidadeId: cob.id, metadata: { total: cob.total_centavos } });
   revalidatePath("/sistema/locacao");
 }
+
+const schemaCadastro = z.object({
+  contrato_id: z.uuid("Contrato inválido."),
+  proprietario_id: z.union([z.uuid("Proprietário inválido."), z.literal("")]).optional(),
+  locador_nome: z.string().trim().min(2, "Informe o proprietário (locador)."),
+  locatario_nome: z.string().trim().min(2, "Informe o locatário."),
+  locatario_tipo_pessoa: z.enum(["pf", "pj"], "Tipo de pessoa do locatário inválido."),
+  locatario_documento: z.string().trim().max(30, "Documento muito longo.").optional(),
+  locatario_telefone: z.string().trim().max(30).optional(),
+  locatario_email: z.union([z.email("E-mail inválido."), z.literal("")]).optional(),
+});
+
+/**
+ * Atualiza so os dados cadastrais do contrato (partes e documento do locatario).
+ * Valores, vigencia e taxas nao mudam aqui: alterariam cobrancas e repasses ja gerados.
+ * Documento em branco = mantem o atual.
+ */
+export async function atualizarCadastroContrato(_prev: EstadoForm, formData: FormData): Promise<EstadoForm> {
+  const bruto: Record<string, unknown> = {};
+  formData.forEach((v, k) => {
+    if (typeof v === "string") bruto[k] = v;
+  });
+  const p = schemaCadastro.safeParse(bruto);
+  if (!p.success) return { erro: p.error.issues[0]?.message ?? "Confira os dados." };
+  const d = p.data;
+
+  const { supabase, companyId } = await requirePermissao("locacao", "editar");
+
+  const { data: atual } = await supabase.from("contrato_locacao").select("id").eq("id", d.contrato_id).eq("company_id", companyId).maybeSingle();
+  if (!atual) return { erro: "Contrato não encontrado." };
+
+  let locador = d.locador_nome;
+  if (d.proprietario_id) {
+    const { data: prop } = await supabase.from("proprietario").select("id, nome").eq("id", d.proprietario_id).eq("company_id", companyId).maybeSingle();
+    if (!prop) return { erro: "O proprietário não pertence à sua empresa." };
+    locador = prop.nome;
+  }
+
+  const mudancas: Record<string, string | null> = {
+    proprietario_id: d.proprietario_id || null,
+    locador_nome: locador,
+    locatario_nome: d.locatario_nome,
+    locatario_tipo_pessoa: d.locatario_tipo_pessoa,
+    locatario_telefone: d.locatario_telefone || null,
+    locatario_email: d.locatario_email || null,
+  };
+  let trocouDocumento = false;
+  if (d.locatario_documento) {
+    const r = protegerDocumento(d.locatario_documento, d.locatario_tipo_pessoa);
+    if (!r.ok) return { erro: `Locatário: ${r.erro}` };
+    mudancas.locatario_documento_cifrado = r.doc.cifrado;
+    mudancas.locatario_documento_hash = r.doc.hash;
+    mudancas.locatario_documento_final = r.doc.final;
+    trocouDocumento = true;
+  }
+
+  const { error } = await supabase.from("contrato_locacao").update(mudancas).eq("id", d.contrato_id).eq("company_id", companyId);
+  if (error) return { erro: "Não foi possível salvar. Tente novamente." };
+
+  await registrarAuditoria(supabase, {
+    acao: "locacao.contrato.editar_cadastro",
+    entidade: "contrato_locacao",
+    entidadeId: d.contrato_id,
+    metadata: { trocou_documento_locatario: trocouDocumento, com_proprietario: !!d.proprietario_id },
+  });
+  revalidatePath("/sistema/locacao");
+  revalidatePath("/sistema/fiscal/dimob");
+  return { ok: true };
+}
