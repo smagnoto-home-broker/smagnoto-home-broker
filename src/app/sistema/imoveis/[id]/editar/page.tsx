@@ -14,6 +14,7 @@ import {
 } from "@/actions/imoveis-meta";
 import type { Json } from "@/lib/supabase/types";
 import { ImovelForm } from "../../imovel-form";
+import { CopyInstagram } from "./copy-instagram";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Editar imóvel" };
@@ -131,6 +132,7 @@ export default async function EditarImovelPage({ params }: { params: Promise<{ i
         </p>
       </div>
       <ImovelForm acao={editarImovel} inicial={valores} proprietarios={proprietarios} />
+      <CopyInstagram imovelId={imovel.id} />
     </div>
   );
 }
