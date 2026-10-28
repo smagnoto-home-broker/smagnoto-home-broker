@@ -8,26 +8,47 @@ import { InputTelefone } from "@/components/ui/input-telefone";
 import { mascaraDocumento, type TipoPessoa } from "@/lib/documento";
 import type { AcaoForm, EstadoForm } from "@/actions/imoveis-meta";
 
-export function ProprietarioForm({ acao, documentoDisponivel }: { acao: AcaoForm; documentoDisponivel: boolean }) {
+export type ProprietarioInicial = {
+  id: string;
+  nome: string;
+  tipo: TipoPessoa;
+  telefone: string;
+  email: string;
+  observacoes: string;
+  /** Documento atual já mascarado (ex.: ***.***.***-12); o número completo nunca vem para cá. */
+  documentoAtual: string;
+};
+
+export function ProprietarioForm({
+  acao,
+  documentoDisponivel,
+  inicial,
+}: {
+  acao: AcaoForm;
+  documentoDisponivel: boolean;
+  inicial?: ProprietarioInicial;
+}) {
+  const editando = Boolean(inicial);
   const router = useRouter();
   const [estado, enviar, pendente] = useActionState(acao, {} as EstadoForm);
   // Campos controlados: se o servidor recusar (ex.: CPF invalido), nada do que foi digitado some.
-  const [nome, setNome] = useState("");
-  const [tipo, setTipo] = useState<TipoPessoa>("pf");
+  const [nome, setNome] = useState(inicial?.nome ?? "");
+  const [tipo, setTipo] = useState<TipoPessoa>(inicial?.tipo ?? "pf");
   const [documento, setDocumento] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [email, setEmail] = useState("");
-  const [obs, setObs] = useState("");
+  const [telefone, setTelefone] = useState(inicial?.telefone ?? "");
+  const [email, setEmail] = useState(inicial?.email ?? "");
+  const [obs, setObs] = useState(inicial?.observacoes ?? "");
 
   useEffect(() => {
     if (!estado.ok) return;
-    toast.success("Proprietário cadastrado.");
+    toast.success(editando ? "Proprietário atualizado." : "Proprietário cadastrado.");
     router.push("/sistema/proprietarios");
     router.refresh();
-  }, [estado, router]);
+  }, [estado, editando, router]);
 
   return (
     <form action={enviar} className="space-y-5">
+      {inicial ? <input type="hidden" name="id" value={inicial.id} /> : null}
       {estado.erro && <div role="alert" className="rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm p-3">{estado.erro}</div>}
       {!documentoDisponivel && (
         <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-sm p-3">
@@ -71,6 +92,11 @@ export function ProprietarioForm({ acao, documentoDisponivel }: { acao: AcaoForm
               value={documento}
               onChange={(e) => setDocumento(mascaraDocumento(e.target.value, tipo))}
             />
+            {inicial?.documentoAtual && (
+              <p className="text-xs text-mute mt-1">
+                Atual: {inicial.documentoAtual}. Deixe em branco para manter.
+              </p>
+            )}
           </div>
           <div>
             <label className="label" htmlFor="telefone">Telefone</label>
@@ -86,7 +112,7 @@ export function ProprietarioForm({ acao, documentoDisponivel }: { acao: AcaoForm
           <textarea id="observacoes" name="observacoes" rows={3} maxLength={1000} className="field" value={obs} onChange={(e) => setObs(e.target.value)} />
         </div>
       </section>
-      <button type="submit" disabled={pendente} className="btn btn-gold"><Save size={16} aria-hidden /> {pendente ? "Salvando…" : "Salvar proprietário"}</button>
+      <button type="submit" disabled={pendente} className="btn btn-gold"><Save size={16} aria-hidden /> {pendente ? "Salvando…" : editando ? "Salvar alterações" : "Salvar proprietário"}</button>
     </form>
   );
 }
