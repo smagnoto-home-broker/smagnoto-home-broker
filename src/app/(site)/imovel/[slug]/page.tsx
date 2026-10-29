@@ -9,6 +9,8 @@ import { getVitrineEmpresa } from "@/lib/site-company";
 import { Gallery } from "@/components/site/gallery";
 import { BotaoVoltar } from "@/components/site/botao-voltar";
 import { Immersive } from "@/components/site/immersive";
+import { TerrenoDestaque } from "@/components/site/terreno-destaque";
+import { medidasTerreno, TERRENOS_DESTAQUE } from "@/lib/terreno-destaque";
 import { LeadForm } from "@/components/site/lead-form";
 import { VisitForm } from "@/components/site/visit-form";
 import { buscarImovel, type Imovel } from "@/components/site/queries";
@@ -192,6 +194,13 @@ export default async function ImovelDetalhePage({ params }: Params) {
               </p>
             </section>
           )}
+
+          {/* Terreno em destaque (demarcação sobre aéreo, só se houver configuração) */}
+          {(() => {
+            const cfg = imovel.code ? TERRENOS_DESTAQUE[imovel.code] : undefined;
+            const m = cfg ? medidasTerreno(cfg, Number(imovel.area_total ?? 0), Number(imovel.price)) : null;
+            return cfg && m ? <TerrenoDestaque cfg={cfg} medidas={m} titulo={imovel.title} /> : null;
+          })()}
 
           {/* Diferenciais */}
           {imovel.features && imovel.features.length > 0 && (
