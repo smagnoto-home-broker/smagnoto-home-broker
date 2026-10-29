@@ -4,17 +4,25 @@ import { useCallback, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Hand } from "lucide-react";
 
 /**
- * Seção "Visita imersiva": iframe para tour 360/modelo 3D hospedados,
- * ou panorama equiretangular arrastável (pointer events + teclado).
- * A página só renderiza isto quando existe mídia real no imóvel.
+ * Seção "Visita imersiva": abas para tour 360 e modelo 3D (iframes hospedados)
+ * e panorama equiretangular arrastável (pointer events + teclado).
+ * Só mostra as abas das mídias que existem no imóvel.
  */
+type Aba = "tour" | "panorama" | "modelo";
+const ROTULOS: Record<Aba, string> = { tour: "Tour 360", panorama: "Panorama", modelo: "Modelo 3D" };
+
 export function Immersive({ tour, modelo, panorama, titulo }: {
   tour?: string | null;
   modelo?: string | null;
   panorama?: string | null;
   titulo: string;
 }) {
-  const fonte = tour ?? modelo ?? null;
+  const fontes: Record<Aba, string | null | undefined> = { tour, panorama, modelo };
+  const abas = (Object.keys(fontes) as Aba[]).filter((a) => typeof fontes[a] === "string" && fontes[a]!.trim().length > 0);
+  const [ativa, setAtiva] = useState<Aba | null>(abas[0] ?? null);
+  const atual = ativa && abas.includes(ativa) ? ativa : (abas[0] ?? null);
+  if (!atual) return null;
+  const fonte = fontes[atual] as string;
 
   return (
     <section aria-labelledby="imersiva-titulo" className="mt-10">
@@ -22,22 +30,40 @@ export function Immersive({ tour, modelo, panorama, titulo }: {
         Visita imersiva
       </h2>
       <p className="mt-1 text-sm text-mute">
-        {fonte ? "Percorra o imóvel sem sair daqui." : "Arraste a imagem para olhar ao redor."}
+        {atual === "panorama" ? "Arraste a imagem para olhar ao redor." : "Percorra o imóvel sem sair daqui."}
       </p>
 
-      {fonte ? (
+      {abas.length > 1 && (
+        <div role="tablist" aria-label="Tipo de visita imersiva" className="mt-4 flex flex-wrap gap-2">
+          {abas.map((a) => (
+            <button
+              key={a}
+              type="button"
+              role="tab"
+              aria-selected={a === atual}
+              onClick={() => setAtiva(a)}
+              className={a === atual ? "btn btn-navy btn-sm" : "btn btn-outline btn-sm"}
+            >
+              {ROTULOS[a]}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {atual === "panorama" ? (
+        <Panorama src={fonte} titulo={titulo} />
+      ) : (
         <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-navy-950">
           <iframe
+            key={atual}
             src={fonte}
-            title={`Tour imersivo de ${titulo}`}
+            title={`${ROTULOS[atual]} de ${titulo}`}
             className="h-[420px] w-full"
             loading="lazy"
-            allow="fullscreen; accelerometer; gyroscope; camera; fullscreen"
+            allow="fullscreen; accelerometer; gyroscope; camera"
           />
         </div>
-      ) : panorama ? (
-        <Panorama src={panorama} titulo={titulo} />
-      ) : null}
+      )}
     </section>
   );
 }

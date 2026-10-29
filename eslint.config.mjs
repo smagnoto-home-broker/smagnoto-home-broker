@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Arquivos estaticos (inclui o model-viewer minificado de public/demo).
+    "public/**",
   ]),
 ]);
 
