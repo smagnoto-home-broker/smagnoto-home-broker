@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { BRAND, CONDOMINIOS_DESTAQUE } from "@/lib/brand";
-import { OVERLAY_LEVE, SectionVideo } from "./section-video";
+import { OVERLAY_HERO, SectionVideo } from "./section-video";
 import { TipoCarousel, type TipoCard } from "./tipo-carousel";
 
 /** Números exibidos como os 3 cards do herói (saem da antiga seção Números). */
@@ -30,7 +30,7 @@ export function Hero({ numeros, tipos }: { numeros: NumeroHero[]; tipos: TipoCar
         src={["/videos/casa1.mp4", "/videos/casa2.mp4", "/videos/casa3.mp4"]}
         poster="/videos/casa1.jpg"
         eager
-        overlay={OVERLAY_LEVE}
+        overlay={OVERLAY_HERO}
       />
 
       {/* z-10 (item flex) mantém o conteúdo acima do vídeo; sem `relative` para que
