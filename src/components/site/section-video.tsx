@@ -24,6 +24,15 @@ export const OVERLAY_LEVE: CSSProperties = {
 };
 
 /**
+ * Película do herói da home: mais forte no lado do texto (esquerda) para o título ficar legível
+ * sobre fachadas e folhagens, e leve no lado direito, onde o vídeo aparece.
+ */
+export const OVERLAY_HERO: CSSProperties = {
+  backgroundImage:
+    "linear-gradient(100deg, rgba(1,36,57,0.78) 0%, rgba(1,36,57,0.55) 42%, rgba(1,36,57,0.18) 100%)",
+};
+
+/**
  * Overlay padrão das seções com vídeo: navy da marca em diagonal (lado do texto em
  * 88% para contraste, lado do vídeo em 66%).
  * Toda seção/hero que usar <SectionVideo> sem overlay recebe este automaticamente.
