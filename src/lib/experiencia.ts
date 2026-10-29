@@ -33,6 +33,19 @@ export const EXPERIENCIAS: Record<string, Experiencia> = {
       { de: 0.78, ate: 1, titulo: "Seu novo capítulo", texto: "Piscina, deck e entardecer na varanda. Agende uma visita e conheça pessoalmente." },
     ],
   },
+  casa1: {
+    chave: "casa1",
+    quadros: 237,
+    titulo: "Casa nova em condomínio",
+    subtitulo: "Ambientes amplos, luz natural e área gourmet com vista.",
+    capitulos: [
+      { de: 0, ate: 0.17, titulo: "Fachada contemporânea", texto: "Linhas retas, painel de madeira, pedra na entrada e guarda-corpo de vidro, em condomínio fechado.", destaques: ["Painel de madeira", "Condomínio fechado"] },
+      { de: 0.2, ate: 0.43, titulo: "Ambientes amplos e integrados", texto: "Salas generosas, com esquadrias pretas e muita luz natural, abertas para a área externa.", destaques: ["Esquadrias pretas", "Porcelanato claro"] },
+      { de: 0.46, ate: 0.7, titulo: "Detalhes que fazem diferença", texto: "Escada com guarda-corpo de vidro, bancada em granito e iluminação embutida nos ambientes.", destaques: ["Guarda-corpo de vidro", "Bancada em granito"] },
+      { de: 0.74, ate: 0.89, titulo: "Área externa", texto: "Corredor lateral reservado e área gourmet coberta, com vista aberta para o condomínio." },
+      { de: 0.9, ate: 1, titulo: "Seu novo capítulo", texto: "Varanda com vista para a piscina. Agende uma visita e conheça pessoalmente." },
+    ],
+  },
   sobrado: {
     chave: "sobrado",
     quadros: 162,
