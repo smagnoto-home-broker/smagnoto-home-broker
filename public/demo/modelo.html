@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modelo 3D (demonstração)</title>
+<script type="module" src="/demo/vendor/model-viewer.min.js"></script>
+<style>*{margin:0}html,body{height:100%;background:#012439}model-viewer{width:100%;height:100%;--poster-color:#012439}
+#t{position:absolute;left:14px;top:12px;color:#fff;font:700 11px system-ui;letter-spacing:.14em;background:rgba(0,0,0,.4);padding:5px 9px;border-radius:99px;z-index:2}</style></head>
+<body><div id="t">MODELO 3D · DEMONSTRAÇÃO · ARRASTE PARA GIRAR</div>
+<model-viewer id="m" camera-controls auto-rotate shadow-intensity="1" exposure="1.1" interaction-prompt="none" camera-orbit="35deg 65deg 130%" alt="Modelo 3D de demonstração"></model-viewer>
+<script>var k=new URLSearchParams(location.search).get("i")||"casa";document.getElementById("m").setAttribute("src","/demo/modelos/"+k+".glb");</script>
+</body></html>
