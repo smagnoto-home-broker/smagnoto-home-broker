@@ -7,6 +7,7 @@ import { BRAND } from "@/lib/brand";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getVitrineEmpresa } from "@/lib/site-company";
 import { Gallery } from "@/components/site/gallery";
+import { BotaoVoltar } from "@/components/site/botao-voltar";
 import { Immersive } from "@/components/site/immersive";
 import { LeadForm } from "@/components/site/lead-form";
 import { VisitForm } from "@/components/site/visit-form";
@@ -63,7 +64,7 @@ export default async function ImovelDetalhePage({ params }: Params) {
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
       {/* Migalha */}
-      <nav aria-label="Migalha de navegação" className="mb-6 text-xs text-mute">
+      <nav aria-label="Migalha de navegação" className="mb-6 flex items-center justify-between gap-4 text-[0.92rem] text-mute">
         <ol className="flex flex-wrap items-center gap-2">
           <li>
             <Link href="/imoveis" className="inline-flex items-center gap-1 hover:text-navy-700">
@@ -90,6 +91,7 @@ export default async function ImovelDetalhePage({ params }: Params) {
             </>
           )}
         </ol>
+        <BotaoVoltar />
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-3">
