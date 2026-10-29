@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Hand } from "lucide-react";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, Hand, Play } from "lucide-react";
+import { chaveDaUrlExperiencia, quadroUrl } from "@/lib/experiencia";
 
 /**
  * Seção "Visita imersiva": abas para tour 360 e modelo 3D (iframes hospedados)
@@ -10,6 +12,7 @@ import { ChevronLeft, ChevronRight, Hand } from "lucide-react";
  */
 type Aba = "tour" | "panorama" | "modelo";
 const ROTULOS: Record<Aba, string> = { tour: "Tour 360", panorama: "Panorama", modelo: "Modelo 3D" };
+const ROTULO_EXPERIENCIA = "Experiência";
 
 export function Immersive({ tour, modelo, panorama, titulo }: {
   tour?: string | null;
@@ -23,6 +26,8 @@ export function Immersive({ tour, modelo, panorama, titulo }: {
   const atual = ativa && abas.includes(ativa) ? ativa : (abas[0] ?? null);
   if (!atual) return null;
   const fonte = fontes[atual] as string;
+  const chaveExp = atual === "tour" ? chaveDaUrlExperiencia(fonte) : null;
+  const rotuloAba = (a: Aba) => (a === "tour" && chaveDaUrlExperiencia(fontes.tour) ? ROTULO_EXPERIENCIA : ROTULOS[a]);
 
   return (
     <section aria-labelledby="imersiva-titulo" className="mt-10">
@@ -44,7 +49,7 @@ export function Immersive({ tour, modelo, panorama, titulo }: {
               onClick={() => setAtiva(a)}
               className={a === atual ? "btn btn-navy btn-sm" : "btn btn-outline btn-sm"}
             >
-              {ROTULOS[a]}
+              {rotuloAba(a)}
             </button>
           ))}
         </div>
@@ -52,12 +57,32 @@ export function Immersive({ tour, modelo, panorama, titulo }: {
 
       {atual === "panorama" ? (
         <Panorama src={fonte} titulo={titulo} />
+      ) : chaveExp ? (
+        <Link
+          href={fonte}
+          className="group relative mt-4 block h-[420px] overflow-hidden rounded-2xl border border-line bg-navy-950"
+          aria-label={`Abrir a experiência cinematográfica de ${titulo}`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- quadro estático de demonstração */}
+          <img src={quadroUrl(chaveExp, 1)} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <span className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-navy-950/10 to-transparent" aria-hidden />
+          <span className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-4 p-6 text-white">
+            <span>
+              <span className="block text-[11px] font-bold uppercase tracking-[0.2em] text-gold-500">Experiência cinematográfica</span>
+              <span className="mt-1 block text-xl font-bold">Role a página e percorra o imóvel</span>
+            </span>
+            <span className="btn btn-gold shrink-0">
+              <Play size={16} aria-hidden />
+              Abrir
+            </span>
+          </span>
+        </Link>
       ) : (
         <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-navy-950">
           <iframe
             key={atual}
             src={fonte}
-            title={`${ROTULOS[atual]} de ${titulo}`}
+            title={`${rotuloAba(atual)} de ${titulo}`}
             className="h-[420px] w-full"
             loading="lazy"
             allow="fullscreen; accelerometer; gyroscope; camera"
