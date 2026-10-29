@@ -70,6 +70,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: P
           <div><p className="text-xl font-bold text-navy-950">{formatarBRL(taxaAdm)}</p><p className="text-mute">taxa de administração: receita da imobiliária</p></div>
           <div><p className="text-xl font-bold text-navy-950">{formatarBRL(deTerceiros)}</p><p className="text-mute">repasses a proprietários: dinheiro de terceiros</p></div>
         </div>
+        <Link href="/sistema/financeiro/dre" className="btn btn-outline btn-sm">Ver DRE gerencial</Link>
         <p className="text-xs text-mute">Os valores de locação ainda não entram no resultado acima; a integração com o plano de contas vem a seguir.</p>
       </div>
     </div>
