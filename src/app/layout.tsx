@@ -1,12 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const dm = DM_Sans({
-  subsets: ["latin"],
+/** Fonte local (DM Sans variável, licença OFL): não depende de baixar do Google no build. */
+const dm = localFont({
+  src: "./fonts/DMSans-latin-variable.woff2",
   variable: "--font-dm",
-  weight: ["400", "500", "600", "700"],
+  weight: "100 1000",
+  display: "swap",
 });
 
 /**
