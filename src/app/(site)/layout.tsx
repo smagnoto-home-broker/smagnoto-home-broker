@@ -1,5 +1,6 @@
 import { RedesFlutuantes, SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
+import { WhatsChat } from "@/components/site/whats-chat";
 
 /** Shell do site público: topbar + header sticky + rodapé navy. */
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -8,6 +9,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <RedesFlutuantes />
+      <WhatsChat />
       <SiteFooter />
     </div>
   );
