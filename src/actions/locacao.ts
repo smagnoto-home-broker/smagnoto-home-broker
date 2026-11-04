@@ -259,3 +259,21 @@ export async function atualizarCadastroContrato(_prev: EstadoForm, formData: For
   revalidatePath("/sistema/fiscal/dimob");
   return { ok: true };
 }
+
+/** Marca o repasse como pago (Pix feito fora do sistema). So pendente vira pago; nunca desfaz. */
+export async function marcarRepassePago(formData: FormData): Promise<void> {
+  const id = z.uuid().safeParse(formData.get("repasse_id"));
+  if (!id.success) return;
+  const { supabase, companyId } = await requirePermissao("locacao", "editar");
+  const { data } = await supabase
+    .from("repasse")
+    .update({ status: "pago", pago_em: hojeSP() })
+    .eq("id", id.data)
+    .eq("company_id", companyId)
+    .eq("status", "pendente")
+    .select("id, liquido")
+    .maybeSingle();
+  if (!data) return;
+  await registrarAuditoria(supabase, { acao: "locacao.repasse.pagar", entidade: "repasse", entidadeId: data.id, metadata: { liquido: data.liquido } });
+  revalidatePath("/sistema/locacao/repasses");
+}
