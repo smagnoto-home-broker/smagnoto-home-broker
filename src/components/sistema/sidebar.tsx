@@ -22,6 +22,8 @@ import {
   UserCog,
   Settings,
   AlertTriangle,
+  Banknote,
+  TrendingUp,
   FileSignature,
   BookOpen,
   Calculator,
@@ -67,6 +69,8 @@ const NAV = [
     items: [
       { href: "/sistema/locacao", label: "Painel da locação", icon: KeyRound, exact: true },
       { href: "/sistema/locacao/inadimplencia", label: "Inadimplência", icon: AlertTriangle },
+      { href: "/sistema/locacao/repasses", label: "Repasses", icon: Banknote },
+      { href: "/sistema/locacao/reajustes", label: "Reajustes", icon: TrendingUp },
       { href: "/sistema/financeiro", label: "Financeiro", icon: Wallet },
       { href: "/sistema/financeiro/contas", label: "Plano de contas", icon: BookOpen },
       { href: "/sistema/fiscal/dimob", label: "DIMOB e informe", icon: FileText },
