@@ -1,5 +1,6 @@
 import { slugify } from "@/lib/format";
 import { BRAND } from "@/lib/brand";
+import { textoWhatsImovel, type ImovelParaWhats } from "@/lib/whats-imovel";
 import type { Imovel } from "./queries";
 
 /** Labels oficiais (enum do banco → texto em pt-BR). */
@@ -83,9 +84,6 @@ export function whatsAvaliacao(): string {
 }
 
 /** Mensagem de contato sobre um imóvel específico. */
-export function whatsImovel(imovel: Pick<Imovel, "title" | "code">, url: string): string {
-  return linkWhatsTelefone(
-    BRAND.whatsapp,
-    `Olá! Tenho interesse neste imóvel da Smagnoto: ${imovel.title}${imovel.code ? ` (cód. ${imovel.code})` : ""}. ${url}`,
-  );
+export function whatsImovel(imovel: ImovelParaWhats, url: string): string {
+  return linkWhatsTelefone(BRAND.whatsapp, textoWhatsImovel(imovel, url));
 }
