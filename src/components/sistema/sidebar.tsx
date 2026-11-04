@@ -26,6 +26,7 @@ import {
   TrendingUp,
   Percent,
   Landmark,
+  FileBarChart,
   FileSignature,
   BookOpen,
   Calculator,
@@ -41,6 +42,7 @@ const NAV = [
     items: [
       { href: "/sistema", label: "Painel", icon: LayoutDashboard, exact: true },
       { href: "/sistema/gestao", label: "Gestão", icon: BarChart3 },
+      { href: "/sistema/relatorios", label: "Relatórios", icon: FileBarChart },
       { href: "/sistema/equipe", label: "Equipe", icon: UserCog },
       { href: "/sistema/configuracoes", label: "Configurações", icon: Settings },
     ],
