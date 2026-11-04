@@ -19,6 +19,8 @@ import {
   KeyRound,
   Wallet,
   BarChart3,
+  UserCog,
+  Settings,
   FileSignature,
   BookOpen,
   Calculator,
@@ -34,6 +36,8 @@ const NAV = [
     items: [
       { href: "/sistema", label: "Painel", icon: LayoutDashboard, exact: true },
       { href: "/sistema/gestao", label: "Gestão", icon: BarChart3 },
+      { href: "/sistema/equipe", label: "Equipe", icon: UserCog },
+      { href: "/sistema/configuracoes", label: "Configurações", icon: Settings },
     ],
   },
   {
