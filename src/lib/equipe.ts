@@ -1,4 +1,5 @@
-/** Funcoes puras da tela Equipe/Configuracoes (sem acesso a banco). */
+/** Funcoes puras da tela Equipe/Configuracoes (sem acesso a banco). Dinheiro em centavos. */
+import { paraCentavos } from "./dinheiro";
 
 export const ROTULO_PAPEL: Record<string, string> = {
   owner: "Proprietário",
@@ -51,12 +52,12 @@ export function estatisticasPorCorretor(
     const e = p.corretor_id ? mapa.get(p.corretor_id) : undefined;
     if (e && p.status === "aceita") {
       e.vendasFechadas += 1;
-      e.vgv += Number(p.value) || 0;
+      e.vgv += paraCentavos(Number(p.value) || 0);
     }
   }
   for (const c of dados.comissoes) {
     const e = mapa.get(c.corretor_id);
-    if (e) e.comissaoGerada += Number(c.value) || 0;
+    if (e) e.comissaoGerada += paraCentavos(Number(c.value) || 0);
   }
   return mapa;
 }

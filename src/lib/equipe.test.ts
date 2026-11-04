@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { estatisticasPorCorretor, iniciais, rotuloPapel } from "./equipe.ts";
+import { estatisticasPorCorretor, iniciais, rotuloPapel } from "./equipe";
 
 test("iniciais", () => {
   assert.equal(iniciais("Anderson Smagnoto"), "AS");
@@ -37,7 +37,7 @@ test("estatisticas por corretor", () => {
     ],
     comissoes: [{ corretor_id: "a", value: 15000 }, { corretor_id: "b", value: 0 }],
   });
-  assert.deepEqual(m.get("a"), { leadsAtivos: 1, visitasRealizadas: 1, vendasFechadas: 2, vgv: 750000.5, comissaoGerada: 15000 });
+  assert.deepEqual(m.get("a"), { leadsAtivos: 1, visitasRealizadas: 1, vendasFechadas: 2, vgv: 75000050, comissaoGerada: 1500000 });
   assert.deepEqual(m.get("b"), { leadsAtivos: 1, visitasRealizadas: 1, vendasFechadas: 0, vgv: 0, comissaoGerada: 0 });
   assert.equal(m.size, 2);
 });
