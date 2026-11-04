@@ -19,6 +19,7 @@ function vizinho(mes: string, d: number) {
 export default async function RepassesPage({ searchParams }: { searchParams: Promise<{ mes?: string }> }) {
   const { supabase, companyId, membership } = await requirePermissao("locacao", "ver");
   const podeEditar = pode(membership.role, "locacao", "editar");
+  const podeExportar = pode(membership.role, "locacao", "exportar");
   const hoje = new Date().toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" });
   const { mes, inicio, fim } = intervaloDoMes((await searchParams).mes, hoje);
 
@@ -71,7 +72,7 @@ export default async function RepassesPage({ searchParams }: { searchParams: Pro
           const c = contrato.get(x.contrato_id);
           const partes = Array.isArray(x.distribuicao) ? x.distribuicao.length : 1;
           return (
-            <div key={x.id} className="p-4 grid gap-2 md:grid-cols-[1.4fr_1fr_1fr_1fr_auto] text-sm items-center">
+            <div key={x.id} className="p-4 grid gap-2 md:grid-cols-[1.4fr_1fr_1fr_1fr_auto_auto] text-sm items-center">
               <div>
                 <p className="font-medium text-navy-950">{c?.locador_nome ?? "Proprietário"}</p>
                 <p className="text-xs text-mute">Inquilino: {c?.locatario_nome ?? "—"}{partes > 1 ? ` · rateio entre ${partes} pessoas` : ""}</p>
@@ -83,6 +84,9 @@ export default async function RepassesPage({ searchParams }: { searchParams: Pro
                 {x.reembolsos !== 0 && <span className="block">– reembolsos {formatarBRL(x.reembolsos)}</span>}
               </p>
               <p className="font-bold text-navy-950">{formatarBRL(x.liquido)}</p>
+              {podeExportar && (
+                <a href={`/sistema/locacao/prestacao?repasse=${x.id}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline btn-sm">Extrato</a>
+              )}
               {x.status === "pago" ? (
                 <span className="text-xs text-emerald-700 font-semibold">Pago{x.pago_em ? ` em ${br(x.pago_em)}` : ""}</span>
               ) : podeEditar ? (
