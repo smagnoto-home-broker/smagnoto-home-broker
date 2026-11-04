@@ -1,10 +1,12 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { AlertTriangle, Plus, ShieldCheck } from "lucide-react";
 import { redirect } from "next/navigation";
 import { requireCompany } from "@/lib/supabase/server";
 import { pode } from "@/lib/permissoes";
 import { mascararEmail, mascararTelefone, seSensivel } from "@/lib/mascara";
 import { agruparProprietarios, type ImovelProprietario } from "@/lib/proprietarios";
+import { autorizacaoPorProprietario } from "@/lib/proprietario-passos";
+import { diasParaVencer } from "@/lib/autorizacao";
 import { formatarBRL } from "@/lib/dinheiro";
 import { registrarAuditoria } from "@/lib/auditoria";
 import { decifrar } from "@/lib/cripto-dados";
@@ -26,7 +28,16 @@ export default async function ProprietariosPage() {
     .neq("status", "inativo")
     .limit(2000);
 
-  const r = agruparProprietarios((data ?? []) as unknown as ImovelProprietario[]);
+  const imoveisBase = (data ?? []) as unknown as ImovelProprietario[];
+  const r = agruparProprietarios(imoveisBase);
+  const hoje = new Date().toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" });
+  const { data: autorizacoes } = await supabase
+    .from("autorizacao_imovel")
+    .select("property_id, tipo, data_vencimento, status")
+    .eq("company_id", companyId)
+    .eq("status", "ativa")
+    .limit(2000);
+  const aut = autorizacaoPorProprietario(imoveisBase, autorizacoes ?? [], hoje);
 
   const { data: cadastrados } = await supabase
     .from("proprietario")
@@ -70,6 +81,20 @@ export default async function ProprietariosPage() {
         <div className="card p-4"><p className="text-3xl font-bold text-red-700">{r.semProprietario}</p><p className="text-xs text-mute">imóveis sem proprietário</p></div>
       </div>
 
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="card p-4"><p className="text-3xl font-bold text-navy-950">{aut.comExclusividade}</p><p className="text-xs text-mute">com exclusividade</p></div>
+        <div className="card p-4"><p className="text-3xl font-bold text-yellow-700">{aut.vencendo60}</p><p className="text-xs text-mute">autorizações vencendo em 60 dias</p></div>
+        <div className="card p-4"><p className="text-3xl font-bold text-red-700">{aut.vencidas}</p><p className="text-xs text-mute">autorizações vencidas</p></div>
+        <div className="card p-4"><p className="text-3xl font-bold text-navy-950">{(cadastrados ?? []).length}</p><p className="text-xs text-mute">cadastros completos</p></div>
+      </div>
+
+      {aut.vencidas > 0 && (
+        <div role="alert" className="rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-sm p-3 flex gap-2">
+          <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden />
+          <span>{aut.vencidas} {aut.vencidas === 1 ? "autorização vencida" : "autorizações vencidas"}. Renove em <Link href="/sistema/autorizacoes" className="underline">Autorizações</Link> antes de continuar divulgando o imóvel.</span>
+        </div>
+      )}
+
       <div className="card divide-y divide-line">
         <p className="p-4 font-semibold text-navy-950">Cadastrados ({(cadastrados ?? []).length})</p>
         {(cadastrados ?? []).length === 0 && <p className="p-4 text-sm text-mute">Nenhum proprietário cadastrado ainda. Use o botão “Cadastrar proprietário”.</p>}
@@ -108,6 +133,16 @@ export default async function ProprietariosPage() {
                 ? "Sem contato válido"
                 : [seSensivel(completo, p.telefone, mascararTelefone(p.telefone)), seSensivel(completo, p.email, mascararEmail(p.email))].filter(Boolean).join(" · ")}
             </p>
+            {aut.porChave.get(p.chave) && (() => {
+              const a = aut.porChave.get(p.chave)!;
+              const d = diasParaVencer(a.vencimento, hoje);
+              return (
+                <p className="text-xs text-mute flex items-center gap-1">
+                  {a.exclusiva && <ShieldCheck size={13} className="text-navy-600" aria-hidden />}
+                  {a.exclusiva ? "Exclusividade" : "Simples"} · {d < 0 ? `vencida há ${-d} dias` : `vence em ${d} dias`}
+                </p>
+              );
+            })()}
             <div className="flex flex-wrap gap-2 pt-1">
               {p.imoveis.slice(0, 6).map((i) => (
                 <Link key={i.id} href={`/sistema/imoveis/${i.id}`} className="text-xs underline text-navy-950">{i.title}</Link>
