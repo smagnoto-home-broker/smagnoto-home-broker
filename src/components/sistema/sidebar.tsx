@@ -21,6 +21,7 @@ import {
   BarChart3,
   UserCog,
   Settings,
+  AlertTriangle,
   FileSignature,
   BookOpen,
   Calculator,
@@ -64,7 +65,8 @@ const NAV = [
   {
     section: "Locação",
     items: [
-      { href: "/sistema/locacao", label: "Painel da locação", icon: KeyRound },
+      { href: "/sistema/locacao", label: "Painel da locação", icon: KeyRound, exact: true },
+      { href: "/sistema/locacao/inadimplencia", label: "Inadimplência", icon: AlertTriangle },
       { href: "/sistema/financeiro", label: "Financeiro", icon: Wallet },
       { href: "/sistema/financeiro/contas", label: "Plano de contas", icon: BookOpen },
       { href: "/sistema/fiscal/dimob", label: "DIMOB e informe", icon: FileText },

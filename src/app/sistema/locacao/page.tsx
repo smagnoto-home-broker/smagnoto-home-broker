@@ -64,7 +64,10 @@ export default async function LocacaoPage() {
       </div>
 
       <div className="card divide-y divide-line">
-        <p className="p-4 font-semibold text-navy-950">Inadimplência</p>
+        <div className="p-4 flex items-center justify-between">
+          <p className="font-semibold text-navy-950">Inadimplência</p>
+          <Link href="/sistema/locacao/inadimplencia" className="btn btn-outline btn-sm">Ver régua completa</Link>
+        </div>
         {atrasadas.length === 0 && <p className="p-4 text-sm text-mute">Nenhuma cobrança em atraso.</p>}
         {atrasadas.map(({ c, s }) => (
           <div key={c.id} className="p-4 flex items-center justify-between gap-3 text-sm">
