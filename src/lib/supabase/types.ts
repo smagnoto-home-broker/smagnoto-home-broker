@@ -392,6 +392,7 @@ export type Database = {
           owner_email: string | null
           owner_name: string | null
           proprietario_id: string | null
+          condominio_id: string | null
           owner_phone: string | null
           panorama_url: string | null
           parking: number | null
@@ -431,6 +432,7 @@ export type Database = {
           owner_email?: string | null
           owner_name?: string | null
           proprietario_id?: string | null
+          condominio_id?: string | null
           owner_phone?: string | null
           panorama_url?: string | null
           parking?: number | null
@@ -470,6 +472,7 @@ export type Database = {
           owner_email?: string | null
           owner_name?: string | null
           proprietario_id?: string | null
+          condominio_id?: string | null
           owner_phone?: string | null
           panorama_url?: string | null
           parking?: number | null
@@ -1204,6 +1207,53 @@ export type Database = {
             columns: ["cobranca_id"]
             isOneToOne: false
             referencedRelation: "cobranca"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      condominio: {
+        Row: {
+          bairro: string | null
+          cidade: string | null
+          company_id: string
+          created_at: string
+          descricao: string | null
+          id: string
+          lazer: string[]
+          lote_tipico_m2: number | null
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          bairro?: string | null
+          cidade?: string | null
+          company_id: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          lazer?: string[]
+          lote_tipico_m2?: number | null
+          nome: string
+          updated_at?: string
+        }
+        Update: {
+          bairro?: string | null
+          cidade?: string | null
+          company_id?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          lazer?: string[]
+          lote_tipico_m2?: number | null
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "condominio_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company"
             referencedColumns: ["id"]
           },
         ]
